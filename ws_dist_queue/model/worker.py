@@ -1,4 +1,4 @@
-from ws_dist_queue.model.job import JobStatus
+from ws_dist_queue.model.work import JobStatus
 
 
 class WorkerFactory:

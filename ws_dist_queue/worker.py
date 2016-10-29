@@ -3,7 +3,7 @@ import json
 import os
 from autobahn.twisted import WebSocketClientProtocol
 
-from ws_dist_queue.model.job import Job
+from ws_dist_queue.model.work import Work
 
 
 class PingClientProtocol(WebSocketClientProtocol):
@@ -12,7 +12,7 @@ class PingClientProtocol(WebSocketClientProtocol):
     def onOpen(self):
         print("my pid: {}".format(os.getpid()))
         worker_up_message = {
-            'type': 'worker_up',
+            'message_type': 'worker_up',
             'api_key': self.API_KEY,
         }
         payload = json.dumps(worker_up_message).encode('utf8')
@@ -21,8 +21,8 @@ class PingClientProtocol(WebSocketClientProtocol):
     def onMessage(self, payload, isBinary):
         message = json.loads(payload.decode('utf8'))
         print(str(message))
-        if message['type'] == 'new_job':
-            job = Job(**message['job'])
+        if message['message_type'] == 'new_job':
+            job = Work(**message['job'])
 
             payload = json.dumps(job_message).encode('utf8')
             self.sendMessage(payload)

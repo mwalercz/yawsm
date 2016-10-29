@@ -4,40 +4,44 @@ from paramiko import SSHClient
 
 
 class AuthService:
-    def __init__(self, user_auth, worker_auth):
-        self.user_auth = user_auth
-        self.worker_auth = worker_auth
+    def __init__(self, user_auth=None, worker_auth=None):
+        self.user_auth = user_auth or UserAuthService()
+        self.worker_auth = worker_auth or WorkerAuthService()
 
-    def authenticate(self, message):
-        if message['from'] == 'client':
-            return self.user_auth.authenticate(message)
-        elif message['from'] == 'worker':
-            return self.worker_auth.authenticate(message)
+    def authenticate(self, headers):
+        if headers['message_from'] == 'user':
+            return self.user_auth.authenticate(headers)
+        elif headers['message_from'] == 'worker':
+            return self.worker_auth.authenticate(headers)
+        else:
+            raise RuntimeError()
 
     def get_session(self, message_from, cookie):
-        if message_from == 'client':
+        if message_from == 'user':
             return self.user_auth.get_session(cookie)
         elif message_from == 'worker':
             return self.worker_auth.get_session(cookie)
+        else:
+            raise RuntimeError()
 
 
 class UserAuthService:
     def __init__(self):
         self.authenticated_users = {}
 
-    def authenticate(self, message):
-        username, password = message['username'], message['password']
-        user = self._try_to_login(username, password)
+    def authenticate(self, headers):
+        user = self._try_to_login(headers['username'], headers['password'])
         if user:
             cookie = self._create_cookie()
-            self.authenticated_users.update({
-                cookie: Session(
+            session = Session(
                     cookie=cookie,
-                    username=username,
-                    password=password,
+                    username=headers['username'],
+                    password=headers['password'],
                 )
+            self.authenticated_users.update({
+                cookie: session
             })
-            return cookie
+            return session
         else:
             return None
 
@@ -68,9 +72,8 @@ class UserAuthService:
 class WorkerAuthService:
     API_KEY = '1111'
 
-    def authenticate(self, message):
-        api_key = message['api_key']
-        if self.API_KEY == api_key:
+    def authenticate(self, headers):
+        if self.API_KEY == headers.api_key:
             return self.API_KEY
         else:
             return None

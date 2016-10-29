@@ -2,14 +2,16 @@ import colander
 from colander import SchemaNode
 
 
-class Job:
+class Work:
     def __init__(
-            self, cwd, command, user=None,
-            environment=None, job_id=None,
+            self, cwd, command, username=None,
+            environment=None, work_id=None,
             status=None, worker=None,
+            password=None
     ):
-        self.job_id = job_id
-        self.user = user
+        self.work_id = work_id
+        self.username = username
+        self.password = password
         self.cwd = cwd
         self.command = command
         self.environment = environment or {}
@@ -22,12 +24,12 @@ class Job:
 
     @staticmethod
     def create(job):
-        return Job(
-            job_id=job.get('job_id'),
-            user=job.get('user'),
-            cwd=job.get('cwd'),
-            command=job.get('command'),
-            environment=job.get('environment')
+        return Work(
+            work_id=job.get_cookie('job_id'),
+            username=job.get_cookie('user'),
+            cwd=job.get_cookie('cwd'),
+            command=job.get_cookie('command'),
+            environment=job.get_cookie('environment')
         )
 
 
