@@ -3,6 +3,7 @@ import sys
 import os
 from autobahn.twisted.websocket import connectWS
 from twisted.internet import reactor
+from twisted.internet import ssl
 from twisted.python import log
 from ws_dist_queue.master.message_sender import MessageSender, JsonDeserializer, JsonSerializer
 from ws_dist_queue.message import WorkMessage, ListWorkMessage, KillWorkMessage
@@ -15,22 +16,22 @@ from ws_dist_queue.user.protocol import UserProtocol
 class UserApp:
     def __init__(self, conf, credentials, message):
         self.init_logging()
+        self.conf = conf
         self.factory = self.init_factory(
-            conf=conf,
             credentials=credentials,
             message=message,
         )
 
     def run(self):
-        connectWS(self.factory)
+        connectWS(self.factory,  ssl.ClientContextFactory())
         reactor.run()
 
-    def init_factory(self, conf, credentials, message):
+    def init_factory(self, credentials, message):
         factory = UserFactory(
-            conf=conf,
+            conf=self.conf,
             credentials=credentials,
             message=message,
-            **self.init_services(conf),
+            **self.init_services(),
         )
         factory.protocol = UserProtocol
         return factory
@@ -38,11 +39,11 @@ class UserApp:
     def init_logging(self):
         log.startLogging(sys.stdout)
 
-    def init_services(self, conf):
+    def init_services(self):
         message_sender = MessageSender(
             message_from='user'
         )
-        cookie_keeper = CookieKeeper(conf)
+        cookie_keeper = CookieKeeper(self.conf)
         services = {
             'message_sender': message_sender,
             'deserializer': JsonDeserializer(),

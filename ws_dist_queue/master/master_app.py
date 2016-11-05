@@ -16,19 +16,26 @@ from ws_dist_queue.message import MessageFactory, MASTER_MAPPING
 
 
 class MasterApp:
-    def __init__(self, uri, conf):
+    def __init__(self, conf):
         self.init_logging()
-        self.context_factory = self.init_context(conf)
-        self.factory = self.init_factory(uri, conf)
+        self.conf = conf
+        self.context_factory = self.init_context()
+        self.factory = self.init_factory()
         self.site = self.init_site(WebSocketResource(self.factory))
 
-    def init_context(self, conf):
+    def init_context(self):
         return ssl.DefaultOpenSSLContextFactory(
-            conf.MASTER_KEY_PATH, conf.MASTER_CRT_PATH
+            self.conf.MASTER_KEY_PATH, self.conf.MASTER_CRT_PATH
         )
 
-    def init_factory(self, uri, conf):
-        factory = MasterFactory(uri=uri, **self.init_services(conf))
+    def init_factory(self):
+        factory = MasterFactory(uri=self.conf.MASTER_WSS_URI, **self.init_services())
+        factory.setProtocolOptions(
+            allowedOrigins=[
+                "https://127.0.0.1:8080",
+                "https://localhost:8080",
+            ]
+        )
         factory.protocol = MasterProtocol
         return factory
 
@@ -42,10 +49,10 @@ class MasterApp:
 
     def run(self):
         listenWS(self.factory, self.context_factory)
-        reactor.listenSSL(8080, self.site, self.context_factory)
+        reactor.listenSSL(self.conf.MASTER_WWW_PORT, self.site, self.context_factory)
         reactor.run()
 
-    def init_services(self, conf):
+    def init_services(self):
         message_sender = MessageSender(message_from='master')
         worker_picker = WorkerPicker()
         master_controller = MasterController(
@@ -56,7 +63,7 @@ class MasterApp:
             'controller': master_controller,
             'message_factory': MessageFactory(MASTER_MAPPING),
             'dispatcher': Dispatcher(controller=master_controller),
-            'auth': AuthService(conf=conf),
+            'auth': AuthService(conf=self.conf),
             'message_sender': message_sender,
             'deserializer': JsonDeserializer()
         }
@@ -64,8 +71,7 @@ class MasterApp:
 
 
 if __name__ == '__main__':
-    address = 'wss://127.0.0.1:9000'
     import ws_dist_queue.settings.defaults as defaults
-    app = MasterApp(address, conf=defaults)
+    app = MasterApp(defaults)
     app.run()
 

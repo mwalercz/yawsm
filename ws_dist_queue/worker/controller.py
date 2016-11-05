@@ -77,3 +77,4 @@ class WorkerController:
                 self.work_executor.kill_work,
             )
             self.current_work.remove_done_callback(self.work_completed)
+            self.executor.shutdown(wait=True)

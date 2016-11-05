@@ -6,7 +6,7 @@ class WorkerFactory(WebSocketClientFactory):
             self, conf, deserializer, dispatcher,
             message_sender, controller
     ):
-        WebSocketClientFactory.__init__(self, conf.MASTER_URI)
+        WebSocketClientFactory.__init__(self, conf.MASTER_WSS_URI)
         self.conf = conf
         self.deserializer = deserializer
         self.dispatcher = dispatcher

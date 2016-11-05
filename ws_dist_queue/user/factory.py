@@ -6,7 +6,7 @@ class UserFactory(WebSocketClientFactory):
             self, conf, credentials, message, deserializer,
             cookie_keeper, message_sender, serializer
     ):
-        WebSocketClientFactory.__init__(self, conf.MASTER_URI)
+        WebSocketClientFactory.__init__(self, conf.MASTER_WSS_URI)
         self.credentials = credentials
         self.message = message
         self.serializer = serializer

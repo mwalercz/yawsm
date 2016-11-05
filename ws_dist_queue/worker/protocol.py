@@ -4,8 +4,6 @@ from ws_dist_queue.message import WorkerCreatedMessage
 
 
 class WorkerProtocol(WebSocketClientProtocol):
-    API_KEY = '111'
-
     def onOpen(self):
         print("my pid: {}".format(os.getpid()))
         self.factory.controller.master = self
@@ -31,13 +29,7 @@ class WorkerProtocol(WebSocketClientProtocol):
 
     def onClose(self, wasClean, code, reason):
         print('Reason: {}, code: {}'.format(reason, code))
-        # reactor.stop()
 
-    def onPing(self, payload):
-        self.pingsReceived += 1
-        print("Ping received from {} - {}".format(self.peer, self.pingsReceived))
-        self.sendPong(payload)
-        self.pongsSent += 1
-        print("Pong sent to {} - {}".format(self.peer, self.pongsSent))
+
 
 

@@ -1,16 +1,13 @@
+import asyncio
 import signal
+import ssl
 
 import functools
-import ssl
-import sys
-
-import asyncio
 from ws_dist_queue.dispatcher import Dispatcher
 from ws_dist_queue.master.message_sender import MessageSender, JsonDeserializer
 from ws_dist_queue.worker.controller import WorkerController
 from ws_dist_queue.worker.factory import WorkerFactory
 from ws_dist_queue.worker.protocol import WorkerProtocol
-from ws_dist_queue.worker.work_executor import WorkExecutor
 
 
 class WorkerApp:
@@ -28,8 +25,8 @@ class WorkerApp:
     def run(self):
         coro = self.loop.create_connection(
             protocol_factory=self.factory,
-            host=self.conf.MASTER_URL,
-            port=self.conf.MASTER_PORT,
+            host=self.conf.MASTER_HOST,
+            port=self.conf.MASTER_WSS_PORT,
             ssl=ssl.SSLContext(protocol=ssl.PROTOCOL_TLSv1_2)
         )
         self.loop.run_until_complete(coro)
@@ -38,12 +35,14 @@ class WorkerApp:
 
     def register_signal_handlers(self):
         for signame in ('SIGINT', 'SIGTERM'):
-            self.loop.add_signal_handler(getattr(signal, signame),
-                                    functools.partial(self.clean_up, signame))
+            self.loop.add_signal_handler(
+                getattr(signal, signame),
+                functools.partial(self.clean_up, signame)
+            )
 
     def clean_up(self, signame):
-        self.loop.stop()
         self.factory.controller.clean_up()
+        self.loop.stop()
 
     def init_factory(self, conf):
         factory = WorkerFactory(

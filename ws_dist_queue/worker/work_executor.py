@@ -2,7 +2,10 @@ import paramiko
 
 
 class WorkExecutor:
-    PID_HACK = r"bash -c 'echo $$; exec"
+    INVOKE_BASH = r"bash -c"
+    ECHO_PID = r"echo $$"
+    GOTO_DIR = r"cd {}"
+    EXEC_CMD = r"exec {}"
 
     def __init__(self, work):
         self.work = work
@@ -10,15 +13,26 @@ class WorkExecutor:
 
     def do_work(self):
         ssh = self.login_as_user()
-        command = "{} {}'".format(self.PID_HACK, self.work.command)
+        cmd_to_exec = self.EXEC_CMD.format(self.work.command)
+        goto_dir = self.GOTO_DIR.format(self.work.cwd)
+        command = r"{invoke_bash} '{echo_pid}; {goto_dir}; {exec_cmd}'".format(
+            invoke_bash=self.INVOKE_BASH,
+            echo_pid=self.ECHO_PID,
+            goto_dir=goto_dir,
+            exec_cmd=cmd_to_exec,
+        )
         self.pid, channel = self.exec_command(ssh, command)
         return channel.recv_exit_status()
 
     def kill_work(self):
         if self.pid:
             ssh = self.login_as_user()
-            kill_command = "kill -9 {}".format(str(self.pid))
-            command = "{} {}'".format(self.PID_HACK, kill_command)
+            kill_command = r"kill -9 {pid}".format(pid=self.pid)
+            command = r"{invoke_bash} '{echo_pid}; {exec_command}'".format(
+                invoke_bash=self.INVOKE_BASH,
+                echo_pid=self.ECHO_PID,
+                exec_command=kill_command
+            )
             self.pid, channel = self.exec_command(ssh, command)
             return channel.recv_exit_status()
 
