@@ -1,15 +1,8 @@
 from autobahn.twisted import WebSocketServerProtocol
-from ws_dist_queue.message import ClientAuthorizedMessage
 from ws_dist_queue.model.request import Request
 
 
 class MasterProtocol(WebSocketServerProtocol):
-    API_KEY = '111'
-
-    def onOpen(self):
-        pass
-        # self.factory.register(self)
-
     def onClose(self, wasClean, code, reason):
         print("connection was closed. Reason {}, peer: {}".format(reason, self.peer))
         self.factory.controller.worker_down(
@@ -22,6 +15,7 @@ class MasterProtocol(WebSocketServerProtocol):
 
     def onMessage(self, payload, isBinary):
         whole_message = self.factory.deserializer.deserialize(payload)
+        print(whole_message)
 
         headers = whole_message['headers']
         message_from = headers['message_from']
@@ -35,14 +29,14 @@ class MasterProtocol(WebSocketServerProtocol):
                 cookie=cookie,
             )
             if session:
-                self.update_cookie(session.cookie)
+                self.factory.message_sender.update_cookie(session.cookie)
                 self.dispatch_to_method(message_type, message_body, session)
             else:
                 self.sendClose(code=3001, reason='Cookie too old or wrong!')
         else:
             session = self.factory.auth.authenticate(headers)
             if session:
-                self.update_cookie(session.cookie)
+                self.factory.message_sender.update_cookie(session.cookie)
                 self.dispatch_to_method(message_type, message_body, session)
             else:
                 self.sendClose(code=3000, reason='Authentication failed')
@@ -56,6 +50,3 @@ class MasterProtocol(WebSocketServerProtocol):
                 message=message_body,
             ),
         )
-
-    def update_cookie(self, cookie):
-        self.factory.message_sender.update_cookie(cookie)

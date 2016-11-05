@@ -4,7 +4,7 @@ import os
 from autobahn.twisted.websocket import connectWS
 from twisted.internet import reactor
 from twisted.python import log
-from ws_dist_queue.master.message_sender import MessageSender, JsonDeserializer
+from ws_dist_queue.master.message_sender import MessageSender, JsonDeserializer, JsonSerializer
 from ws_dist_queue.message import WorkMessage, ListWorkMessage, KillWorkMessage
 from ws_dist_queue.user.cookie_keeper import CookieKeeper
 from ws_dist_queue.user.factory import UserFactory
@@ -46,6 +46,7 @@ class UserApp:
         services = {
             'message_sender': message_sender,
             'deserializer': JsonDeserializer(),
+            'serializer': JsonSerializer(),
             'cookie_keeper': cookie_keeper,
         }
         return services
@@ -66,14 +67,14 @@ class Credentials:
 
 class MessageFactory:
     def create(self, args):
-        if args.command:
+        if hasattr(args, 'command'):
             return WorkMessage(
                 command=args.command,
                 cwd=os.getcwd()
             )
-        elif args.list:
+        elif hasattr(args, 'list'):
             return ListWorkMessage()
-        elif args.kill_work_id:
+        elif hasattr(args, 'kill_work_id'):
             return KillWorkMessage(
                 work_id=args.kill_work_id
             )
@@ -83,7 +84,6 @@ if __name__ == "__main__":
     args = parser.parse()
     credentials = Credentials.create(args.username, args.password)
     message = MessageFactory().create(args)
-
     import ws_dist_queue.settings.defaults as defaults
     app = UserApp(
         conf=defaults,

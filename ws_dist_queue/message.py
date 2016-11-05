@@ -23,6 +23,7 @@ class WorkAcceptedNoWorkersMessage:
     def __init__(self, work_id):
         self.work_id = work_id
 
+
 class WorkAcceptedMessage:
     def __init__(self, work_id):
         self.work_id = work_id
@@ -50,6 +51,11 @@ class ListWorkMessage:
     pass
 
 
+class ListWorkResponseMessage:
+    def __init__(self, work_list):
+        self.work_list = work_list
+
+
 class WorkIsDoneMessage:
     pass
 
@@ -62,7 +68,16 @@ class WorkToBeDoneMessage:
     def __init__(self, work):
         self.work = work
 
+
 class WorkIsReadyMessage:
+    pass
+
+
+class NoWorkWithGivenIdMessage:
+    pass
+
+
+class WorkWasKilledMessage:
     pass
 
 

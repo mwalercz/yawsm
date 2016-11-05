@@ -35,7 +35,8 @@ class UserProtocol(WebSocketClientProtocol):
         else:
             self.factory.cookie_keeper.save(cookie)
         finally:
-            print(raw_message)
+            body = self.factory.serializer.serialize(raw_message['body'])
+            print('received: {}'.format(body))
             self.sendClose(code=3200, reason='OK')
 
     def onClose(self, wasClean, code, reason):

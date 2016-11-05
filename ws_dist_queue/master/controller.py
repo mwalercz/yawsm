@@ -1,6 +1,7 @@
 from collections import deque
 from ws_dist_queue.message import WorkAcceptedMessage, WorkIsReadyMessage, WorkToBeDoneMessage, \
-    WorkAcceptedNoWorkersMessage
+    WorkAcceptedNoWorkersMessage, KillWorkMessage, NoWorkWithGivenIdMessage, ListWorkResponseMessage
+from ws_dist_queue.model.request import Request
 from ws_dist_queue.model.work import Work
 
 
@@ -15,6 +16,10 @@ class MasterController:
         self.workers.update({
             req.sender.peer: Worker(req.sender, None)
         })
+        free_workers = self.picker.pick_best(
+            [w for w in self.workers.values() if w.current_work is None]
+        )
+        self._notify_workers(free_workers)
 
     def worker_down(self, req):
         if self.workers.get(req.sender.peer):
@@ -26,7 +31,6 @@ class MasterController:
                 print(msg)
                 self.work_queue.appendleft(dead_worker.current_work)
                 del self.workers[req.sender.peer]
-                self.work(req)
             else:
                 print('worker is dead')
                 del self.workers[req.sender.peer]
@@ -35,23 +39,17 @@ class MasterController:
         self.workers[req.sender.peer].current_work = None
 
     def worker_requests_work(self, req):
-        if len(self.work_queue) == 0:
+        if len(self.work_queue) > 0:
             work = self.work_queue.pop()
             self.workers[req.sender.peer].current_work = work
             self.message_sender.send(req.sender, WorkToBeDoneMessage(work))
 
     def work(self, req):
-        work = Work(
-            command=req.message.command,
-            cwd=req.message.cwd,
-            username=req.session.username,
-            password=req.session.password,
-            work_id=1,
-        )
+        work = WorkFactory.create(req)
         print(str(work))
         self.work_queue.appendleft(work)
         free_workers = self.picker.pick_best(
-            [w for w in self.workers if w.current_job is None]
+            [w for w in self.workers.values() if w.current_work is None]
         )
         if free_workers:
             self.message_sender.send(
@@ -67,18 +65,36 @@ class MasterController:
         self._notify_workers(free_workers)
 
     def kill_work(self, req):
-        work_found = filter(
-            lambda work: work.work_id == req.message.work_id,
-            self.work_queue
-        )
+        work_found = [w for w in self.workers.values()
+                      if w.current_work is not None and
+                      w.current_work.work_id == req.message.work_id]
+        if work_found:
+            self.message_sender.send(
+                work_found[0].worker_ref,
+                KillWorkMessage(req.message.work_id)
+            )
+        else:
+            self.message_sender.send(
+                req.sender,
+                NoWorkWithGivenIdMessage(),
+            )
+
+    def work_was_killed(self, req):
+        self.workers[req.sender.peer].current_work = None
 
     def list_work(self, req):
-        work_found = filter(
-            lambda work: work.work_id == req.message.work_id,
-            self.work_queue
+        found_in_workers = [w for w in self.workers.values()
+                            if w.current_work is not None and
+                            w.current_work.username == req.session.username]
+
+        found_in_work_queue = [w for w in self.work_queue
+                               if w.username == req.session.username]
+
+        work_list = found_in_workers + found_in_work_queue
+        self.message_sender.send(
+            req.sender,
+            ListWorkResponseMessage(work_list)
         )
-        if work_found:
-            return
 
     def _notify_workers(self, free_workers):
         if self.work_queue:
@@ -95,3 +111,20 @@ class Worker:
 class WorkerPicker:
     def pick_best(self, workers):
         return workers
+
+
+class WorkFactory:
+    @classmethod
+    def create(cls, req):
+        if isinstance(req, Request):
+            return Work(
+                command=req.message.command,
+                cwd=req.message.cwd,
+                username=req.session.username,
+                password=req.session.password,
+                work_id=1,
+            )
+        elif isinstance(req, Work):
+            return req
+        else:
+            raise RuntimeError()

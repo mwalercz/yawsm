@@ -1,5 +1,3 @@
-import json
-
 import jsonpickle
 import re
 
@@ -42,8 +40,6 @@ class JsonSerializer:
     def serialize(self, message):
         serialized_message = jsonpickle.encode(message)
         return serialized_message.encode(ENCODING)
-
-
 
 
 class JsonDeserializer:

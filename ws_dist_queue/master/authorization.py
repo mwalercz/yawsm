@@ -1,12 +1,13 @@
-import paramiko
 import time
+
+import paramiko
 from paramiko import SSHClient
 
 
 class AuthService:
-    def __init__(self, user_auth=None, worker_auth=None):
+    def __init__(self, conf, user_auth=None, worker_auth=None):
         self.user_auth = user_auth or UserAuthService()
-        self.worker_auth = worker_auth or WorkerAuthService()
+        self.worker_auth = worker_auth or WorkerAuthService(conf=conf)
 
     def authenticate(self, headers):
         if headers['message_from'] == 'user':
@@ -33,7 +34,7 @@ class UserAuthService:
         user = self._try_to_login(headers['username'], headers['password'])
         if user:
             cookie = self._create_cookie()
-            session = Session(
+            session = UserSession(
                     cookie=cookie,
                     username=headers['username'],
                     password=headers['password'],
@@ -70,20 +71,30 @@ class UserAuthService:
 
 
 class WorkerAuthService:
-    API_KEY = '1111'
+    def __init__(self, conf):
+        self.api_key = conf.API_KEY
 
     def authenticate(self, headers):
-        if self.API_KEY == headers.api_key:
-            return self.API_KEY
+        if self.api_key == headers['api_key']:
+            return WorkerSession(
+                cookie=self.api_key
+            )
         else:
             return None
 
     def get_session(self, cookie):
-        return self.API_KEY == cookie
+        return WorkerSession(
+                cookie=cookie
+        )
 
 
-class Session:
+class UserSession:
     def __init__(self, cookie, username, password):
         self.cookie = cookie
         self.username = username
         self.password = password
+
+
+class WorkerSession:
+    def __init__(self, cookie):
+        self.cookie = cookie
