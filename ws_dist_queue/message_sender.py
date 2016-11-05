@@ -29,11 +29,11 @@ class MessageSender:
         serialized_message = self.serializer.serialize(whole_message)
         recipient.sendMessage(serialized_message)
 
-        # self.log.info(
-        #     'Message was sent to {peer!r}. {message!r}',
-        #     peer=recipient.peer,
-        #     message=whole_message
-        # )
+        self.log.info(
+            'Message was sent to {peer!r}. {message!r}',
+            peer=recipient.peer,
+            message=whole_message
+        )
 
     def get_message_type(self, message_body):
         return self.converter.to_underscore(type(message_body).__name__)
@@ -41,10 +41,6 @@ class MessageSender:
     def update_cookie(self, cookie):
         self.headers['cookie'] = cookie
 
-
-class WorkerMessageSender(MessageSender):
-    def __init__(self, message_from):
-        super(WorkerMessageSender, self).__init__(message_from=message_from)
 
 class JsonSerializer:
     def serialize(self, message):

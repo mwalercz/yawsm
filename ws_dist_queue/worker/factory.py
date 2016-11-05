@@ -1,4 +1,4 @@
-from autobahn.asyncio import WebSocketClientFactory
+from autobahn.twisted import WebSocketClientFactory
 
 
 class WorkerFactory(WebSocketClientFactory):

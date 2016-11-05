@@ -15,7 +15,7 @@ class WorkExecutor:
         ssh = self.login_as_user()
         cmd_to_exec = self.EXEC_CMD.format(self.work.command)
         goto_dir = self.GOTO_DIR.format(self.work.cwd)
-        command = r"{invoke_bash} '{echo_pid}; {goto_dir}; {exec_cmd}'".format(
+        command = r"{invoke_bash} '{echo_pid}; {exec_cmd}'".format(
             invoke_bash=self.INVOKE_BASH,
             echo_pid=self.ECHO_PID,
             goto_dir=goto_dir,

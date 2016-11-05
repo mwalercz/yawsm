@@ -1,4 +1,5 @@
 from collections import deque
+from twisted.logger import Logger
 from ws_dist_queue.message import WorkAcceptedMessage, WorkIsReadyMessage, WorkToBeDoneMessage, \
     WorkAcceptedNoWorkersMessage, KillWorkMessage, NoWorkWithGivenIdMessage, ListWorkResponseMessage
 from ws_dist_queue.model.request import Request
@@ -6,6 +7,8 @@ from ws_dist_queue.model.work import Work
 
 
 class MasterController:
+    log = Logger()
+
     def __init__(self, message_sender, worker_picker):
         self.message_sender = message_sender
         self.picker = worker_picker
