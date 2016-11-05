@@ -8,9 +8,9 @@ class WorkerController:
         self.message_sender = message_sender
         self.executor = ThreadPoolExecutor(max_workers=2)
         self.work_executor = None
+        self.current_work = None
         self.loop = None  # will be injected later
         self.master = None  # will be injected later
-        self.current_work = None
 
     def work_is_ready(self, message):
         if self.current_work:

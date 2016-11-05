@@ -5,8 +5,8 @@ from autobahn.twisted.websocket import connectWS
 from twisted.internet import reactor
 from twisted.internet import ssl
 from twisted.python import log
-from ws_dist_queue.master.message_sender import MessageSender, JsonDeserializer, JsonSerializer
 from ws_dist_queue.message import WorkMessage, ListWorkMessage, KillWorkMessage
+from ws_dist_queue.message_sender import MessageSender, JsonDeserializer, JsonSerializer
 from ws_dist_queue.user.cookie_keeper import CookieKeeper
 from ws_dist_queue.user.factory import UserFactory
 from ws_dist_queue.user.input_parser import InputParser

@@ -10,9 +10,9 @@ from ws_dist_queue.dispatcher import Dispatcher
 from ws_dist_queue.master.authorization import AuthService
 from ws_dist_queue.master.controller import MasterController, WorkerPicker
 from ws_dist_queue.master.factory import MasterFactory
-from ws_dist_queue.master.message_sender import MessageSender, JsonDeserializer
 from ws_dist_queue.master.protocol import MasterProtocol
 from ws_dist_queue.message import MessageFactory, MASTER_MAPPING
+from ws_dist_queue.message_sender import MessageSender, JsonDeserializer
 
 
 class MasterApp:

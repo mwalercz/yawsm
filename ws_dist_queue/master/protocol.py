@@ -1,10 +1,14 @@
 from autobahn.twisted import WebSocketServerProtocol
+from twisted.logger import Logger
+
 from ws_dist_queue.model.request import Request
 
 
 class MasterProtocol(WebSocketServerProtocol):
+    log = Logger()
+
     def onClose(self, wasClean, code, reason):
-        print("connection was closed. Reason {}, peer: {}".format(reason, self.peer))
+        self.log.info("connection was closed. Reason {}, peer: {}".format(reason, self.peer))
         self.factory.controller.worker_down(
             req=Request(
                 sender=self,
@@ -15,7 +19,7 @@ class MasterProtocol(WebSocketServerProtocol):
 
     def onMessage(self, payload, isBinary):
         whole_message = self.factory.deserializer.deserialize(payload)
-        print(whole_message)
+        self.log.info('Message was received: {message!r}', message=payload)
 
         headers = whole_message['headers']
         message_from = headers['message_from']

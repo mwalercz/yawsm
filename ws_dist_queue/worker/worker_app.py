@@ -4,7 +4,7 @@ import ssl
 
 import functools
 from ws_dist_queue.dispatcher import Dispatcher
-from ws_dist_queue.master.message_sender import MessageSender, JsonDeserializer
+from ws_dist_queue.message_sender import MessageSender, JsonDeserializer
 from ws_dist_queue.worker.controller import WorkerController
 from ws_dist_queue.worker.factory import WorkerFactory
 from ws_dist_queue.worker.protocol import WorkerProtocol
@@ -12,7 +12,6 @@ from ws_dist_queue.worker.protocol import WorkerProtocol
 
 class WorkerApp:
     def __init__(self, conf):
-        self.loop = None
         self.conf = conf
         self.init_logging()
         self.factory = self.init_factory(

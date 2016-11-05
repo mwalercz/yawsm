@@ -16,10 +16,7 @@ class MasterController:
         self.workers.update({
             req.sender.peer: Worker(req.sender, None)
         })
-        free_workers = self.picker.pick_best(
-            [w for w in self.workers.values() if w.current_work is None]
-        )
-        self._notify_workers(free_workers)
+        self._notify_workers()
 
     def worker_down(self, req):
         if self.workers.get(req.sender.peer):
@@ -48,9 +45,7 @@ class MasterController:
         work = WorkFactory.create(req)
         print(str(work))
         self.work_queue.appendleft(work)
-        free_workers = self.picker.pick_best(
-            [w for w in self.workers.values() if w.current_work is None]
-        )
+        free_workers = self.get_free_workers()
         if free_workers:
             self.message_sender.send(
                 req.sender,
@@ -62,7 +57,7 @@ class MasterController:
                 WorkAcceptedNoWorkersMessage(work.work_id)
             )
 
-        self._notify_workers(free_workers)
+        self._notify_workers()
 
     def kill_work(self, req):
         work_found = [w for w in self.workers.values()
@@ -96,10 +91,14 @@ class MasterController:
             ListWorkResponseMessage(work_list)
         )
 
-    def _notify_workers(self, free_workers):
+    def _notify_workers(self):
         if self.work_queue:
-            for worker in free_workers:
+            best_workers = self.picker.pick_best(self.get_free_workers())
+            for worker in best_workers:
                 self.message_sender.send(worker.worker_ref, WorkIsReadyMessage())
+
+    def get_free_workers(self):
+        return [w for w in self.workers.values() if w.current_work is None]
 
 
 class Worker:
