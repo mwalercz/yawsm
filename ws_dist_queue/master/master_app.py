@@ -13,6 +13,8 @@ from ws_dist_queue.master.factory import MasterFactory
 from ws_dist_queue.master.protocol import MasterProtocol
 from ws_dist_queue.message import MessageFactory, MASTER_MAPPING
 from ws_dist_queue.message_sender import MessageSender, JsonDeserializer
+from twisted.enterprise import adbapi
+from twistar.registry import Registry
 
 
 class MasterApp:
@@ -26,6 +28,11 @@ class MasterApp:
     def init_context(self):
         return ssl.DefaultOpenSSLContextFactory(
             self.conf.MASTER_KEY_PATH, self.conf.MASTER_CRT_PATH
+        )
+
+    def init_db(self):
+        Registry.DBPOOL = adbapi.ConnectionPool(
+            "pyPgSQL.PgSQL", database="dist_queue", user='mwal', passwd='matrix'
         )
 
     def init_factory(self):

@@ -1,8 +1,5 @@
-import asyncio
-import signal
-
-import functools
 import sys
+
 from autobahn.twisted.websocket import connectWS
 from twisted.internet import reactor
 from twisted.internet import ssl
@@ -18,6 +15,7 @@ class WorkerApp:
     def __init__(self, conf):
         self.conf = conf
         self.init_logging()
+        self.configure_twisted()
         self.factory = self.init_factory()
         self.register_signal_handlers()
 
@@ -42,7 +40,6 @@ class WorkerApp:
         factory.protocol = WorkerProtocol
         return factory
 
-
     def init_services(self):
         message_sender = MessageSender(
             message_from='worker'
@@ -60,6 +57,9 @@ class WorkerApp:
             'dispatcher': worker_dispatcher,
         }
         return services
+
+    def configure_twisted(self):
+        reactor.suggestThreadPoolSize(30)
 
 
 if __name__ == "__main__":

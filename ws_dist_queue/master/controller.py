@@ -1,5 +1,8 @@
+import uuid
+
 from collections import deque
 from twisted.logger import Logger
+from ws_dist_queue.domain.work import WorkDB
 from ws_dist_queue.message import WorkAcceptedMessage, WorkIsReadyMessage, WorkToBeDoneMessage, \
     WorkAcceptedNoWorkersMessage, KillWorkMessage, NoWorkWithGivenIdMessage, ListWorkResponseMessage
 from ws_dist_queue.model.request import Request
@@ -25,15 +28,18 @@ class MasterController:
         if self.workers.get(req.sender.peer):
             dead_worker = self.workers[req.sender.peer]
             if dead_worker.current_work is not None:
-                msg = 'worker: {} was dead while making job'.format(
-                    req.sender.peer
+                self.log.info(
+                    'Worker: {peer!r} has died while working on: {work!r}',
+                    peer=req.sender.peer,
+                    work=dead_worker.current_work
                 )
-                print(msg)
                 self.work_queue.appendleft(dead_worker.current_work)
-                del self.workers[req.sender.peer]
             else:
-                print('worker is dead')
-                del self.workers[req.sender.peer]
+                self.log.info(
+                    'Worker: {peer!r} has died. He wasnt doing anything.',
+                    peer=req.sender.peer
+                )
+            del self.workers[req.sender.peer]
 
     def work_is_done(self, req):
         self.workers[req.sender.peer].current_work = None
@@ -46,9 +52,8 @@ class MasterController:
 
     def work(self, req):
         work = WorkFactory.create(req)
-        print(str(work))
         self.work_queue.appendleft(work)
-        free_workers = self.get_free_workers()
+        free_workers = self._get_free_workers()
         if free_workers:
             self.message_sender.send(
                 req.sender,
@@ -96,11 +101,12 @@ class MasterController:
 
     def _notify_workers(self):
         if self.work_queue:
-            best_workers = self.picker.pick_best(self.get_free_workers())
+            best_workers = self.picker.pick_best(self._get_free_workers())
             for worker in best_workers:
-                self.message_sender.send(worker.worker_ref, WorkIsReadyMessage())
+                self.message_sender.send(
+                    worker.worker_ref, WorkIsReadyMessage())
 
-    def get_free_workers(self):
+    def _get_free_workers(self):
         return [w for w in self.workers.values() if w.current_work is None]
 
 
@@ -119,12 +125,20 @@ class WorkFactory:
     @classmethod
     def create(cls, req):
         if isinstance(req, Request):
+            work_id = uuid.uuid4()
+            WorkDB(
+                command=req.message.command,
+                cwd=req.message.cwd,
+                username=req.session.username,
+                password=req.session.password,
+                work_id=work_id,
+            ).save()
             return Work(
                 command=req.message.command,
                 cwd=req.message.cwd,
                 username=req.session.username,
                 password=req.session.password,
-                work_id=1,
+                work_id=uuid.uuid4(),
             )
         elif isinstance(req, Work):
             return req

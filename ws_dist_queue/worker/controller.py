@@ -1,5 +1,3 @@
-from concurrent.futures import ThreadPoolExecutor
-
 from twisted.internet import threads
 from ws_dist_queue.message import WorkerRequestsWorkMessage, WorkIsDoneMessage, WorkWasKilledMessage
 from ws_dist_queue.worker.work_executor import WorkExecutor

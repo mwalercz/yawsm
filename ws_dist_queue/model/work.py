@@ -6,8 +6,7 @@ class Work:
     def __init__(
             self, cwd, command, username=None,
             environment=None, work_id=None,
-            status=None, worker=None,
-            password=None
+            status=None, password=None
     ):
         self.work_id = work_id
         self.username = username
@@ -16,22 +15,6 @@ class Work:
         self.command = command
         self.environment = environment or {}
         self.status = status
-        self.worker = worker
-
-    @property
-    def is_processed(self):
-        return bool(self.worker)
-
-    @staticmethod
-    def create(job):
-        return Work(
-            work_id=job.get_cookie('job_id'),
-            username=job.get_cookie('user'),
-            cwd=job.get_cookie('cwd'),
-            command=job.get_cookie('command'),
-            environment=job.get_cookie('environment')
-        )
-
 
 
 class JobStatus:
