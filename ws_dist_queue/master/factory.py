@@ -1,4 +1,4 @@
-from autobahn.twisted import WebSocketServerFactory
+from autobahn.asyncio import WebSocketServerFactory
 
 
 class MasterFactory(WebSocketServerFactory):

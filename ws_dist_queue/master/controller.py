@@ -1,8 +1,7 @@
+import logging
 import uuid
 
 from collections import deque
-from twisted.logger import Logger
-from ws_dist_queue.domain.work import WorkDB
 from ws_dist_queue.message import WorkAcceptedMessage, WorkIsReadyMessage, WorkToBeDoneMessage, \
     WorkAcceptedNoWorkersMessage, KillWorkMessage, NoWorkWithGivenIdMessage, ListWorkResponseMessage
 from ws_dist_queue.model.request import Request
@@ -10,7 +9,7 @@ from ws_dist_queue.model.work import Work
 
 
 class MasterController:
-    log = Logger()
+    log = logging.getLogger(__name__)
 
     def __init__(self, message_sender, worker_picker):
         self.message_sender = message_sender
@@ -29,15 +28,17 @@ class MasterController:
             dead_worker = self.workers[req.sender.peer]
             if dead_worker.current_work is not None:
                 self.log.info(
-                    'Worker: {peer!r} has died while working on: {work!r}',
-                    peer=req.sender.peer,
-                    work=dead_worker.current_work
+                    'Worker: {peer} has died while working on: {work}'.format(
+                        peer=req.sender.peer,
+                        work=dead_worker.current_work
+                    )
                 )
                 self.work_queue.appendleft(dead_worker.current_work)
             else:
                 self.log.info(
-                    'Worker: {peer!r} has died. He wasnt doing anything.',
-                    peer=req.sender.peer
+                    'Worker: {peer} has died. He wasnt doing anything.'.format(
+                        peer=req.sender.peer
+                    )
                 )
             del self.workers[req.sender.peer]
 
@@ -126,19 +127,19 @@ class WorkFactory:
     def create(cls, req):
         if isinstance(req, Request):
             work_id = uuid.uuid4()
-            WorkDB(
-                command=req.message.command,
-                cwd=req.message.cwd,
-                username=req.session.username,
-                password=req.session.password,
-                work_id=work_id,
-            ).save()
+            # WorkDB(
+            #     command=req.message.command,
+            #     cwd=req.message.cwd,
+            #     username=req.session.username,
+            #     password=req.session.password,
+            #     work_id=work_id,
+            # ).save()
             return Work(
                 command=req.message.command,
                 cwd=req.message.cwd,
                 username=req.session.username,
                 password=req.session.password,
-                work_id=uuid.uuid4(),
+                work_id=work_id,
             )
         elif isinstance(req, Work):
             return req

@@ -1,11 +1,7 @@
-import sys
+import asyncio
+import logging
+import ssl
 
-from autobahn.twisted.resource import WebSocketResource
-from autobahn.twisted.websocket import listenWS
-from twisted.internet import reactor, ssl
-from twisted.python import log
-from twisted.web.server import Site
-from twisted.web.static import File
 from ws_dist_queue.dispatcher import Dispatcher
 from ws_dist_queue.master.authorization import AuthService
 from ws_dist_queue.master.controller import MasterController, WorkerPicker
@@ -13,51 +9,48 @@ from ws_dist_queue.master.factory import MasterFactory
 from ws_dist_queue.master.protocol import MasterProtocol
 from ws_dist_queue.message import MessageFactory, MASTER_MAPPING
 from ws_dist_queue.message_sender import MessageSender, JsonDeserializer
-from twisted.enterprise import adbapi
-from twistar.registry import Registry
 
 
 class MasterApp:
     def __init__(self, conf):
-        self.init_logging()
         self.conf = conf
-        self.context_factory = self.init_context()
+        self.secure_context = self.init_context()
+        self.loop = asyncio.get_event_loop()
+        self.init_logging()
         self.factory = self.init_factory()
-        self.site = self.init_site(WebSocketResource(self.factory))
 
     def init_context(self):
-        return ssl.DefaultOpenSSLContextFactory(
-            self.conf.MASTER_KEY_PATH, self.conf.MASTER_CRT_PATH
+        secure_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        secure_context.load_cert_chain(
+            self.conf.MASTER_CRT_PATH, self.conf.MASTER_KEY_PATH
         )
-
-    def init_db(self):
-        Registry.DBPOOL = adbapi.ConnectionPool(
-            "pyPgSQL.PgSQL", database="dist_queue", user='mwal', passwd='matrix'
-        )
+        return secure_context
 
     def init_factory(self):
         factory = MasterFactory(uri=self.conf.MASTER_WSS_URI, **self.init_services())
-        factory.setProtocolOptions(
-            allowedOrigins=[
-                "https://127.0.0.1:8080",
-                "https://localhost:8080",
-            ]
-        )
         factory.protocol = MasterProtocol
         return factory
 
-    def init_site(self, resource):
-        root = File(".")
-        root.putChild('ws', resource)
-        return Site(root)
-
     def init_logging(self):
-        log.startLogging(sys.stdout)
+        self.loop.set_debug(True)
+        logging.basicConfig(level=logging.DEBUG,
+                            format='%(asctime)s %(levelname)s: %(name)s  %(message)s')
 
     def run(self):
-        listenWS(self.factory, self.context_factory)
-        reactor.listenSSL(self.conf.MASTER_WWW_PORT, self.site, self.context_factory)
-        reactor.run()
+        coro = self.loop.create_server(
+            protocol_factory=self.factory,
+            host=self.conf.MASTER_HOST,
+            port=self.conf.MASTER_WSS_PORT,
+            ssl=self.secure_context
+        )
+        server = self.loop.run_until_complete(coro)
+        try:
+            self.loop.run_forever()
+        except KeyboardInterrupt:
+            pass
+        finally:
+            server.close()
+            self.loop.close()
 
     def init_services(self):
         message_sender = MessageSender(message_from='master')
@@ -79,6 +72,6 @@ class MasterApp:
 
 if __name__ == '__main__':
     import ws_dist_queue.settings.defaults as defaults
+
     app = MasterApp(defaults)
     app.run()
-

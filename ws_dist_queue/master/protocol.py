@@ -1,4 +1,4 @@
-from autobahn.twisted import WebSocketServerProtocol
+from autobahn.asyncio import WebSocketServerProtocol
 from twisted.logger import Logger
 
 from ws_dist_queue.model.request import Request
