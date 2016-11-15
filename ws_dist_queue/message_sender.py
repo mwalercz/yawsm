@@ -1,12 +1,13 @@
+import logging
+
 import jsonpickle
 import re
-from twisted.logger import Logger
 
 ENCODING = 'utf8'
 
 
 class MessageSender:
-    log = Logger()
+    log = logging.getLogger(__name__)
 
     def __init__(self, message_from):
         self.headers = {
@@ -30,9 +31,10 @@ class MessageSender:
         recipient.sendMessage(serialized_message)
 
         self.log.info(
-            'Message was sent to {peer!r}. {message!r}',
-            peer=recipient.peer,
-            message=whole_message
+            'Message was sent to {peer}. {message}'.format(
+                peer=recipient.peer,
+                message=whole_message
+            )
         )
 
     def get_message_type(self, message_body):

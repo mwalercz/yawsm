@@ -1,14 +1,15 @@
+import logging
+
 import os
-from autobahn.twisted import WebSocketClientProtocol
-from twisted.logger import Logger
+from autobahn.asyncio import WebSocketClientProtocol
 from ws_dist_queue.message import WorkerCreatedMessage
 
 
 class WorkerProtocol(WebSocketClientProtocol):
-    log = Logger()
+    log = logging.getLogger(__name__)
 
     def onOpen(self):
-        print("my pid: {}".format(os.getpid()))
+        self.log.info("my pid: {}".format(os.getpid()))
         self.factory.controller.master = self
         headers = {
             'api_key': self.factory.conf.API_KEY
@@ -20,7 +21,7 @@ class WorkerProtocol(WebSocketClientProtocol):
         )
 
     def onMessage(self, payload, isBinary):
-        self.log.info('Message was received: {message!r}', message=payload)
+        self.log.info('Message was received: {message}'.format(message=payload))
         whole_message = self.factory.deserializer.deserialize(payload)
         message_body = whole_message['body']
         headers = whole_message['headers']

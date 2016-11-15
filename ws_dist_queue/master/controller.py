@@ -126,20 +126,12 @@ class WorkFactory:
     @classmethod
     def create(cls, req):
         if isinstance(req, Request):
-            work_id = uuid.uuid4()
-            # WorkDB(
-            #     command=req.message.command,
-            #     cwd=req.message.cwd,
-            #     username=req.session.username,
-            #     password=req.session.password,
-            #     work_id=work_id,
-            # ).save()
             return Work(
                 command=req.message.command,
                 cwd=req.message.cwd,
                 username=req.session.username,
                 password=req.session.password,
-                work_id=work_id,
+                work_id=1,
             )
         elif isinstance(req, Work):
             return req

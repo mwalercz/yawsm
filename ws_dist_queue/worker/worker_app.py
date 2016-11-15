@@ -1,9 +1,9 @@
-import sys
+import asyncio
+import logging
+import signal
+import ssl
 
-from autobahn.twisted.websocket import connectWS
-from twisted.internet import reactor
-from twisted.internet import ssl
-from twisted.python import log
+import functools
 from ws_dist_queue.dispatcher import Dispatcher
 from ws_dist_queue.message_sender import MessageSender, JsonDeserializer
 from ws_dist_queue.worker.controller import WorkerController
@@ -14,33 +14,50 @@ from ws_dist_queue.worker.protocol import WorkerProtocol
 class WorkerApp:
     def __init__(self, conf):
         self.conf = conf
+        self.factory = self.init_factory(
+            conf=conf,
+        )
+        self.loop = asyncio.get_event_loop()
         self.init_logging()
-        self.configure_twisted()
-        self.factory = self.init_factory()
+        self.factory.controller.loop = self.loop
         self.register_signal_handlers()
 
     def run(self):
-        connectWS(self.factory, ssl.ClientContextFactory())
-        reactor.run()
+        coro = self.loop.create_connection(
+            protocol_factory=self.factory,
+            host=self.conf.MASTER_HOST,
+            port=self.conf.MASTER_WSS_PORT,
+            ssl=ssl.SSLContext(protocol=ssl.PROTOCOL_TLSv1_2)
+        )
+        self.loop.run_until_complete(coro)
+        self.loop.run_forever()
+        self.loop.close()
 
     def register_signal_handlers(self):
-        reactor.addSystemEventTrigger('before', 'shutdown', self.clean_up)
+        for signame in ('SIGINT', 'SIGTERM'):
+            self.loop.add_signal_handler(
+                getattr(signal, signame),
+                functools.partial(self.clean_up, signame)
+            )
 
-    def init_logging(self):
-        log.startLogging(sys.stdout)
-
-    def clean_up(self):
+    def clean_up(self, signame):
         self.factory.controller.clean_up()
+        self.loop.stop()
 
-    def init_factory(self):
+    def init_factory(self, conf):
         factory = WorkerFactory(
-            conf=self.conf,
-            **self.init_services(),
+            conf=conf,
+            **self.init_services(conf),
         )
         factory.protocol = WorkerProtocol
         return factory
 
-    def init_services(self):
+    def init_logging(self):
+        self.loop.set_debug(True)
+        logging.basicConfig(level=logging.INFO,
+                            format='%(asctime)s %(levelname)s: %(name)s  %(message)s')
+
+    def init_services(self, conf):
         message_sender = MessageSender(
             message_from='worker'
         )
@@ -57,9 +74,6 @@ class WorkerApp:
             'dispatcher': worker_dispatcher,
         }
         return services
-
-    def configure_twisted(self):
-        reactor.suggestThreadPoolSize(30)
 
 
 if __name__ == "__main__":
