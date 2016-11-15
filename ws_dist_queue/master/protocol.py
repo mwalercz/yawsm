@@ -1,14 +1,18 @@
-from autobahn.asyncio import WebSocketServerProtocol
-from twisted.logger import Logger
+import logging
 
+from autobahn.asyncio import WebSocketServerProtocol
 from ws_dist_queue.model.request import Request
 
 
 class MasterProtocol(WebSocketServerProtocol):
-    log = Logger()
+    log = logging.getLogger(__name__)
 
     def onClose(self, wasClean, code, reason):
-        self.log.info("connection was closed. Reason {}, peer: {}".format(reason, self.peer))
+        self.log.info(
+            "connection was closed. Reason {}, peer: {}".format(
+                reason, self.peer
+            )
+        )
         self.factory.controller.worker_down(
             req=Request(
                 sender=self,
@@ -17,9 +21,9 @@ class MasterProtocol(WebSocketServerProtocol):
             )
         )
 
-    def onMessage(self, payload, isBinary):
+    async def onMessage(self, payload, isBinary):
         whole_message = self.factory.deserializer.deserialize(payload)
-        self.log.info('Message was received: {message!r}', message=payload)
+        self.log.info('Message was received: {message}'.format(message=payload))
 
         headers = whole_message['headers']
         message_from = headers['message_from']
@@ -41,13 +45,13 @@ class MasterProtocol(WebSocketServerProtocol):
             session = self.factory.auth.authenticate(headers)
             if session:
                 self.factory.message_sender.update_cookie(session.cookie)
-                self.dispatch_to_method(message_type, message_body, session)
+                await self.dispatch_to_method(message_type, message_body, session)
             else:
                 self.sendClose(code=3000, reason='Authentication failed')
 
-    def dispatch_to_method(self, message_type, message_body, session):
+    async def dispatch_to_method(self, message_type, message_body, session):
         method = self.factory.dispatcher.find_method(message_type)
-        method(
+        await method(
             req=Request(
                 sender=self,
                 session=session,

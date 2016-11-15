@@ -2,7 +2,9 @@ import asyncio
 import logging
 import ssl
 
+from peewee_async import PostgresqlDatabase, Manager
 from ws_dist_queue.dispatcher import Dispatcher
+from ws_dist_queue.domain.work import Work
 from ws_dist_queue.master.authorization import AuthService
 from ws_dist_queue.master.controller import MasterController, WorkerPicker
 from ws_dist_queue.master.factory import MasterFactory
@@ -17,6 +19,8 @@ class MasterApp:
         self.secure_context = self.init_context()
         self.loop = asyncio.get_event_loop()
         self.init_logging()
+        self.objects = self.init_db()
+        self.init_models()
         self.factory = self.init_factory()
 
     def init_context(self):
@@ -25,6 +29,15 @@ class MasterApp:
             self.conf.MASTER_CRT_PATH, self.conf.MASTER_KEY_PATH
         )
         return secure_context
+
+    def init_db(self):
+        database = PostgresqlDatabase(**self.conf.DB_CONF)
+        objects = Manager(database, loop=self.loop)
+        objects.database.allow_sync = False
+        return objects
+
+    def init_models(self):
+        Work.create_table(True)
 
     def init_factory(self):
         factory = MasterFactory(uri=self.conf.MASTER_WSS_URI, **self.init_services())
@@ -57,7 +70,8 @@ class MasterApp:
         worker_picker = WorkerPicker()
         master_controller = MasterController(
             message_sender=message_sender,
-            worker_picker=worker_picker
+            worker_picker=worker_picker,
+            objects=self.objects,
         )
         services = {
             'controller': master_controller,

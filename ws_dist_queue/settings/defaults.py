@@ -5,7 +5,13 @@ MASTER_WWW_PORT = 8080
 MASTER_KEY_PATH = '../keys/server.key'
 MASTER_CRT_PATH = '../keys/server.crt'
 
+DB_CONF = {
+    'database': 'dist_queue',
+    'user': 'mwal',
+    'password': 'matrix',
+    'host': 'localhost',
+}
+
 PARTIAL_USER_FILEPATH = '.dist_queue'
 ENCODING = 'utf8'
 API_KEY = '1123213'
-

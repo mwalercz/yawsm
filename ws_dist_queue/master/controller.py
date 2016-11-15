@@ -1,19 +1,18 @@
 import logging
-import uuid
 
 from collections import deque
+from ws_dist_queue.domain.work import Work
 from ws_dist_queue.message import WorkAcceptedMessage, WorkIsReadyMessage, WorkToBeDoneMessage, \
     WorkAcceptedNoWorkersMessage, KillWorkMessage, NoWorkWithGivenIdMessage, ListWorkResponseMessage
-from ws_dist_queue.model.request import Request
-from ws_dist_queue.model.work import Work
 
 
 class MasterController:
     log = logging.getLogger(__name__)
 
-    def __init__(self, message_sender, worker_picker):
+    def __init__(self, message_sender, worker_picker, objects):
         self.message_sender = message_sender
         self.picker = worker_picker
+        self.objects = objects
         self.workers = {}
         self.work_queue = deque()
 
@@ -51,19 +50,26 @@ class MasterController:
             self.workers[req.sender.peer].current_work = work
             self.message_sender.send(req.sender, WorkToBeDoneMessage(work))
 
-    def work(self, req):
-        work = WorkFactory.create(req)
+    async def work(self, req):
+        self.log.info(req)
+        work = await self.objects.create(
+            Work,
+            command=req.message.command,
+            cwd=req.message.cwd,
+            username=req.session.username,
+            password=req.session.password
+        )
         self.work_queue.appendleft(work)
         free_workers = self._get_free_workers()
         if free_workers:
             self.message_sender.send(
                 req.sender,
-                WorkAcceptedMessage(work.work_id)
+                WorkAcceptedMessage(work.id)
             )
         else:
             self.message_sender.send(
                 req.sender,
-                WorkAcceptedNoWorkersMessage(work.work_id)
+                WorkAcceptedNoWorkersMessage(work.id)
             )
 
         self._notify_workers()
@@ -121,19 +127,17 @@ class WorkerPicker:
     def pick_best(self, workers):
         return workers
 
-
-class WorkFactory:
-    @classmethod
-    def create(cls, req):
-        if isinstance(req, Request):
-            return Work(
-                command=req.message.command,
-                cwd=req.message.cwd,
-                username=req.session.username,
-                password=req.session.password,
-                work_id=1,
-            )
-        elif isinstance(req, Work):
-            return req
-        else:
-            raise RuntimeError()
+# class WorkFactory:
+#     @classmethod
+#     def create(cls, req):
+#         if isinstance(req, Request):
+#             self.objects.create_or_get(
+#                 command=req.message.command,
+#                 cwd=req.message.cwd,
+#                 username=req.session.username,
+#                 password=req.session.password
+#             )
+#         elif isinstance(req, Work):
+#             return req
+#         else:
+#             raise RuntimeError()

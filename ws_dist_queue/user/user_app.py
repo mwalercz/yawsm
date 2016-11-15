@@ -1,8 +1,7 @@
+import asyncio
 import logging
 import ssl
-import sys
 
-import asyncio
 import os
 from ws_dist_queue.message import WorkMessage, ListWorkMessage, KillWorkMessage
 from ws_dist_queue.message_sender import MessageSender, JsonDeserializer, JsonSerializer
