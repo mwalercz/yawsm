@@ -1,6 +1,5 @@
 import os
-from autobahn.twisted.websocket import WebSocketClientProtocol
-from twisted.internet import reactor
+from autobahn.asyncio import WebSocketClientProtocol
 
 
 class UserProtocol(WebSocketClientProtocol):
@@ -41,4 +40,4 @@ class UserProtocol(WebSocketClientProtocol):
 
     def onClose(self, wasClean, code, reason):
         print('Reason: {}, code: {}'.format(reason, code))
-        reactor.stop()
+        self.factory.loop.stop()
