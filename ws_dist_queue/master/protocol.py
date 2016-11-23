@@ -1,5 +1,6 @@
 import logging
 
+import asyncio
 from autobahn.asyncio import WebSocketServerProtocol
 from ws_dist_queue.model.request import Request
 
@@ -21,7 +22,7 @@ class MasterProtocol(WebSocketServerProtocol):
             )
         )
 
-    async def onMessage(self, payload, isBinary):
+    def onMessage(self, payload, isBinary):
         whole_message = self.factory.deserializer.deserialize(payload)
         self.log.info('Message was received: {message}'.format(message=payload))
 
@@ -45,16 +46,19 @@ class MasterProtocol(WebSocketServerProtocol):
             session = self.factory.auth.authenticate(headers)
             if session:
                 self.factory.message_sender.update_cookie(session.cookie)
-                await self.dispatch_to_method(message_type, message_body, session)
+                self.dispatch_to_method(message_type, message_body, session)
             else:
                 self.sendClose(code=3000, reason='Authentication failed')
 
-    async def dispatch_to_method(self, message_type, message_body, session):
+    def dispatch_to_method(self, message_type, message_body, session):
         method = self.factory.dispatcher.find_method(message_type)
-        await method(
-            req=Request(
-                sender=self,
-                session=session,
-                message=message_body,
-            ),
+        request = Request(sender=self, session=session, message=message_body)
+        asyncio.ensure_future(
+            self.execute(
+                method=method,
+                req=request
+            )
         )
+
+    async def execute(self, method, req):
+        await method(req)

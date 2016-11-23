@@ -127,17 +127,3 @@ class WorkerPicker:
     def pick_best(self, workers):
         return workers
 
-# class WorkFactory:
-#     @classmethod
-#     def create(cls, req):
-#         if isinstance(req, Request):
-#             self.objects.create_or_get(
-#                 command=req.message.command,
-#                 cwd=req.message.cwd,
-#                 username=req.session.username,
-#                 password=req.session.password
-#             )
-#         elif isinstance(req, Work):
-#             return req
-#         else:
-#             raise RuntimeError()

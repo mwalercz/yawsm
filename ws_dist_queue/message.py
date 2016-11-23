@@ -1,3 +1,8 @@
+from schematics.models import Model
+from schematics.types import StringType
+from schematics.types.compound import PolyModelType
+
+
 class MessageFactory:
     def __init__(self, mapping):
         self.mapping = mapping
@@ -97,3 +102,11 @@ MASTER_MAPPING = {
     'work_to_be_done': WorkToBeDoneMessage,
     'work_accepted': WorkAcceptedMessage,
 }
+
+
+# class Message(Model):
+#     header = StringType()
+#     body = PolyModelType(Model)
+#
+# class Header(Model):
+#     message_type=
