@@ -2,7 +2,7 @@ import logging
 
 import os
 from autobahn.asyncio import WebSocketClientProtocol
-from ws_dist_queue.message import WorkerCreatedMessage
+from ws_dist_queue.messages import Message
 
 
 class WorkerProtocol(WebSocketClientProtocol):
@@ -16,7 +16,7 @@ class WorkerProtocol(WebSocketClientProtocol):
         }
         self.factory.message_sender.send(
             recipient=self.factory.controller.master,
-            message_body=WorkerCreatedMessage(),
+            message_type=Message.worker_created,
             message_headers=headers,
         )
 

@@ -1,5 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor
-from ws_dist_queue.message import WorkerRequestsWorkMessage, WorkIsDoneMessage, WorkWasKilledMessage
+
+from ws_dist_queue.messages import Message
+from ws_dist_queue.model.work import WorkStatus
 from ws_dist_queue.worker.work_executor import WorkExecutor
 
 
@@ -18,7 +20,7 @@ class WorkerController:
         else:
             self.message_sender.send(
                 self.master,
-                WorkerRequestsWorkMessage()
+                Message.worker_requests_work
             )
 
     def no_work_to_be_done(self, message):
@@ -51,23 +53,28 @@ class WorkerController:
         print('work was killed: ' + str(result))
         self.message_sender.send(
             self.master,
-            WorkWasKilledMessage()
+            Message.work_was_killed
         )
         self.current_work = None
         self.message_sender.send(
             self.master,
-            WorkerRequestsWorkMessage(),
+            Message.worker_requests_work
         )
 
     def work_completed(self, message):
         self.message_sender.send(
             self.master,
-            WorkIsDoneMessage(),
+            Message.work_is_done,
+            {
+                'work_id': 1, # FIXME
+                'status': WorkStatus.finished_with_success.name
+            }
+
         )
         self.current_work = None
         self.message_sender.send(
             self.master,
-            WorkerRequestsWorkMessage()
+            Message.worker_requests_work
         )
 
     def clean_up(self):

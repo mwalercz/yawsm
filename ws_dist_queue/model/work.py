@@ -1,5 +1,4 @@
-import colander
-from colander import SchemaNode
+from enum import Enum
 
 
 class Work:
@@ -17,19 +16,15 @@ class Work:
         self.status = status
 
 
-class JobStatus:
-    RECEIVED = 'received'
-    PROCESSING = 'processing'
-    FINISHED_WITH_SUCCESS = 'finished with success'
-    FINISHED_WITH_FAILURE = 'finished with failure'
-    JOB_KILLED = 'job killed'
-    WORKER_FAILURE = 'worker failure'
+class WorkStatus(Enum):
+    received = 1
+    processing = 2
+    finished_with_success = 2
+    finished_with_failure = 3
+    work_killed = 4
+    worker_failure = 5
+
+ALL_WORK_STATUSES = [e.name for e in WorkStatus]
 
 
-class JobSchema(colander.MappingSchema):
-    job_id = SchemaNode(colander.Int())
-    user = SchemaNode(colander.String())
-    cwd = SchemaNode(colander.String())
-    command = SchemaNode(colander.String())
-    environment = colander.MappingSchema()
 

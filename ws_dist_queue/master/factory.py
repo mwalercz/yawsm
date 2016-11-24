@@ -11,5 +11,5 @@ class MasterFactory(WebSocketServerFactory):
         self.dispatcher = dispatcher
         self.auth = auth
         self.message_sender = message_sender
-        self.message_factory = message_factory
+        self.message_fact = message_factory
         self.controller = controller

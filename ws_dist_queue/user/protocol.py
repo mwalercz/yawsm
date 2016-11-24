@@ -19,9 +19,11 @@ class UserProtocol(WebSocketClientProtocol):
             }
         else:
             headers = {}
+        message_type, message_body = message
         self.factory.message_sender.send(
             recipient=self,
-            message_body=message,
+            message_type=message_type,
+            message_body=message_body,
             message_headers=headers,
         )
 

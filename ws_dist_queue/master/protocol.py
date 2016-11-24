@@ -8,13 +8,13 @@ from ws_dist_queue.model.request import Request
 class MasterProtocol(WebSocketServerProtocol):
     log = logging.getLogger(__name__)
 
-    def onClose(self, wasClean, code, reason):
+    async def onClose(self, wasClean, code, reason):
         self.log.info(
             "connection was closed. Reason {}, peer: {}".format(
                 reason, self.peer
             )
         )
-        self.factory.controller.worker_down(
+        await self.factory.controller.worker_down(
             req=Request(
                 sender=self,
                 session=None,
@@ -29,8 +29,19 @@ class MasterProtocol(WebSocketServerProtocol):
         headers = whole_message['headers']
         message_from = headers['message_from']
         message_type = headers['message_type']
-        message_body = whole_message['body']
         cookie = headers.get('cookie')
+
+        try:
+            message_body = self.try_to_get_message_body(message_type, whole_message)
+        except Exception as e:
+            self.log.warning(e)
+            return
+        if message_body:
+            try:
+                message_body.validate()
+            except Exception as e:
+                self.log.warning(e)
+                return
 
         if cookie:
             session = self.factory.auth.get_session(
@@ -62,3 +73,8 @@ class MasterProtocol(WebSocketServerProtocol):
 
     async def execute(self, method, req):
         await method(req)
+
+    def try_to_get_message_body(self, message_type, whole_message):
+        message_obj = self.factory.message_fact.get_object(message_type)
+        raw_message_body = whole_message.get('body', None)
+        return message_obj(raw_message_body) if raw_message_body else None

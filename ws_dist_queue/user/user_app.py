@@ -3,7 +3,7 @@ import logging
 import ssl
 
 import os
-from ws_dist_queue.message import WorkMessage, ListWorkMessage, KillWorkMessage
+from ws_dist_queue.messages import Message
 from ws_dist_queue.message_sender import MessageSender, JsonDeserializer, JsonSerializer
 from ws_dist_queue.user.cookie_keeper import CookieKeeper
 from ws_dist_queue.user.factory import UserFactory
@@ -78,16 +78,17 @@ class Credentials:
 class MessageFactory:
     def create(self, args):
         if hasattr(args, 'command'):
-            return WorkMessage(
-                command=args.command,
-                cwd=os.getcwd()
+            return (
+                Message.new_work,
+                {
+                    'command': args.command,
+                    'cwd': os.getcwd()
+                }
             )
         elif hasattr(args, 'list'):
-            return ListWorkMessage()
+            return Message.new_work, None
         elif hasattr(args, 'kill_work_id'):
-            return KillWorkMessage(
-                work_id=args.kill_work_id
-            )
+            return Message.kill_work, args.kill_work_id
 
 if __name__ == "__main__":
     parser = InputParser()

@@ -1,9 +1,10 @@
 import logging
 
 from collections import deque
+from playhouse.shortcuts import model_to_dict
 from ws_dist_queue.domain.work import Work
-from ws_dist_queue.message import WorkAcceptedMessage, WorkIsReadyMessage, WorkToBeDoneMessage, \
-    WorkAcceptedNoWorkersMessage, KillWorkMessage, NoWorkWithGivenIdMessage, ListWorkResponseMessage
+from ws_dist_queue.messages import Message
+from ws_dist_queue.model.work import WorkStatus
 
 
 class MasterController:
@@ -22,16 +23,19 @@ class MasterController:
         })
         self._notify_workers()
 
-    def worker_down(self, req):
+    async def worker_down(self, req):
         if self.workers.get(req.sender.peer):
             dead_worker = self.workers[req.sender.peer]
-            if dead_worker.current_work is not None:
+            worker_work = dead_worker.current_work
+            if worker_work is not None:
                 self.log.info(
                     'Worker: {peer} has died while working on: {work}'.format(
                         peer=req.sender.peer,
-                        work=dead_worker.current_work
+                        work=worker_work
                     )
                 )
+                worker_work.status = WorkStatus.worker_failure
+                await self.objects.update(worker_work)
                 self.work_queue.appendleft(dead_worker.current_work)
             else:
                 self.log.info(
@@ -41,21 +45,29 @@ class MasterController:
                 )
             del self.workers[req.sender.peer]
 
-    def work_is_done(self, req):
+    async def work_is_done(self, req):
+        finished_work = self.workers[req.sender.peer].current_work
+        finished_work.status = req.message.status
+        await self.objects.update(finished_work)
+
         self.workers[req.sender.peer].current_work = None
 
-    def worker_requests_work(self, req):
+    async def worker_requests_work(self, req):
         if len(self.work_queue) > 0:
             work = self.work_queue.pop()
             self.workers[req.sender.peer].current_work = work
-            self.message_sender.send(req.sender, WorkToBeDoneMessage(work))
+            self.message_sender.send(req.sender, Message.work_to_be_done, model_to_dict(work))
+            work.status = WorkStatus.processing
+            await self.objects.update(work)
 
-    async def work(self, req):
+    async def new_work(self, req):
         self.log.info(req)
         work = await self.objects.create(
             Work,
             command=req.message.command,
             cwd=req.message.cwd,
+            env=req.message.env,
+            status=WorkStatus.received.name,
             username=req.session.username,
             password=req.session.password
         )
@@ -64,12 +76,14 @@ class MasterController:
         if free_workers:
             self.message_sender.send(
                 req.sender,
-                WorkAcceptedMessage(work.id)
+                Message.work_accepted,
+                model_to_dict(work, exclude=['username', 'password'])
             )
         else:
             self.message_sender.send(
                 req.sender,
-                WorkAcceptedNoWorkersMessage(work.id)
+                Message.work_accepted_no_worker,
+                model_to_dict(work, exclude=['username', 'password'])
             )
 
         self._notify_workers()
@@ -81,29 +95,30 @@ class MasterController:
         if work_found:
             self.message_sender.send(
                 work_found[0].worker_ref,
-                KillWorkMessage(req.message.work_id)
+                Message.kill_work,
+                {'work_id': req.message.work_id}
             )
         else:
             self.message_sender.send(
                 req.sender,
-                NoWorkWithGivenIdMessage(),
+                Message.no_work_with_given_id,
             )
 
     def work_was_killed(self, req):
         self.workers[req.sender.peer].current_work = None
 
-    def list_work(self, req):
-        found_in_workers = [w for w in self.workers.values()
-                            if w.current_work is not None and
-                            w.current_work.username == req.session.username]
-
-        found_in_work_queue = [w for w in self.work_queue
-                               if w.username == req.session.username]
-
-        work_list = found_in_workers + found_in_work_queue
+    async def list_work(self, req):
+        # found_in_workers = [w for w in self.workers.values()
+        #                     if w.current_work is not None and
+        #                     w.current_work.username == req.session.username]
+        #
+        # found_in_work_queue = [w for w in self.work_queue
+        #                        if w.username == req.session.username]
+        work_list = self.objects.get(Work, username=req.session.username)
         self.message_sender.send(
             req.sender,
-            ListWorkResponseMessage(work_list)
+            Message.list_work_response,
+            work_list
         )
 
     def _notify_workers(self):
@@ -111,7 +126,7 @@ class MasterController:
             best_workers = self.picker.pick_best(self._get_free_workers())
             for worker in best_workers:
                 self.message_sender.send(
-                    worker.worker_ref, WorkIsReadyMessage())
+                    worker.worker_ref, Message.work_is_ready)
 
     def _get_free_workers(self):
         return [w for w in self.workers.values() if w.current_work is None]
