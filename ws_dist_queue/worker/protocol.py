@@ -4,6 +4,8 @@ import os
 from autobahn.asyncio import WebSocketClientProtocol
 from ws_dist_queue.messages import Message
 
+from ws_dist_queue.master.components.clients import JsonDeserializer
+
 
 class WorkerProtocol(WebSocketClientProtocol):
     log = logging.getLogger(__name__)
@@ -22,7 +24,7 @@ class WorkerProtocol(WebSocketClientProtocol):
 
     def onMessage(self, payload, isBinary):
         self.log.info('Message was received: {message}'.format(message=payload))
-        whole_message = self.factory.deserializer.deserialize(payload)
+        whole_message = JsonDeserializer.deserialize(payload)
         message_body = whole_message['body']
         headers = whole_message['headers']
         message_type = headers['message_type']

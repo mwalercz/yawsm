@@ -1,104 +1,58 @@
-import asyncio
 import logging
 import ssl
 
-import os
-from ws_dist_queue.messages import Message
-from ws_dist_queue.message_sender import MessageSender, JsonDeserializer, JsonSerializer
-from ws_dist_queue.user.cookie_keeper import CookieKeeper
-from ws_dist_queue.user.factory import UserFactory
-from ws_dist_queue.user.input_parser import InputParser
-from ws_dist_queue.user.protocol import UserProtocol
+from knot import Container
+
+from ws_dist_queue.user.dependencies import register
+
+
+def make_app(config_path, username, password):
+    logging.basicConfig(
+        level=logging.DEBUG,
+    )
+    c = Container(dict(
+        config_path=config_path,
+        username=username,
+        password=password,
+    ))
+
+    register(c)
+    return UserApp(
+        host=c('conf')['master']['host'],
+        port=c('conf')['master']['port'],
+        loop=c('loop'),
+        factory=c('factory'),
+    )
 
 
 class UserApp:
-    def __init__(self, conf, credentials, message):
-        self.conf = conf
-        self.loop = asyncio.get_event_loop()
-        self.init_logging()
-        self.factory = self.init_factory(
-            credentials=credentials,
-            message=message,
-        )
+    container = {}
 
-    def run(self):
+    def __init__(self, host, port, loop, factory):
+        self.host = host
+        self.port = port
+        self.loop = loop
+        self.factory = factory
+
+    def send_and_wait(self, path, body=None):
+        self.factory.protocol.path = path
+        self.factory.protocol.body = body
+
         coro = self.loop.create_connection(
             protocol_factory=self.factory,
-            host=self.conf.MASTER_HOST,
-            port=self.conf.MASTER_WSS_PORT,
+            host=self.host,
+            port=self.port,
             ssl=ssl.SSLContext(protocol=ssl.PROTOCOL_TLSv1_2)
         )
         self.loop.run_until_complete(coro)
         self.loop.run_forever()
-        self.loop.close()
 
-    def init_factory(self, credentials, message):
-        factory = UserFactory(
-            conf=self.conf,
-            credentials=credentials,
-            message=message,
-            **self.init_services(),
-        )
-        factory.protocol = UserProtocol
-        return factory
-
-    def init_logging(self):
-        self.loop.set_debug(True)
-        logging.basicConfig(level=logging.INFO,
-                            format='%(asctime)s %(levelname)s: %(name)s  %(message)s')
-
-    def init_services(self):
-        message_sender = MessageSender(
-            message_from='user'
-        )
-        cookie_keeper = CookieKeeper(self.conf)
-        services = {
-            'message_sender': message_sender,
-            'deserializer': JsonDeserializer(),
-            'serializer': JsonSerializer(),
-            'cookie_keeper': cookie_keeper,
-            'loop': self.loop,
-        }
-        return services
-
-
-class Credentials:
-    def __init__(self, username, password):
-        self.username = username
-        self.password = password
-
-    @classmethod
-    def create(cls, username, password):
-        if username and password:
-            return Credentials(username, password)
-        else:
-            return None
-
-
-class MessageFactory:
-    def create(self, args):
-        if hasattr(args, 'command'):
-            return (
-                Message.new_work,
-                {
-                    'command': args.command,
-                    'cwd': os.getcwd()
-                }
-            )
-        elif hasattr(args, 'list'):
-            return Message.new_work, None
-        elif hasattr(args, 'kill_work_id'):
-            return Message.kill_work, args.kill_work_id
-
-if __name__ == "__main__":
-    parser = InputParser()
-    args = parser.parse()
-    credentials = Credentials.create(args.username, args.password)
-    message = MessageFactory().create(args)
-    import ws_dist_queue.settings.defaults as defaults
-    app = UserApp(
-        conf=defaults,
-        credentials=credentials,
-        message=message,
+if __name__ == '__main__':
+    app = make_app('conf/develop.ini', 'mal', 'matrix')
+    app.send_and_wait(
+        path='user/new_work',
+        body={
+            'command': 'ls',
+            'cwd': 'haha',
+        },
     )
-    app.run()

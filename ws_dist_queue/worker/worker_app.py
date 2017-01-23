@@ -5,7 +5,8 @@ import ssl
 
 import functools
 from ws_dist_queue.dispatcher import Dispatcher
-from ws_dist_queue.message_sender import MessageSender, JsonDeserializer
+
+from ws_dist_queue.master.components.clients import MessageSender, JsonDeserializer
 from ws_dist_queue.worker.controller import WorkerController
 from ws_dist_queue.worker.factory import WorkerFactory
 from ws_dist_queue.worker.protocol import WorkerProtocol
@@ -59,7 +60,7 @@ class WorkerApp:
 
     def init_services(self, conf):
         message_sender = MessageSender(
-            message_from='worker'
+            path='worker'
         )
         worker_controller = WorkerController(
             message_sender=message_sender,

@@ -9,4 +9,9 @@ setup(
     license="BSD",
     keywords="example documentation tutorial",
     packages=find_packages(),
+    entry_points={
+        'console_scripts': [
+            'queue = ws_dist_queue.user.cli:queue',
+        ],
+    },
 )

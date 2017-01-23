@@ -1,7 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor
 
-from ws_dist_queue.messages import Message
-from ws_dist_queue.model.work import WorkStatus
 from ws_dist_queue.worker.work_executor import WorkExecutor
 
 
