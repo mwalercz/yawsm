@@ -1,7 +1,3 @@
-from ws_dist_queue.master.components.protocol import Request
-from ws_dist_queue.master.schema import NewWorkSchema
-
-
 def validate(schema):
     def validate_decorator(func):
         async def func_wrapper(self, req):

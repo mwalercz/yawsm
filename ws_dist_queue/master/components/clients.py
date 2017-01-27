@@ -22,8 +22,8 @@ class WorkerClient:
     def send(self, recipient, action_name, body=None):
         path = self.path + '/' + action_name
         message = {
-            path: path,
-            body: body,
+            'path': path,
+            'body': body,
         }
         serialized_message = self.serializer.serialize(message)
         recipient.sendMessage(serialized_message)

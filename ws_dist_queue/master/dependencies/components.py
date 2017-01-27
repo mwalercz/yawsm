@@ -2,11 +2,11 @@ import asyncio
 
 from peewee_async import Manager
 
+from ws_dist_queue.lib.router import Router
 from ws_dist_queue.master.components.authorization import Authorization, UserAuthorization, WorkerAuthorization
 from ws_dist_queue.master.components.clients import UserClient, WorkerClient
 from ws_dist_queue.master.components.factory import MasterFactory
 from ws_dist_queue.master.components.protocol import MasterProtocol
-from ws_dist_queue.master.components.router import Router
 
 
 def router(c):

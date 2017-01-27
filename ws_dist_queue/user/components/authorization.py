@@ -1,6 +1,10 @@
 from ws_dist_queue.user.components.cookie_keeper import CookieKeeper
 
 
+class NoCookieException(Exception):
+    pass
+
+
 class Authorization:
     def __init__(self, cookie_keeper: CookieKeeper, parent_pid):
         self.cookie_keeper = cookie_keeper
@@ -17,7 +21,7 @@ class Authorization:
                     'parent_pid': self.parent_pid,
                 }
             else:
-                raise Exception('No cookie and no credentials!')
+                raise NoCookieException()
 
 
 class Credentials:

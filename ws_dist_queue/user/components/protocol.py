@@ -1,3 +1,5 @@
+import pprint
+
 from autobahn.asyncio import WebSocketClientProtocol
 
 
@@ -24,8 +26,8 @@ class UserProtocol(WebSocketClientProtocol):
 
     def onMessage(self, payload, isBinary):
         message = self.deserializer.deserialize(payload)
-        print(message['info'])
-        print(message['body'])
+        print('MESSAGE: ' + message['info'])
+        pprint.PrettyPrinter(indent=4).pprint(message['body'])
         self.sendClose(code=3200, reason='Finished')
 
     def onClose(self, wasClean, code, reason):

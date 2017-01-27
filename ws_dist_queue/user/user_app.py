@@ -8,7 +8,7 @@ from ws_dist_queue.user.dependencies import register
 
 def make_app(config_path, username, password):
     logging.basicConfig(
-        level=logging.DEBUG,
+        level=logging.INFO,
     )
     c = Container(dict(
         config_path=config_path,

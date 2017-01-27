@@ -1,6 +1,11 @@
+import getpass
+
 import click
 import os
+import sys
 from click import pass_context
+from click import prompt
+from ws_dist_queue.user.components.authorization import NoCookieException
 
 from ws_dist_queue.user.user_app import make_app
 
@@ -8,27 +13,40 @@ from ws_dist_queue.user.user_app import make_app
 @click.group()
 @click.option(
     '-c', '--config',
-    default='conf/develop.ini',
+    default=os.getenv("HOME") + '/.dist_queue/develop.ini',
     type=click.Path(exists=True),
     help='Config path',
     show_default=True
 )
 @click.option(
-    '-u', '--username',
-    # default='mwal',
-)
-@click.option(
-    '-p', '--password',
-    # default='matrix'
+    '-l', '--login',
+    is_flag=True
 )
 @pass_context
-def queue(ctx, config, username, password):
-    click.echo(ctx.obj)
-    ctx.obj = make_app(
-        config_path=config,
-        username=username,
-        password=password,
-    )
+def queue(ctx, config, login):
+    if login:
+        username = getpass.getuser()
+        password = prompt(text='Password', hide_input=True)
+    else:
+        username = None
+        password = None
+    try:
+        ctx.obj = make_app(
+            config_path=config,
+            username=username,
+            password=password,
+        )
+    except NoCookieException:
+        username = getpass.getuser()
+        password = prompt(text='Password', hide_input=True)
+        ctx.obj = make_app(
+            config_path=config,
+            username=username,
+            password=password,
+        )
+    except Exception as e:
+        click.echo('ERROR(s): ' + str(e))
+        sys.exit()
 
 
 @click.argument('command')

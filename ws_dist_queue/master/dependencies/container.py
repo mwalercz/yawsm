@@ -1,11 +1,10 @@
 import ssl
 from configparser import ConfigParser
 
-
+from ws_dist_queue.lib.serializers import JsonDeserializer, JsonSerializer
 from ws_dist_queue.master.dependencies import components
 from ws_dist_queue.master.dependencies import controllers
 from ws_dist_queue.master.models.work import Work, database
-from ws_dist_queue.serializers import JsonDeserializer, JsonSerializer
 
 
 def conf(c):

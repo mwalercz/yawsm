@@ -1,5 +1,6 @@
 from ws_dist_queue.master.models.domain.work import Work
-from ws_dist_queue.worker.work_executor import WorkExecutor
+
+from ws_dist_queue.worker.components.worker import Worker
 
 
 class TestWorkExecutor:
@@ -10,7 +11,7 @@ class TestWorkExecutor:
             username='test',
             password='test123'
         )
-        work_executor = WorkExecutor(work=work)
+        work_executor = Worker(work=work)
         result = work_executor.do_work()
         assert result == 0
         assert work_executor.pid is not None and isinstance(work_executor.pid, int)
@@ -22,7 +23,7 @@ class TestWorkExecutor:
             username='test',
             password='test123'
         )
-        work_executor = WorkExecutor(work=work)
+        work_executor = Worker(work=work)
         result = work_executor.do_work()
         assert result != 0
 

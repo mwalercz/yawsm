@@ -1,13 +1,12 @@
 import logging
-from collections import deque
 
+from collections import deque
 from playhouse.shortcuts import model_to_dict
 
 from ws_dist_queue.master.components.authorization import UserAuthorization
 from ws_dist_queue.master.components.clients import UserClient, WorkerClient
 from ws_dist_queue.master.components.validator import validate
 from ws_dist_queue.master.controllers.base import BaseController
-
 from ws_dist_queue.master.models.work import Work, WorkStatus
 from ws_dist_queue.master.schema import WorkIdSchema, NewWorkSchema
 
@@ -83,7 +82,7 @@ class UserController(BaseController):
         else:
             work = self._pop_work_from_queue(work_id)
             if work:
-                work_db = await self._update_status_in_db(
+                work_db = await self._update_work_in_db(
                     work_id=work_id,
                     status=WorkStatus.work_killed.name
                 )
@@ -114,14 +113,14 @@ class UserController(BaseController):
 
     def _get_worker_with_work(self, work_id):
         for w in self.workers.values():
-            if w.current_work is not None and w.current_work.work_id == work_id:
+            if w.current_work is not None and w.current_work['work_id'] == work_id:
                 return w
         return None
 
     def _pop_work_from_queue(self, work_id):
         work_found = None
         for work in self.work_queue:
-            if work.work_id == work_id:
+            if work['work_id'] == work_id:
                 work_found = work
                 break
 

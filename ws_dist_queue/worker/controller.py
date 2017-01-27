@@ -1,85 +1,104 @@
 from concurrent.futures import ThreadPoolExecutor
 
-from ws_dist_queue.worker.work_executor import WorkExecutor
+from ws_dist_queue.worker.components.master_client import MasterClient
+from ws_dist_queue.worker.components.validator import validate
+from ws_dist_queue.worker.components.worker import Worker
+from ws_dist_queue.worker.schema import WorkToBeDoneSchema
 
 
 class WorkerController:
-    def __init__(self, message_sender):
-        self.message_sender = message_sender
-        self.executor = ThreadPoolExecutor(max_workers=2)
-        self.work_executor = None
-        self.current_work = None
-        self.loop = None  # will be injected later
-        self.master = None  # will be injected later
+    def __init__(
+            self, master_client: MasterClient,
+            loop, thread_pool: ThreadPoolExecutor
+    ):
+        self.thread_pool = thread_pool
+        self.master_client = master_client
+        self.loop = loop
+        self.worker = None
+        self.current_task = None
 
     def work_is_ready(self, message):
-        if self.current_work:
+        if self.current_task:
             pass
         else:
-            self.message_sender.send(
-                self.master,
-                Message.worker_requests_work
+            self.master_client.send(
+                action_name='worker_requests_work',
             )
 
     def no_work_to_be_done(self, message):
-        if self.current_work:
+        if self.current_task:
             pass
         else:
             pass
 
+    @validate(schema=WorkToBeDoneSchema)
     def work_to_be_done(self, message):
-        if self.current_work:
+        if self.current_task:
             pass
         else:
-            self.work_executor = WorkExecutor(work=message.work)
-            self.current_work = self.loop.run_in_executor(
-                self.executor,
-                self.work_executor.do_work,
+            self.worker = Worker(work=message)
+            self.current_task = self.loop.run_in_executor(
+                self.thread_pool,
+                self.worker.do_work,
             )
-            self.current_work.add_done_callback(self.work_completed)
+            self.current_task.add_done_callback(self._work_completed)
 
     def kill_work(self, message):
-        if self.current_work:
+        if self.current_task:
             future = self.loop.run_in_executor(
-                self.executor,
-                self.work_executor.kill_work,
+                self.thread_pool,
+                self.worker.kill_work,
             )
-            self.current_work.remove_done_callback(self.work_completed)
-            future.add_done_callback(self.work_was_killed)
+            self.current_task.remove_done_callback(self._work_completed)
+            future.add_done_callback(self._work_was_killed)
 
-    def work_was_killed(self, result):
-        print('work was killed: ' + str(result))
-        self.message_sender.send(
-            self.master,
-            Message.work_was_killed
-        )
-        self.current_work = None
-        self.message_sender.send(
-            self.master,
-            Message.worker_requests_work
-        )
+    def _work_was_killed(self, future):
+        result = future.result()
+        if result == 0:
+            self.master_client.send(
+                action_name='work_is_done',
+                body={
+                    'work_id': self.worker.work.work_id,
+                    'status': 'work_killed',
+                }
+            )
+            self.current_task = None
+            self.master_client.send(
+                action_name='worker_requests_work'
+            )
+        else:
+            self.master_client.send(
+                action_name='work_is_done',
+                body={
+                    'work_id': self.worker.work.work_id,
+                    'status': 'work_not_killed',
+                }
+            )
 
-    def work_completed(self, message):
-        self.message_sender.send(
-            self.master,
-            Message.work_is_done,
-            {
-                'work_id': 1, # FIXME
-                'status': WorkStatus.finished_with_success.name
+    def _work_completed(self, future):
+        result = future.result()
+        if result['status'] == 0:
+            status = 'finished_with_success'
+        else:
+            status = 'finished_with_failure'
+        self.master_client.send(
+            action_name='work_is_done',
+            body={
+                'work_id': self.worker.work.work_id,
+                'status': status,
+                'output': result['output']
             }
-
         )
-        self.current_work = None
-        self.message_sender.send(
-            self.master,
-            Message.worker_requests_work
+        self.current_task = None
+        self.master_client.send(
+            action_name='worker_requests_work'
         )
 
     def clean_up(self):
-        if self.current_work:
+        if self.current_task:
+            self.current_task.remove_done_callback(self._work_completed)
             self.loop.run_in_executor(
-                self.executor,
-                self.work_executor.kill_work,
+                self.thread_pool,
+                self.worker.kill_work,
             )
-            self.current_work.remove_done_callback(self.work_completed)
-            self.executor.shutdown(wait=True)
+            self.thread_pool.shutdown(wait=True)

@@ -1,4 +1,5 @@
 import asyncio
+import inspect
 import logging
 
 from autobahn.asyncio import WebSocketServerProtocol
@@ -21,7 +22,7 @@ class MasterProtocol(WebSocketServerProtocol):
     router = NotImplemented
 
     def onConnect(self, request):
-        log.debug('New connection is being established. %s', request)
+        log.info('New connection is being established. %s', request)
         try:
             headers = self.auth.authenticate(request.headers, self.peer) or {}
         except AuthenticationFailed as e:
@@ -31,16 +32,20 @@ class MasterProtocol(WebSocketServerProtocol):
             )
             raise ConnectionDeny(code=403, reason='invalid_credentials/cookie')
         else:
-            log.debug('New connection is opened %s', request)
+            log.info('New connection is opened and authenticated %s', request)
             return None, headers
 
     def onClose(self, wasClean, code, reason):
-        log.debug(
+        log.info(
             'Connection was closed. Reason: %s, peer: %s', reason, self.peer
         )
-        if wasClean:
+        try:
+            self.auth.get_role(self.peer)
+        except RoleNotFound:
+            return
+        else:
             role = self.auth.get_role(self.peer)
-            responder = self.router.get_responder(path=role + '/' + 'down')
+            controller, responder = self.router.get_responder(path=role + '/' + 'down')
             self.schedule_task(responder, self)
             self.auth.remove(self.peer)
 
@@ -50,7 +55,7 @@ class MasterProtocol(WebSocketServerProtocol):
         except:
             self.sendClose(code=2404, reason='Message is not in json format')
             return
-        log.debug('Message was received: %s', message)
+        log.info('Message was received: %s', message)
         controller, responder = self.router.get_responder(message['path'])
         if controller.ROLE != self.auth.get_role(self.peer):
             self.sendClose(code=2403, reason='Not authorized to access this method')
@@ -67,4 +72,7 @@ class MasterProtocol(WebSocketServerProtocol):
         )
 
     async def execute(self, func, arg):
-        await func(arg)
+        if inspect.iscoroutinefunction(func):
+            await func(arg)
+        else:
+            func(arg)

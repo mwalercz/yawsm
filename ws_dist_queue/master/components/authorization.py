@@ -162,8 +162,8 @@ class WorkerAuthorization:
         self.connected_peers = set()
 
     def authenticate(self, headers, peer):
-        if self.api_key == headers.get('api_key'):
-            self.connected_peers.update(peer)
+        if self.api_key == headers.get('x-api-key'):
+            self.connected_peers.add(peer)
             return None
         else:
             raise AuthenticationFailed()

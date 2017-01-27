@@ -25,7 +25,8 @@ class WorkerController(BaseController):
                 )
                 self.work_queue.appendleft(dead_worker_work)
                 del self.workers[peer]
-                await self._update_status_in_db(
+                self._notify_workers()
+                await self._update_work_in_db(
                     work_id=dead_worker_work['work_id'],
                     status=WorkStatus.worker_failure.name,
                 )
@@ -45,10 +46,13 @@ class WorkerController(BaseController):
 
     @validate(schema=WorkIsDoneSchema)
     async def work_is_done(self, req):
-        self.workers[req.sender.peer].current_work = None
-        await self._update_status_in_db(
+        if not req.validated.status == WorkStatus.work_not_killed.name:
+            self.workers[req.sender.peer].current_work = None
+
+        await self._update_work_in_db(
             work_id=req.validated.work_id,
             status=req.validated.status,
+            output=req.validated.output,
         )
 
     async def worker_requests_work(self, req):
@@ -60,7 +64,7 @@ class WorkerController(BaseController):
                 action_name='work_to_be_done',
                 body=work,
             )
-            await self._update_status_in_db(
+            await self._update_work_in_db(
                 work_id=work['work_id'],
                 status=WorkStatus.processing.name,
             )

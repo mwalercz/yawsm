@@ -32,9 +32,10 @@ class BaseController:
     def _get_free_workers(self):
         return [w for w in self.workers.values() if w.current_work is None]
 
-    async def _update_status_in_db(self, work_id, status):
-        work_db = await self.objects.get(Work, key=work_id)
-        work_db.status = status
+    async def _update_work_in_db(self, work_id, **fields):
+        work_db = await self.objects.get(Work, work_id=work_id)
+        for field, value in fields.items():
+            setattr(work_db, field, value)
         await self.objects.update(work_db)
         return work_db
 

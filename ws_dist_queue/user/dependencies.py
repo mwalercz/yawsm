@@ -3,7 +3,7 @@ from configparser import ConfigParser
 
 import os
 
-from ws_dist_queue.serializers import JsonSerializer, JsonDeserializer
+from ws_dist_queue.lib.serializers import JsonSerializer, JsonDeserializer
 from ws_dist_queue.user.components.authorization import Credentials, Authorization
 from ws_dist_queue.user.components.cookie_keeper import CookieKeeper
 from ws_dist_queue.user.components.factory import UserFactory

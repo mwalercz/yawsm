@@ -4,30 +4,43 @@ import signal
 import ssl
 
 import functools
-from ws_dist_queue.dispatcher import Dispatcher
+from knot import Container
 
-from ws_dist_queue.master.components.clients import MessageSender, JsonDeserializer
-from ws_dist_queue.worker.controller import WorkerController
-from ws_dist_queue.worker.factory import WorkerFactory
-from ws_dist_queue.worker.protocol import WorkerProtocol
+from ws_dist_queue.worker.dependencies.container import register
+
+
+def make_app(config_path):
+    logging.basicConfig(
+        level=logging.DEBUG,
+    )
+    c = Container(dict(
+        config_path=config_path,
+    ))
+    register(c)
+    return WorkerApp(
+        host=c('conf')['master']['host'],
+        port=c('conf')['master']['port'],
+        factory=c('factory'),
+        loop=c('loop'),
+        controller=c('worker_controller'),
+    )
 
 
 class WorkerApp:
-    def __init__(self, conf):
-        self.conf = conf
-        self.factory = self.init_factory(
-            conf=conf,
-        )
-        self.loop = asyncio.get_event_loop()
-        self.init_logging()
-        self.factory.controller.loop = self.loop
+
+    def __init__(self, host, port, factory, loop, controller):
+        self.host = host
+        self.port = port
+        self.factory = factory
+        self.loop = loop
+        self.controller = controller
         self.register_signal_handlers()
 
     def run(self):
         coro = self.loop.create_connection(
             protocol_factory=self.factory,
-            host=self.conf.MASTER_HOST,
-            port=self.conf.MASTER_WSS_PORT,
+            host=self.host,
+            port=self.port,
             ssl=ssl.SSLContext(protocol=ssl.PROTOCOL_TLSv1_2)
         )
         self.loop.run_until_complete(coro)
@@ -42,45 +55,12 @@ class WorkerApp:
             )
 
     def clean_up(self, signame):
-        self.factory.controller.clean_up()
+        self.controller.clean_up()
         self.loop.stop()
-
-    def init_factory(self, conf):
-        factory = WorkerFactory(
-            conf=conf,
-            **self.init_services(conf),
-        )
-        factory.protocol = WorkerProtocol
-        return factory
-
-    def init_logging(self):
-        self.loop.set_debug(True)
-        logging.basicConfig(level=logging.INFO,
-                            format='%(asctime)s %(levelname)s: %(name)s  %(message)s')
-
-    def init_services(self, conf):
-        message_sender = MessageSender(
-            path='worker'
-        )
-        worker_controller = WorkerController(
-            message_sender=message_sender,
-        )
-        worker_dispatcher = Dispatcher(
-            controller=worker_controller,
-        )
-        services = {
-            'message_sender': message_sender,
-            'deserializer': JsonDeserializer(),
-            'controller': worker_controller,
-            'dispatcher': worker_dispatcher,
-        }
-        return services
 
 
 if __name__ == "__main__":
-    import ws_dist_queue.settings.defaults as defaults
-
-    app = WorkerApp(
-        conf=defaults,
+    app = make_app(
+        config_path='conf/develop.ini'
     )
     app.run()
