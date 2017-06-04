@@ -14,7 +14,8 @@ class SimpleRouter:
             raise Exception('Wrong path {0}'.format(path))
         else:
             if method_path.startswith('_'):
-                raise Exception('Private method {0} cannot be accessed'.format(method_path))
+                raise Exception(
+                    'Private method {0} cannot be accessed'.format(method_path))
             else:
                 return method_path
 
@@ -22,10 +23,10 @@ class SimpleRouter:
         try:
             method = getattr(self.controller, method_path)
         except AttributeError:
-            raise Exception('Method: {} in controller: {} not implemented'.format(
-                method_path,
-                str(self.controller)
-            ))
+            raise Exception(
+                'Method: {} in controller: {} not implemented'.format(
+                    method_path, str(
+                        self.controller)))
         else:
             if callable(method):
                 return method

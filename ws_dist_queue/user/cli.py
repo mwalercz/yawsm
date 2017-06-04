@@ -5,7 +5,7 @@ import os
 import sys
 from click import pass_context
 from click import prompt
-from ws_dist_queue.user.components.authorization import NoCookieException
+from ws_dist_queue.user.components.authentication import NoCookieException
 
 from ws_dist_queue.user.user_app import make_app
 
@@ -55,7 +55,7 @@ def queue(ctx, config, login):
 def work(ctx, command):
     app = ctx.obj
     app.send_and_wait(
-        path='user/new_work',
+        path='work/new_work',
         body={
             'command': command,
             'cwd': os.getcwd()
@@ -69,7 +69,7 @@ def work(ctx, command):
 def kill(ctx, work_id):
     app = ctx.obj
     app.send_and_wait(
-        path='user/kill_work',
+        path='work/kill_work',
         body={
             'work_id': work_id,
         }
@@ -81,5 +81,5 @@ def kill(ctx, work_id):
 def ls(ctx):
     app = ctx.obj
     app.send_and_wait(
-        path='user/list_work'
+        path='work/list_work'
     )

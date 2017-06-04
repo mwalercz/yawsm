@@ -53,5 +53,7 @@ txaio==2.5.1
 u-msgpack-python==2.3.0
 watchdog==0.8.3
 wcwidth==0.1.7
+knot==0.3.0
+schematics==2.0.0dev2
 -e git+git@github.com:mwalercz/ws_dist_queue.git@d6abdc3c91b31cd11a015966f727d760388853fc#egg=ws_dist_queue
 zope.interface==4.3.2

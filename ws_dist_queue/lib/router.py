@@ -7,7 +7,7 @@ class Router:
             path: controller
         })
 
-    def get_responder(self, path):
+    def find_responder(self, path):
         controller_path, method_path = self._get_paths(path)
         controller = self._get_controller(controller_path)
         return controller, self._find_responder(controller, method_path)
@@ -21,7 +21,8 @@ class Router:
             raise Exception('Wrong path {0}'.format(path))
         else:
             if method_path.startswith('_'):
-                raise Exception('Private method {0} cannot be accessed'.format(method_path))
+                raise Exception(
+                    'Private method {0} cannot be accessed'.format(method_path))
             else:
                 return controller_path, method_path
 
@@ -29,16 +30,16 @@ class Router:
         try:
             return self.controllers[controller_path]
         except KeyError:
-            raise Exception('No controller with path {0}'.format(controller_path))
+            raise Exception(
+                'No controller with path {0}'.format(controller_path))
 
     def _find_responder(self, controller, method_path):
         try:
             method = getattr(controller, method_path)
         except AttributeError:
-            raise Exception('Method: {} in controller: {} not implemented'.format(
-                method_path,
-                str(controller)
-            ))
+            raise Exception(
+                'Method: {} in controller: {} not implemented'.format(
+                    method_path, str(controller)))
         else:
             if callable(method):
                 return method

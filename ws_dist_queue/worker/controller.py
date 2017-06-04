@@ -8,10 +8,8 @@ from ws_dist_queue.worker.schema import WorkToBeDoneSchema
 
 class WorkerController:
     def __init__(
-            self, master_client: MasterClient,
-            loop, thread_pool: ThreadPoolExecutor
+            self, master_client: MasterClient, loop
     ):
-        self.thread_pool = thread_pool
         self.master_client = master_client
         self.loop = loop
         self.worker = None
@@ -37,24 +35,19 @@ class WorkerController:
             pass
         else:
             self.worker = Worker(work=message)
-            self.current_task = self.loop.run_in_executor(
-                self.thread_pool,
-                self.worker.do_work,
-            )
+            self.current_task = self.loop.run_in_executor(self.worker.do_work)
             self.current_task.add_done_callback(self._work_completed)
 
     def kill_work(self, message):
         if self.current_task:
-            future = self.loop.run_in_executor(
-                self.thread_pool,
-                self.worker.kill_work,
-            )
+            future = self.loop.run_in_executor(self.worker.kill_work)
             self.current_task.remove_done_callback(self._work_completed)
             future.add_done_callback(self._work_was_killed)
 
     def _work_was_killed(self, future):
         result = future.result()
         if result == 0:
+            self.current_task = None
             self.master_client.send(
                 action_name='work_is_done',
                 body={
@@ -62,7 +55,6 @@ class WorkerController:
                     'status': 'work_killed',
                 }
             )
-            self.current_task = None
             self.master_client.send(
                 action_name='worker_requests_work'
             )
@@ -81,6 +73,7 @@ class WorkerController:
             status = 'finished_with_success'
         else:
             status = 'finished_with_failure'
+        self.current_task = None
         self.master_client.send(
             action_name='work_is_done',
             body={
@@ -89,7 +82,6 @@ class WorkerController:
                 'output': result['output']
             }
         )
-        self.current_task = None
         self.master_client.send(
             action_name='worker_requests_work'
         )
@@ -97,8 +89,5 @@ class WorkerController:
     def clean_up(self):
         if self.current_task:
             self.current_task.remove_done_callback(self._work_completed)
-            self.loop.run_in_executor(
-                self.thread_pool,
-                self.worker.kill_work,
-            )
-            self.thread_pool.shutdown(wait=True)
+            self.loop.run_in_executor(self.worker.kill_work)
+            # self.thread_pool.shutdown(wait=True)

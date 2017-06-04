@@ -4,7 +4,7 @@ from configparser import ConfigParser
 import os
 
 from ws_dist_queue.lib.serializers import JsonSerializer, JsonDeserializer
-from ws_dist_queue.user.components.authorization import Credentials, Authorization
+from ws_dist_queue.user.components.authentication import Credentials, Authentication
 from ws_dist_queue.user.components.cookie_keeper import CookieKeeper
 from ws_dist_queue.user.components.factory import UserFactory
 from ws_dist_queue.user.components.protocol import UserProtocol
@@ -29,11 +29,14 @@ def credentials(c):
 
 
 def cookie_keeper(c):
-    return CookieKeeper(c('conf')['other']['secret_folder'])
+    return CookieKeeper(
+        secret_folder=c('conf')['other']['secret_folder'],
+        cookie_filename=c('conf')['other']['cookie_filename'],
+    )
 
 
-def authorization(c):
-    return Authorization(c('cookie_keeper'), os.getppid())
+def auth(c):
+    return Authentication(c('cookie_keeper'), os.getppid())
 
 
 def factory(c):
@@ -67,7 +70,7 @@ def register(c):
     c.add_service(deserializer)
     c.add_service(credentials)
     c.add_service(cookie_keeper)
-    c.add_service(authorization)
+    c.add_service(auth)
     c.add_service(factory)
     c.add_service(protocol)
     c.add_service(loop)

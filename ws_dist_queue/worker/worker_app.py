@@ -1,7 +1,5 @@
-import asyncio
 import logging
 import signal
-import ssl
 
 import functools
 from knot import Container
@@ -10,30 +8,21 @@ from ws_dist_queue.worker.dependencies.container import register
 
 
 def make_app(config_path):
-    logging.basicConfig(
-        level=logging.DEBUG,
-    )
-    c = Container(dict(
-        config_path=config_path,
-    ))
+    logging.basicConfig(level=logging.INFO,)
+    c = Container(dict(config_path=config_path))
     register(c)
-    return WorkerApp(
-        host=c('conf')['master']['host'],
-        port=c('conf')['master']['port'],
-        factory=c('factory'),
-        loop=c('loop'),
-        controller=c('worker_controller'),
-    )
+    return c('app')
 
 
 class WorkerApp:
 
-    def __init__(self, host, port, factory, loop, controller):
+    def __init__(self, host, port, factory, loop, controller, ssl_context):
         self.host = host
         self.port = port
         self.factory = factory
         self.loop = loop
         self.controller = controller
+        self.ssl_context = ssl_context
         self.register_signal_handlers()
 
     def run(self):
@@ -41,7 +30,7 @@ class WorkerApp:
             protocol_factory=self.factory,
             host=self.host,
             port=self.port,
-            ssl=ssl.SSLContext(protocol=ssl.PROTOCOL_TLSv1_2)
+            ssl=self.ssl_context
         )
         self.loop.run_until_complete(coro)
         self.loop.run_forever()
@@ -60,7 +49,5 @@ class WorkerApp:
 
 
 if __name__ == "__main__":
-    app = make_app(
-        config_path='conf/develop.ini'
-    )
+    app = make_app(config_path='conf/develop.ini')
     app.run()

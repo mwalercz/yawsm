@@ -48,7 +48,10 @@ class Worker:
     def _connect_as_user(self):
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect('localhost', username=self.work.username, password=self.work.password)
+        ssh.connect(
+            'localhost',
+            username=self.work.username,
+            password=self.work.password)
         return ssh
 
     def _exec_command(self, chan, command):
@@ -63,7 +66,6 @@ class Worker:
         }
 
     def _exec_kill_command(self, chan, command):
-        print(command)
         chan.exec_command(command)
         status = chan.recv_exit_status()
         return status

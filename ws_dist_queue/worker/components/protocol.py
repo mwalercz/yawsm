@@ -12,7 +12,7 @@ class WorkerProtocol(WebSocketClientProtocol):
     router = NotImplemented
 
     def onConnect(self, response):
-        log.info('Connected to master: %', self.peer)
+        log.info('Connected to master: %s', self.peer)
         self.master_client.master = self
 
     def onOpen(self):
@@ -23,12 +23,8 @@ class WorkerProtocol(WebSocketClientProtocol):
     def onMessage(self, payload, isBinary):
         message = self.deserializer.deserialize(payload)
         log.info(message)
-        controller, responder = self.router.get_responder(message['path'])
+        controller, responder = self.router.find_responder(message['path'])
         responder(message)
 
     def onClose(self, wasClean, code, reason):
-        log.info('Reason: {}, code: {}'.format(reason, code))
-
-
-
-
+        log.info('Reason: %s, code: %s', reason, code)

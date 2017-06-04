@@ -14,7 +14,7 @@ class UserProtocol(WebSocketClientProtocol):
     def onConnect(self, response):
         cookie = response.headers.get('x-cookie')
         if cookie:
-            self.cookie_keeper.save(cookie)
+            self.cookie_keeper.save_new(cookie)
 
     def onOpen(self):
         message = {

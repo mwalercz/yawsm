@@ -1,0 +1,44 @@
+from ws_dist_queue.master.domain.workers.usecases.work_is_done import WorkIsDoneUsecase
+from ws_dist_queue.master.domain.workers.usecases.worker_connected import WorkerConnectedUsecase
+from ws_dist_queue.master.domain.workers.usecases.worker_disconnected import WorkerDisconnectedUsecase
+from ws_dist_queue.master.domain.workers.usecases.worker_requests_work import WorkerRequestsWorkUsecase
+
+
+def work_is_done_usecase(c):
+    return WorkIsDoneUsecase(
+        workers_repo=c('repositories.workers'),
+        event_saver=c('repositories.work.event_saver')
+    )
+
+
+def worker_connected_usecase(c):
+    return WorkerConnectedUsecase(
+        workers_repo=c('repositories.workers'),
+        workers_notifier=c('workers_notifier')
+    )
+
+
+def worker_disconnected_usecase(c):
+    return WorkerDisconnectedUsecase(
+        workers_repo=c('repositories.workers'),
+        work_queue=c('work_queue'),
+        event_saver=c('repositories.work.event_saver'),
+        workers_notifier=c('workers_notifier'),
+    )
+
+
+def worker_requests_work_usecase(c):
+    return WorkerRequestsWorkUsecase(
+        work_queue=c('work_queue'),
+        workers_repo=c('repositories.workers'),
+        worker_client=c('clients.worker'),
+        event_saver=c('repositories.work.event_saver')
+    )
+
+
+def register(c):
+    c.add_service(work_is_done_usecase, 'usecases.worker.work_is_done')
+    c.add_service(worker_connected_usecase, 'usecases.worker.worker_connected')
+    c.add_service(worker_disconnected_usecase, 'usecases.worker.worker_disconnected')
+    c.add_service(worker_requests_work_usecase, 'usecases.worker.worker_requests_work')
+

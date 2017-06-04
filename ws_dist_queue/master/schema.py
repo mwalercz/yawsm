@@ -2,7 +2,7 @@ from schematics.models import Model
 from schematics.types import StringType, IntType
 from schematics.types.compound import DictType
 
-from ws_dist_queue.master.models.work import ALL_WORK_STATUSES
+from ws_dist_queue.master.infrastructure.db.work import ALL_WORK_STATUSES
 
 
 class WorkIsDoneSchema(Model):
@@ -22,4 +22,3 @@ class NewWorkSchema(Model):
 
 class WorkIdSchema(Model):
     work_id = IntType(required=True)
-

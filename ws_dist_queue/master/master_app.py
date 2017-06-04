@@ -6,14 +6,14 @@ from ws_dist_queue.master.dependencies.container import register
 
 def make_app(config_path):
     logging.basicConfig(
-        level=logging.DEBUG,
+        level=logging.INFO,
     )
     c = Container(dict(
         config_path=config_path,
     ))
     register(c)
 
-    c('router').register(path='user', controller=c('user_controller'))
+    c('router').register(path='work', controller=c('user_controller'))
     c('router').register(path='worker', controller=c('worker_controller'))
 
     return MasterApp(

@@ -47,10 +47,11 @@ class UserApp:
         self.loop.run_until_complete(coro)
         self.loop.run_forever()
 
+
 if __name__ == '__main__':
     app = make_app('conf/develop.ini', 'mal', 'matrix')
     app.send_and_wait(
-        path='user/new_work',
+        path='work/new_work',
         body={
             'command': 'ls',
             'cwd': 'haha',
