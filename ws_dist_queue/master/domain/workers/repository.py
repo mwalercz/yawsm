@@ -2,8 +2,8 @@ from ws_dist_queue.master.domain.exceptions import WorkerNotFound
 
 
 class WorkersRepository:
-    def __init__(self, workers: dict):
-        self.workers = workers
+    def __init__(self):
+        self.workers = {}
 
     def put(self, worker):
         self.workers[worker.worker_id] = worker
@@ -30,6 +30,5 @@ class WorkersRepository:
         except KeyError:
             raise WorkerNotFound(work_id=work_id)
 
-    @property
-    def free_workers(self):
-        return [w for w in self.workers.values() if w.current_work is None]
+    def all(self):
+        return [w for w in self.workers.values()]

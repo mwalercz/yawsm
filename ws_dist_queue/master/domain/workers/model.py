@@ -11,7 +11,6 @@ class Worker:
         self.worker_ref = worker_ref
         self.current_work = None
 
-    @property
     def has_work(self):
         return bool(self.current_work)
 

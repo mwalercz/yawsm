@@ -29,11 +29,11 @@ class WorkerRequestsWorkUsecase:
             action_name='work_to_be_done',
             body=work,
         )
-        await self._update_work(work, worker_id)
+        await self._update_work(work.work_id, worker_id)
 
-    async def _update_work(self, work, worker_id):
+    async def _update_work(self, work_id, worker_id):
         event = WorkEvent(
-            work_id=work.work_id,
+            work_id=work_id,
             event_type='work_assigned',
             work_status=WorkStatus.processing.name,
             context={'worker_id': worker_id}

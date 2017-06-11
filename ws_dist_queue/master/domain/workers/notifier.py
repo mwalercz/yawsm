@@ -10,7 +10,7 @@ class WorkersNotifier:
     def notify(self):
         if self.work_queue.empty:
             return
-        best_workers = self.picker.pick_best(self.workers_repo.free_workers)
+        best_workers = self.picker.pick_best(self.workers_repo.all())
         for worker in best_workers:
             self.worker_client.send(
                 recipient=worker.worker_ref,

@@ -4,8 +4,8 @@ from ws_dist_queue.master.domain.exceptions import WorkNotFound
 
 
 class WorkQueue:
-    def __init__(self, work_queue: collections.OrderedDict):
-        self.queue = work_queue
+    def __init__(self, work_queue: collections.OrderedDict=None):
+        self.queue = work_queue or collections.OrderedDict()
 
     def put(self, work):
         self.queue[work.work_id] = work

@@ -1,5 +1,3 @@
-from ws_dist_queue.master.models.domain.work import Work
-
 from ws_dist_queue.worker.components.worker import Worker
 
 

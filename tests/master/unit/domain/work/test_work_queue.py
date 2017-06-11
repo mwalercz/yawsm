@@ -44,8 +44,8 @@ class TestWorkQueue:
     def test_when_two_elements_added_first_they_should_be_popped_in_fifo(
             self, fixt_work_queue, fixt_command_data, fixt_credentials
     ):
-        work_1 = Work.new(fixt_command_data, fixt_credentials)
-        work_2 = Work.new(fixt_command_data, fixt_credentials)
+        work_1 = Work(1, fixt_command_data, fixt_credentials)
+        work_2 = Work(2, fixt_command_data, fixt_credentials)
 
         fixt_work_queue.put(work_1)
         fixt_work_queue.put(work_2)

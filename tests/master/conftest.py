@@ -1,5 +1,7 @@
 from configparser import ConfigParser
+from logging.config import dictConfig, fileConfig
 
+import asyncio
 import pytest
 from peewee_async import Manager
 
@@ -14,6 +16,7 @@ from ws_dist_queue.master.infrastructure import db
 def fixt_conf():
     conf = ConfigParser()
     conf.read(MASTER_TESTING_CONFIG)
+    # fileConfig(MASTER_TESTING_CONFIG)
     return conf
 
 
@@ -26,16 +29,24 @@ def fixt_db(fixt_conf):
         'host': 'localhost',
     }
     database.init(**conf)
-    database.set_autocommit(False)
     db.work.Work.create_table(True)
     db.work.WorkEvent.create_table(True)
+    database.set_autocommit(False)
     return database
 
 
-@pytest.yield_fixture
-async def fixt_objects(fixt_db, event_loop):
+@pytest.yield_fixture(scope='session')
+def event_loop(request):
+    """Create an instance of the default event loop for each test case."""
+    loop = asyncio.get_event_loop_policy().new_event_loop()
+    yield loop
+    loop.close()
+
+
+@pytest.fixture
+def fixt_objects(fixt_db, event_loop):
     objects = Manager(database=fixt_db, loop=event_loop)
-    yield objects
+    return objects
 
 
 @pytest.fixture

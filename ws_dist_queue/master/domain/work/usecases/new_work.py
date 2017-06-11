@@ -5,6 +5,6 @@ class NewWorkUsecase:
         self.work_repo = work_repo
 
     async def perform(self, work):
+        await self.work_repo.save_new(work)
         self.work_queue.put(work)
         self.workers_notifier.notify()
-        await self.work_repo.save_new(work)

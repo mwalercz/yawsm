@@ -11,7 +11,7 @@ class Work:
     @classmethod
     def new(cls, command_data, credentials):
         return cls(
-            work_id=uuid.uuid4(),
+            work_id=None,
             command_data=command_data,
             credentials=credentials,
         )
