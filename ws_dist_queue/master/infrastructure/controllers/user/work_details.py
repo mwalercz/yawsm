@@ -1,9 +1,9 @@
-from ws_dist_queue.master.domain.exceptions import WorkerNotFound
+from ws_dist_queue.master.domain.exceptions import WorkNotFound
 from ws_dist_queue.master.infrastructure.validation import validate
 from ws_dist_queue.master.schema import WorkIdSchema
 
 
-class KillWorkController:
+class WorkDetailsController:
     def __init__(self, user_auth, usecase, user_client):
         self.user_auth = user_auth
         self.usecase = usecase
@@ -11,16 +11,12 @@ class KillWorkController:
 
     @validate(schema=WorkIdSchema)
     async def handle(self, req):
-        work_id = req.validated.work_id
         credentials = self.user_auth.get_credentials(req.sender.peer)
+        work_id = req.validated.work_id
         try:
-            result = await self.usecase.perform(
-                work_id, credentials.username
-            )
-        except WorkerNotFound:
-            result = {
-                'status': 'work_found_in_db_but_not_in_system'
-            }
+            result = await self.usecase.perform(work_id, credentials.username)
+        except WorkNotFound as exc:
+            result = {'status': 'work_with_given_work_id_and_username_not_found'}
         self.user_client.send(
             recipient=req.sender,
             message=result,

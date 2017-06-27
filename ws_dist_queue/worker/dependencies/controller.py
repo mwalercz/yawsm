@@ -1,5 +1,3 @@
-from concurrent.futures import ThreadPoolExecutor
-
 from ws_dist_queue.worker.controller import WorkerController
 
 

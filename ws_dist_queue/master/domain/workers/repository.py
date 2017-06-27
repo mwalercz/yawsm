@@ -27,8 +27,8 @@ class WorkersRepository:
         try:
             return [w for w in self.workers.values()
                     if w.current_work is not None and w.current_work.work_id == work_id][0]
-        except KeyError:
-            raise WorkerNotFound(work_id=work_id)
+        except IndexError:
+            raise WorkerNotFound()
 
     def all(self):
         return [w for w in self.workers.values()]

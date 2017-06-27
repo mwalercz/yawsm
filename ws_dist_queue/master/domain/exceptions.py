@@ -3,7 +3,9 @@ class WorkerNotFound(Exception):
 
 
 class WorkNotFound(Exception):
-    pass
+    def __init__(self, work_id=None, username=None):
+        self.work_id = work_id
+        self.username = username
 
 
 class InvalidArgumentException(Exception):

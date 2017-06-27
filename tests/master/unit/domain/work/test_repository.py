@@ -1,6 +1,7 @@
 import logging
 import pytest
 
+from ws_dist_queue.master.domain.exceptions import WorkNotFound
 from ws_dist_queue.master.domain.work.model import WorkEvent, WorkStatus
 from ws_dist_queue.master.domain.work.repository import WorkSaver, WorkFinder, WorkEventSaver
 from ws_dist_queue.master.infrastructure.db.work import Work
@@ -29,7 +30,9 @@ class TestWorkSaverAndFinder:
             self, fixt_work_saver, fixt_work, fixt_finder,
     ):
         work_id = await fixt_work_saver.save_new(fixt_work)
-        work_found = await fixt_finder.find_by_work_id_with_events(work_id)
+        work_found = await fixt_finder.find_by_work_id_and_username_with_events(
+            work_id, fixt_work.credentials.username
+        )
 
         assert work_found.work_id == work_id
         assert work_found.status == 'new'
@@ -59,7 +62,9 @@ class TestWorkSaverAndFinder:
         await fixt_event_saver.save_event(event_1)
         await fixt_event_saver.save_event(event_2)
 
-        work_found = await fixt_finder.find_by_work_id_with_events(work_id)
+        work_found = await fixt_finder.find_by_work_id_and_username_with_events(
+            work_id, fixt_work.credentials.username
+        )
 
         assert work_found.status == 'finished_with_failure'
         assert len(work_found.events) == 3
@@ -72,15 +77,22 @@ class TestWorkSaverAndFinder:
     async def test_when_no_results_find_by_work_id_should_raise_error(
             self, fixt_finder
     ):
-        with pytest.raises(Work.DoesNotExist):
-            await fixt_finder.find_by_work_id_with_events(work_id=9999999)
+        with pytest.raises(WorkNotFound):
+            await fixt_finder.find_by_work_id_and_username_with_events(
+                work_id=9999999,
+                username='not-exist'
+            )
 
     async def test_when_no_results_find_by_work_id_and_username_should_raise(
             self, fixt_finder
     ):
-        with pytest.raises(Work.DoesNotExist):
+        with pytest.raises(WorkNotFound) as exc:
             await fixt_finder.find_by_work_id_and_username(
-                work_id=9999999, username='does-not-exist')
+                work_id=9999999, username='does-not-exist'
+            )
+
+        assert exc.value.work_id == 9999999
+        assert exc.value.username == 'does-not-exist'
 
     async def test_when_no_results_find_by_username_should_return_empty_list(
             self, fixt_finder

@@ -1,6 +1,7 @@
 from typing import List
 
 from ws_dist_queue.master import domain
+from ws_dist_queue.master.domain.exceptions import WorkNotFound
 from ws_dist_queue.master.domain.work.model import WorkStatus
 from ws_dist_queue.master.infrastructure.db.work import Work, WorkEvent
 
@@ -53,30 +54,38 @@ class WorkFinder:
         self.objects = objects
 
     async def find_by_work_id_and_username(
-            self, work_id, username) -> List[Work]:
-        return await self.objects.get(
-            Work.select().where(
-                Work.work_id == work_id,
-                Work.username == username,
-            )
-        )
+            self, work_id, username
+    ) -> List[Work]:
+        query = Work.select().where(
+            Work.work_id == work_id,
+            Work.username == username,
+        ).limit(1)
+
+        result = await self.objects.execute(query)
+        try:
+            return list(result)[0]
+        except IndexError:
+            raise WorkNotFound(work_id=work_id, username=username)
+
+    async def find_by_work_id_and_username_with_events(
+            self, work_id, username
+    ) -> Work:
+        query = Work.select(Work, WorkEvent).join(
+            WorkEvent
+        ).where(
+            Work.work_id == work_id,
+            Work.username == username,
+        ).limit(1)
+
+        result = await self.objects.execute(query)
+        try:
+            return list(result)[0]
+        except IndexError:
+            raise WorkNotFound(work_id=work_id, username=username)
 
     async def find_by_username(self, username) -> List[Work]:
         query = Work.select().where(
             Work.username == username
-        ).order_by(
-            Work.created_at
         )
         work_list = await self.objects.execute(query)
         return work_list or []
-
-    async def find_by_work_id_with_events(self, work_id) -> Work:
-        return await self.objects.get(
-            Work.select().join(
-                WorkEvent
-            ).where(
-                Work.work_id == work_id
-            ).order_by(
-                WorkEvent.created_at.asc()
-            )
-        )

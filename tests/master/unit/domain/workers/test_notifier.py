@@ -1,5 +1,4 @@
-from unittest.mock import sentinel, call
-
+from tests.master.unit.domain.utils import assert_work_is_ready_sent_to_2_workers
 from ws_dist_queue.master.domain.work.work_queue import WorkQueue
 from ws_dist_queue.master.domain.workers.repository import WorkersRepository
 
@@ -10,12 +9,7 @@ class TestNotifier:
     ):
         notifier.notify()
 
-        mock_worker_client.send.assert_has_calls([
-            call(recipient=sentinel.worker_ref_1,
-                 action_name='work_is_ready'),
-            call(recipient=sentinel.worker_ref_2,
-                 action_name='work_is_ready')
-        ])
+        assert_work_is_ready_sent_to_2_workers(mock_worker_client)
 
     def test_when_queue_is_empty_no_message_should_be_sent(
             self, notifier, mock_worker_client

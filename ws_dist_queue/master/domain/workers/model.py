@@ -6,10 +6,10 @@ log = logging.getLogger(__name__)
 
 
 class Worker:
-    def __init__(self, worker_id, worker_ref):
+    def __init__(self, worker_id, worker_ref, current_work=None):
         self.worker_id = worker_id
         self.worker_ref = worker_ref
-        self.current_work = None
+        self.current_work = current_work
 
     def has_work(self):
         return bool(self.current_work)

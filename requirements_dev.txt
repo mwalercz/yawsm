@@ -1,6 +1,9 @@
 pytest
 pytest-asyncio==0.6.0
 pytest-logging
+asynctest
+python-dateutil==2.6.0
+freezegun
 pytest-runner==2.7.1
 flake8==3.3.0
 pylint

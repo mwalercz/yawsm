@@ -1,7 +1,7 @@
 from ws_dist_queue.master.infrastructure.auth.base import Role
 
 
-def register_routes(r, c):
+def register_routing(r, c):
     r.register('kill_work', c('controllers.user.kill_work'), Role.user)
     r.register('list_work', c('controllers.user.list_work'), Role.user)
     r.register('new_work', c('controllers.user.new_work'), Role.user)

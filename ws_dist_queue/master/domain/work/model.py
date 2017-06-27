@@ -8,6 +8,9 @@ class Work:
         self.command_data = command_data
         self.credentials = credentials
 
+    def set_id(self, work_id):
+        self.work_id = work_id
+
     @classmethod
     def new(cls, command_data, credentials):
         return cls(

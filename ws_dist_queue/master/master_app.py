@@ -1,7 +1,6 @@
 import logging
 
 from knot import Container
-from ws_dist_queue.master.dependencies.container import register
 
 
 def make_app(config_path):

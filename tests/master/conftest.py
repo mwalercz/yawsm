@@ -1,12 +1,14 @@
 from configparser import ConfigParser
-from logging.config import dictConfig, fileConfig
 
 import asyncio
+from unittest.mock import sentinel
+
 import pytest
 from peewee_async import Manager
 
 from definitions import MASTER_TESTING_CONFIG
 from ws_dist_queue.master.domain.work.model import Work, CommandData
+from ws_dist_queue.master.domain.workers.model import Worker
 from ws_dist_queue.master.infrastructure.auth.user import Credentials
 from ws_dist_queue.master.infrastructure.db.work import database
 from ws_dist_queue.master.infrastructure import db
@@ -37,7 +39,6 @@ def fixt_db(fixt_conf):
 
 @pytest.yield_fixture(scope='session')
 def event_loop(request):
-    """Create an instance of the default event loop for each test case."""
     loop = asyncio.get_event_loop_policy().new_event_loop()
     yield loop
     loop.close()
@@ -68,4 +69,17 @@ def fixt_credentials():
     return Credentials(
         username='test-user',
         password='test-pwd'
+    )
+
+
+@pytest.fixture
+def fixt_worker_id():
+    return '1.27.11.1:8181'
+
+
+@pytest.fixture
+def fixt_worker(fixt_worker_id):
+    return Worker(
+        worker_id=fixt_worker_id,
+        worker_ref=sentinel.worker_ref,
     )

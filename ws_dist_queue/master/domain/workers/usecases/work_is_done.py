@@ -8,7 +8,7 @@ from ws_dist_queue.master.domain.workers.repository import WorkersRepository
 log = logging.getLogger(__name__)
 
 
-class WorkIsDoneData:
+class WorkIsDoneDto:
     def __init__(self, worker_id, work_id, status, output=None):
         self.worker_id = worker_id
         self.work_id = work_id
@@ -21,24 +21,24 @@ class WorkIsDoneUsecase:
         self.workers_repo = workers_repo
         self.event_saver = event_saver
 
-    async def perform(self, data: WorkIsDoneData):
+    async def perform(self, dto: WorkIsDoneDto):
         try:
-            worker = self.workers_repo.get(data.worker_id)
-            worker.work_finished(data.work_id)
+            worker = self.workers_repo.get(dto.worker_id)
+            worker.work_finished(dto.work_id)
         except WorkerNotFound:
             log.warning(
                 'Worker: %s not found in repository, '
                 'but he finished work: %s with status: %s',
-                data.worker_id, data.work_id, data.status
+                dto.worker_id, dto.work_id, dto.status
             )
         finally:
             event = WorkEvent(
-                work_id=data.work_id,
+                work_id=dto.work_id,
                 event_type='work_finished',
-                work_status=data.status,
+                work_status=dto.status,
                 context={
-                    'worker_id': data.worker_id,
-                    'output': data.output,
+                    'worker_id': dto.worker_id,
+                    'output': dto.output,
                 }
             )
             await self.event_saver.save_event(event)

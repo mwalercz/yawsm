@@ -50,7 +50,7 @@ class MasterProtocol(WebSocketServerProtocol):
     def onMessage(self, payload, isBinary):
         try:
             message = self.deserializer.deserialize(payload)
-        except BaseException:
+        except Exception:
             self.sendClose(code=2404, reason='Message is not in json format')
             return
         log.info('New message: %s from: %s', message, self.peer)
