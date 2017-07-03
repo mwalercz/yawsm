@@ -12,6 +12,7 @@ class ListWorkUsecase:
         return {
             'work_id': work.work_id,
             'command': work.command,
+            'status': work.status,
             'cwd': work.cwd,
             'environment': work.env,
             'output': work.output,

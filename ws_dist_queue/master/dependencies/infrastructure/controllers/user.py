@@ -8,7 +8,6 @@ def kill_work_controller(c):
     return KillWorkController(
         user_auth=c('user_auth'),
         usecase=c('usecases.user.kill_work'),
-        user_client=c('user_client'),
     )
 
 
@@ -16,7 +15,6 @@ def list_work_controller(c):
     return ListWorkController(
         user_auth=c('user_auth'),
         usecase=c('usecases.user.list_work'),
-        user_client=c('user_client')
     )
 
 
@@ -24,7 +22,6 @@ def new_work_controller(c):
     return NewWorkController(
         user_auth=c('user_auth'),
         usecase=c('usecases.user.new_work'),
-        user_client=c('user_client'),
     )
 
 
@@ -32,7 +29,6 @@ def work_details_controller(c):
     return WorkDetailsController(
         user_auth=c('user_auth'),
         usecase=c('usecases.user.work_details'),
-        user_client=c('user_client'),
     )
 
 

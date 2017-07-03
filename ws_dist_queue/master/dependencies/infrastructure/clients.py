@@ -1,8 +1,8 @@
-from ws_dist_queue.master.infrastructure.clients import UserClient, WorkerClient
+from ws_dist_queue.master.infrastructure.clients import ResponseClient, WorkerClient
 
 
-def user_client(c):
-    return UserClient(c('serializer'))
+def response_client(c):
+    return ResponseClient(c('serializer'))
 
 
 def worker_client(c):
@@ -10,5 +10,5 @@ def worker_client(c):
 
 
 def register(c):
-    c.add_service(user_client)
+    c.add_service(response_client)
     c.add_service(worker_client)

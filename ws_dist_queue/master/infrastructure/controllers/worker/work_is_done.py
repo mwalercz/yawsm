@@ -9,10 +9,10 @@ class WorkIsDoneController:
 
     @validate(schema=WorkIsDoneSchema)
     async def handle(self, req):
-        data = WorkIsDoneDto(
-            worker_id=req.sender.peer,
+        dto = WorkIsDoneDto(
+            worker_id=req.peer,
             work_id=req.validated.work_id,
             status=req.validated.status,
             output=req.validated.output,
         )
-        await self.usecase.perform(data)
+        await self.usecase.perform(dto)

@@ -4,20 +4,22 @@ from ws_dist_queue.master.schema import WorkIdSchema
 
 
 class WorkDetailsController:
-    def __init__(self, user_auth, usecase, user_client):
+    def __init__(self, user_auth, usecase):
         self.user_auth = user_auth
         self.usecase = usecase
-        self.user_client = user_client
 
     @validate(schema=WorkIdSchema)
     async def handle(self, req):
-        credentials = self.user_auth.get_credentials(req.sender.peer)
-        work_id = req.validated.work_id
         try:
-            result = await self.usecase.perform(work_id, credentials.username)
+            result = await self.usecase.perform(
+                work_id=req.validated.work_id,
+                username=self.user_auth.get_username(req.peer)
+            )
+            return req.get_response(
+                body=result
+            )
         except WorkNotFound as exc:
-            result = {'status': 'work_with_given_work_id_and_username_not_found'}
-        self.user_client.send(
-            recipient=req.sender,
-            message=result,
-        )
+            return req.get_response(
+                status_code=404,
+                body={'error': 'work_with_given_work_id_and_username_not_found'}
+            )

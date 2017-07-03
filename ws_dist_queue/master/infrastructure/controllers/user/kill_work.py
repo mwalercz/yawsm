@@ -1,27 +1,27 @@
 from ws_dist_queue.master.domain.exceptions import WorkerNotFound
+from ws_dist_queue.master.infrastructure.request import Response
 from ws_dist_queue.master.infrastructure.validation import validate
 from ws_dist_queue.master.schema import WorkIdSchema
 
 
 class KillWorkController:
-    def __init__(self, user_auth, usecase, user_client):
+    def __init__(self, user_auth, usecase):
         self.user_auth = user_auth
         self.usecase = usecase
-        self.user_client = user_client
 
     @validate(schema=WorkIdSchema)
     async def handle(self, req):
-        work_id = req.validated.work_id
-        credentials = self.user_auth.get_credentials(req.sender.peer)
         try:
             result = await self.usecase.perform(
-                work_id, credentials.username
+                work_id=req.validated.work_id,
+                username=self.user_auth.get_username(req.peer)
+            )
+            return req.get_response(
+                body=result
             )
         except WorkerNotFound:
-            result = {
-                'status': 'work_found_in_db_but_not_in_system'
-            }
-        self.user_client.send(
-            recipient=req.sender,
-            message=result,
-        )
+            response = req.get_response(
+                status_code=404,
+                body={'error': 'work_found_in_db_but_not_in_memory'}
+            )
+            return response

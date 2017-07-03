@@ -7,7 +7,7 @@ class WorkerConnectedController:
 
     def handle(self, req):
         worker = Worker(
-            worker_id=req.sender.peer,
+            worker_id=req.peer,
             worker_ref=req.sender,
         )
         self.usecase.perform(worker)

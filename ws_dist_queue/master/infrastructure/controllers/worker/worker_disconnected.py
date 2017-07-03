@@ -2,5 +2,5 @@ class WorkerDisconnectedController:
     def __init__(self, usecase):
         self.usecase = usecase
 
-    def handle(self, req):
-        self.usecase.perform(worker_id=req.sender.peer)
+    async def handle(self, req):
+        await self.usecase.perform(worker_id=req.peer)
