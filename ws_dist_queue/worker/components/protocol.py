@@ -27,4 +27,4 @@ class WorkerProtocol(WebSocketClientProtocol):
         responder(message)
 
     def onClose(self, wasClean, code, reason):
-        log.info('Reason: %s, code: %s', reason, code)
+        log.info('Reason: %s, status_code: %s', reason, code)

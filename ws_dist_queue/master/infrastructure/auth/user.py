@@ -82,6 +82,9 @@ class UserAuthenticationService:
     def get_credentials(self, peer):
         return self.get_session(peer).credentials
 
+    def get_username(self, peer):
+        return self.get_credentials(peer).username
+
     def _create_session_or_raise(self, username, password, parent_pid, peer):
         self._login_or_raise(username, password)
         cookie = self._create_cookie()

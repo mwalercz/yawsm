@@ -22,6 +22,8 @@ class Router:
         })
 
     def get_route(self, path):
+        if path is None:
+            return PathDoesNotExist(None)
         try:
             return self.routes[path]
         except KeyError:

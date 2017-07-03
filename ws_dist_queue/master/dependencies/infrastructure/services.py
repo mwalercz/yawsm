@@ -4,7 +4,7 @@ from ws_dist_queue.lib.serializers import JsonDeserializer, JsonSerializer
 from ws_dist_queue.master.infrastructure.auth.base import AuthenticationService
 from ws_dist_queue.master.infrastructure.auth.user import UserAuthenticationService
 from ws_dist_queue.master.infrastructure.auth.worker import WorkerAuthenticationService
-from ws_dist_queue.master.infrastructure.task_scheduler import TaskScheduler
+from ws_dist_queue.master.infrastructure.executor import Executor
 
 
 def loop(c):
@@ -28,7 +28,7 @@ def auth(c):
 
 
 def task_scheduler(c):
-    return TaskScheduler()
+    return Executor()
 
 
 def deserializer(c):

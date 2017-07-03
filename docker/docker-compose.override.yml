@@ -10,7 +10,7 @@ services:
       - postgres
 
   tests:
-    command: python setup.py test
+    command: rm */**__pycache__ -rf && python setup.py test && rm */**__pycache__ -rf
     volumes:
       - ../:/usr/src/app
     links:

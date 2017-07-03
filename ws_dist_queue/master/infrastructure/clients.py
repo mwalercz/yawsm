@@ -1,22 +1,25 @@
-class UserClient:
+class ResponseClient:
     def __init__(self, serializer):
         self.serializer = serializer
 
-    def send(self, recipient, message):
+    def send(self, recipient, response):
+        message = response.to_message()
         serialized_message = self.serializer.serialize(message)
         recipient.sendMessage(serialized_message)
 
 
 class WorkerClient:
     def __init__(self, serializer):
-        self.path = 'worker'
         self.serializer = serializer
 
     def send(self, recipient, action_name, body=None):
-        path = self.path + '/' + action_name
+        path = action_name
         message = {
-            'path': path,
+            'headers': {
+                'path': path,
+            },
             'body': body,
         }
         serialized_message = self.serializer.serialize(message)
         recipient.sendMessage(serialized_message)
+

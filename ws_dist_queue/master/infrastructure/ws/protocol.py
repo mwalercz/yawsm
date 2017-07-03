@@ -5,21 +5,16 @@ from autobahn.websocket import ConnectionDeny
 
 from ws_dist_queue.master.exceptions import AuthenticationFailed, RoleNotFound
 from ws_dist_queue.master.infrastructure.auth.base import Role
+from ws_dist_queue.master.infrastructure.request import Request
 
 log = logging.getLogger(__name__)
-
-
-class Request:
-    def __init__(self, message, sender):
-        self.message = message
-        self.sender = sender
 
 
 class MasterProtocol(WebSocketServerProtocol):
     deserializer = NotImplemented
     auth = NotImplemented
     router = NotImplemented
-    task_scheduler = NotImplemented
+    supervisor = NotImplemented
 
     def onConnect(self, request):
         log.info('New connection is being established. %s', request)
@@ -44,10 +39,10 @@ class MasterProtocol(WebSocketServerProtocol):
             return
         controller, responder = self.router.find_responder(
             path=role + '/' + 'down')
-        self.task_scheduler.schedule_task(responder, self)
+        self.task_scheduler.execute(responder, self)
         self.auth.process_remove_worker(self.peer)
 
-    def onMessage(self, payload, isBinary):
+    async def onMessage(self, payload, isBinary):
         try:
             message = self.deserializer.deserialize(payload)
         except Exception:
@@ -60,5 +55,13 @@ class MasterProtocol(WebSocketServerProtocol):
                 code=2403,
                 reason='Not authorized to access this method')
             return
-        request = Request(sender=self, message=message)
-        self.task_scheduler.schedule_task(route.handler, request)
+        request = Request(
+            sender=self,
+            message=message,
+            peer=self.peer,
+            route=route,
+        )
+        await self.supervisor.handle_request(
+            route=route,
+            request=request
+        )

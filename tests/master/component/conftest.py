@@ -4,12 +4,12 @@ import pytest
 from knot import Container
 
 from ws_dist_queue.master.dependencies.app import register_domain
-from ws_dist_queue.master.infrastructure.clients import UserClient, WorkerClient
+from ws_dist_queue.master.infrastructure.clients import ResponseClient, WorkerClient
 from ws_dist_queue.master.infrastructure.db.work import Work, WorkEvent
 
 
 def register_mock_clients(c):
-    c.add_service(Mock(spec=UserClient), 'user_client')
+    c.add_service(Mock(spec=ResponseClient), 'response_client')
     c.add_service(Mock(spec=WorkerClient), 'worker_client')
 
 
@@ -61,6 +61,11 @@ async def work_is_done_usecase(container):
 @pytest.fixture
 async def work_details_usecase(container):
     return container('usecases.user.work_details')
+
+
+@pytest.fixture
+async def list_work_usecase(container):
+    return container('usecases.user.list_work')
 
 
 @pytest.fixture
