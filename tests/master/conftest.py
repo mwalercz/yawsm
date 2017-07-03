@@ -3,10 +3,11 @@ from configparser import ConfigParser
 import asyncio
 from unittest.mock import sentinel
 
+import os
 import pytest
 from peewee_async import Manager
 
-from definitions import MASTER_TESTING_CONFIG
+from definitions import ROOT_DIR
 from ws_dist_queue.master.domain.work.model import Work, CommandData
 from ws_dist_queue.master.domain.workers.model import Worker
 from ws_dist_queue.master.infrastructure.auth.user import Credentials
@@ -14,23 +15,30 @@ from ws_dist_queue.master.infrastructure.db.work import database
 from ws_dist_queue.master.infrastructure import db
 
 
+def pytest_addoption(parser):
+    parser.addoption(
+        "--settings", action="store",
+        default="develop.ini", help="config name"
+    )
+
+
 @pytest.fixture
-def fixt_conf():
+def conf_path(request):
+    conf_name = request.config.getoption("--settings")
+    conf_path = os.path.join(ROOT_DIR, 'ws_dist_queue/master/conf/', conf_name)
+    return conf_path
+
+
+@pytest.fixture
+def fixt_conf(conf_path):
     conf = ConfigParser()
-    conf.read(MASTER_TESTING_CONFIG)
-    # fileConfig(MASTER_TESTING_CONFIG)
+    conf.read(conf_path)
     return conf
 
 
 @pytest.fixture
 def fixt_db(fixt_conf):
-    conf = {
-        'database': 'test_dist_queue',
-        'user': 'test_dist_queue',
-        'password': 'test_dist_queue',
-        'host': 'localhost',
-    }
-    database.init(**conf)
+    database.init(**fixt_conf['db'])
     db.work.Work.create_table(True)
     db.work.WorkEvent.create_table(True)
     database.set_autocommit(False)

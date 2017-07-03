@@ -1,0 +1,11 @@
+version: '2'
+services:
+  postgres:
+    image: postgres:9.2-alpine
+    container_name: master-postgres-exposed
+    environment:
+      - POSTGRES_USER=master_dist_queue
+      - POSTGRES_PASSWORD=master_dist_queue
+      - POSTGRES_DB=master_dist_queue
+    ports:
+      - 5432:5432
