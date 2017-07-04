@@ -12,11 +12,23 @@ class Request:
             body=body,
         )
 
+    def to_dict(self):
+        return {
+            'message': str(self.message),
+            'sender': self.sender,
+            'peer': self.peer,
+            'route': str(self.route),
+        }
+
+    def __str__(self):
+        return '<Request: {}>'.format(str(self.to_dict()))
+
 
 STATUS_CODE_MAPPING = {
     200: 'OK',
     202: 'Accepted',
     400: 'Bad Arguments',
+    403: 'Forbidden',
     404: 'Not Found',
     500: 'Server Internal Error',
 }
@@ -28,7 +40,7 @@ class Response:
         self.body = body
         self.path = path
 
-    def to_message(self):
+    def to_dict(self):
         return {
             'headers': {
                 'path': self.path,
@@ -39,9 +51,9 @@ class Response:
         }
 
     def __str__(self):
-        return '<Response: {}>'.format(str(self.to_message()))
+        return '<Response: {}>'.format(str(self.to_dict()))
 
     def __eq__(self, other):
         if not isinstance(other, Response):
             return False
-        return self.to_message() == other.to_message()
+        return self.to_dict() == other.to_dict()

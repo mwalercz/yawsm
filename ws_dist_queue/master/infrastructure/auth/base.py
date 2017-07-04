@@ -42,7 +42,10 @@ class Role(Enum):
     worker = 2
     admin = 3
 
-    @staticmethod
-    def match(first, second):
-        return first == second
+
+ALL_ROLES = [e for e in Role]
+ADMIN_ROLES = [Role.admin]
+USER_ROLES = [Role.admin, Role.user]
+WORKER_ROLES = [Role.worker]
+
 
