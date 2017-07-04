@@ -4,7 +4,7 @@ from enum import Enum
 import paramiko
 from paramiko import SSHClient
 
-from ws_dist_queue.master.exceptions import AuthenticationFailed, RoleNotFound
+from ws_dist_queue.master.exceptions import AuthenticationFailed, RoleNotFound, SessionNotFound
 
 
 class AuthenticationService:
@@ -17,7 +17,7 @@ class AuthenticationService:
     def authenticate(self, headers, peer):
         for auth in self.auth_services:
             try:
-                return auth.authenticate(headers, peer)
+                auth.authenticate(headers, peer)
             except AuthenticationFailed:
                 continue
 
@@ -27,14 +27,23 @@ class AuthenticationService:
         for auth in self.auth_services:
             try:
                 return auth.get_role(peer)
-            except RoleNotFound:
+            except SessionNotFound:
                 continue
 
-        raise RoleNotFound('Peer was not found.')
+        raise SessionNotFound(peer)
+
+    def get_headers(self, peer):
+        for auth in self.auth_services:
+            try:
+                return auth.headers(peer)
+            except SessionNotFound:
+                continue
+
+        raise SessionNotFound(peer)
 
     def remove(self, peer):
         for auth in self.auth_services:
-            auth.process_remove_worker(peer)
+            auth.remove(peer)
 
 
 class Role(Enum):

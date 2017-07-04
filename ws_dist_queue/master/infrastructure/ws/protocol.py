@@ -3,7 +3,9 @@ import logging
 from autobahn.asyncio import WebSocketServerProtocol
 from autobahn.websocket import ConnectionDeny
 
-from ws_dist_queue.master.exceptions import AuthenticationFailed, RoleNotFound, ValidationError
+from ws_dist_queue.master.exceptions import (
+    AuthenticationFailed, RoleNotFound, ValidationError
+)
 from ws_dist_queue.master.infrastructure.message import IncomingMessage
 
 log = logging.getLogger(__name__)
@@ -17,7 +19,8 @@ class MasterProtocol(WebSocketServerProtocol):
     def onConnect(self, request):
         try:
             log.info('New connection is being established. %s', request)
-            headers = self.auth.authenticate(request.headers, self.peer) or {}
+            self.auth.authenticate(headers=request.headers, peer=self.peer)
+            headers = self.auth.get_headers(self.peer)
             log.info('New connection is opened and authenticated %s', request)
             return None, headers
         except AuthenticationFailed as e:
@@ -38,7 +41,7 @@ class MasterProtocol(WebSocketServerProtocol):
                     path='{role}_disconnected'.format(role=role),
                 ),
             )
-            self.auth.process_remove_worker(self.peer)
+            self.auth.remove(self.peer)
         except RoleNotFound as exc:
             log.exception(exc)
 
@@ -59,4 +62,3 @@ class MasterProtocol(WebSocketServerProtocol):
                 peer=self.peer,
                 message=message,
             )
-
