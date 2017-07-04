@@ -1,4 +1,3 @@
-from ws_dist_queue.master.infrastructure.request import Response
 
 
 class ListWorkController:
@@ -10,6 +9,4 @@ class ListWorkController:
         result = await self.usecase.perform(
             username=self.user_auth.get_username(req.peer)
         )
-        return req.get_response(
-            body=result,
-        )
+        return req.get_response(body=result)

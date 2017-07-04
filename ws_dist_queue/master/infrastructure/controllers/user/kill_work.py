@@ -16,12 +16,9 @@ class KillWorkController:
                 work_id=req.validated.work_id,
                 username=self.user_auth.get_username(req.peer)
             )
-            return req.get_response(
-                body=result
-            )
+            return req.get_response(body=result)
         except WorkerNotFound:
-            response = req.get_response(
+            return req.get_response(
                 status_code=404,
                 body={'error': 'work_found_in_db_but_not_in_memory'}
             )
-            return response

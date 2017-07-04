@@ -3,7 +3,7 @@ class ResponseClient:
         self.serializer = serializer
 
     def send(self, recipient, response):
-        message = response.to_message()
+        message = response.to_dict()
         serialized_message = self.serializer.serialize(message)
         recipient.sendMessage(serialized_message)
 
@@ -13,13 +13,9 @@ class WorkerClient:
         self.serializer = serializer
 
     def send(self, recipient, action_name, body=None):
-        path = action_name
         message = {
-            'headers': {
-                'path': path,
-            },
+            'path': action_name,
             'body': body,
         }
         serialized_message = self.serializer.serialize(message)
         recipient.sendMessage(serialized_message)
-

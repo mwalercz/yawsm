@@ -4,6 +4,7 @@ import pytest
 from schematics.exceptions import DataError
 
 from ws_dist_queue.master import exceptions
+from ws_dist_queue.master.infrastructure.message import IncomingMessage
 from ws_dist_queue.master.infrastructure.request import Request
 from ws_dist_queue.master.infrastructure.validation import validate
 from ws_dist_queue.master.schema import WorkIsDoneSchema
@@ -29,10 +30,10 @@ class TestValidate:
             'output': 'some output'
         }
         request = Request(
-            message={
-                'headers': {},
-                'body': data
-            },
+            message=IncomingMessage(
+                path='something',
+                body=data
+            ),
             sender=Mock(),
             peer=Mock(),
             route=Mock()
@@ -44,10 +45,10 @@ class TestValidate:
 
     async def test_input_does_not_match_schema_error_should_be_raised(self):
         request = Request(
-            message={
-                'headers': {},
-                'body': None
-            },
+            message=IncomingMessage(
+                path='lala',
+                body={},
+            ),
             sender=Mock(),
             peer=Mock(),
             route=Mock()
