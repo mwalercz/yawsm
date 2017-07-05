@@ -42,7 +42,7 @@ class TestRoute:
         )
         mock_auth.get_role.return_value = Role.worker
         peer = '123.123.123.1:1'
-        result = route.is_allowed_to_access(
+        result = route.can_be_accessed(
             peer, mock_auth
         )
 
@@ -59,7 +59,7 @@ class TestRoute:
         )
         mock_auth.get_role.return_value = Role.user
 
-        result = route.is_allowed_to_access(
+        result = route.can_be_accessed(
             '123.123.123.1:1', mock_auth
         )
 

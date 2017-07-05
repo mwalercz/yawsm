@@ -12,5 +12,5 @@ class AuthenticationFailed(Exception):
     pass
 
 
-class RoleNotFound(Exception):
+class SessionNotFound(Exception):
     pass
