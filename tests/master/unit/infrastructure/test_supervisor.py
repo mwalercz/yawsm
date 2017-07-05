@@ -1,15 +1,14 @@
 from unittest.mock import Mock
 
 import pytest
+from ws_dist_queue.master.infrastructure.services.clients import ResponseClient
+from ws_dist_queue.master.infrastructure.services.executor import Executor
+from ws_dist_queue.master.infrastructure.services.routing import Route, Router
+from ws_dist_queue.master.infrastructure.services.supervisor import Supervisor
 
 from ws_dist_queue.master.exceptions import AccessForbidden
-from ws_dist_queue.master.infrastructure.clients import ResponseClient
-from ws_dist_queue.master.infrastructure.executor import Executor
 from ws_dist_queue.master.infrastructure.message import IncomingMessage
-from ws_dist_queue.master.infrastructure.request import Response
-from ws_dist_queue.master.infrastructure.routing import Route, Router
-from ws_dist_queue.master.infrastructure.supervisor import Supervisor
-from ws_dist_queue.master.infrastructure.validation import validate
+from ws_dist_queue.master.infrastructure.services.request import Response, validate
 from ws_dist_queue.master.schema import WorkIdSchema
 
 pytestmark = pytest.mark.asyncio

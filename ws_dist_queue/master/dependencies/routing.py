@@ -1,5 +1,5 @@
 from ws_dist_queue.master.infrastructure.auth.base import ALL_ROLES, USER_ROLES, WORKER_ROLES
-from ws_dist_queue.master.infrastructure.routing import Route as _
+from ws_dist_queue.master.infrastructure.services.routing import Route as _
 
 
 def register_routing(r, c):

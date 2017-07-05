@@ -1,3 +1,8 @@
+from schematics.exceptions import DataError
+
+from ws_dist_queue.master import exceptions
+
+
 class Request:
     def __init__(self, message, sender, peer, route):
         self.message = message
@@ -57,3 +62,20 @@ class Response:
         if not isinstance(other, Response):
             return False
         return self.to_dict() == other.to_dict()
+
+
+def validate(schema):
+    def validate_decorator(func):
+        async def func_wrapper(self, req):
+            schema_instance = schema(req.message.body)
+            try:
+                schema_instance.validate()
+            except DataError as exc:
+                raise exceptions.ValidationError(
+                    data=exc.to_primitive()
+                )
+            else:
+                req.validated = schema_instance
+                return await func(self, req)
+        return func_wrapper
+    return validate_decorator

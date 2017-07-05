@@ -47,9 +47,7 @@ def register_domain(c):
     register_user_usecases(c)
 
 
-def register_ws(c):
-    register_clients(c)
-    register_ws_services(c)
+def register_controllers(c):
     register_user_controllers(c)
     register_worker_controllers(c)
     register_routing(
@@ -58,6 +56,12 @@ def register_ws(c):
     )
 
 
+def register_ws(c):
+    register_clients(c)
+    register_ws_services(c)
+
+
 def register_app(c):
     register_domain(c)
+    register_controllers(c)
     register_ws(c)

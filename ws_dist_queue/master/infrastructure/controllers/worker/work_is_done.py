@@ -1,5 +1,5 @@
 from ws_dist_queue.master.domain.workers.usecases.work_is_done import WorkIsDoneDto
-from ws_dist_queue.master.infrastructure.validation import validate
+from ws_dist_queue.master.infrastructure.services.request import validate
 from ws_dist_queue.master.schema import WorkIsDoneSchema
 
 

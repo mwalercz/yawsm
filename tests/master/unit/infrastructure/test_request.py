@@ -1,12 +1,10 @@
 from unittest.mock import Mock
 
 import pytest
-from schematics.exceptions import DataError
 
 from ws_dist_queue.master import exceptions
 from ws_dist_queue.master.infrastructure.message import IncomingMessage
-from ws_dist_queue.master.infrastructure.request import Request
-from ws_dist_queue.master.infrastructure.validation import validate
+from ws_dist_queue.master.infrastructure.services.request import Request, validate
 from ws_dist_queue.master.schema import WorkIsDoneSchema
 
 pytestmark = pytest.mark.asyncio

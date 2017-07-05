@@ -1,7 +1,7 @@
 import logging
 
 from ws_dist_queue.master.exceptions import ValidationError, AccessForbidden
-from ws_dist_queue.master.infrastructure.request import Request, Response
+from ws_dist_queue.master.infrastructure.services.request import Request, Response
 
 log = logging.getLogger(__name__)
 

@@ -1,4 +1,4 @@
-from ws_dist_queue.master.infrastructure.clients import ResponseClient, WorkerClient
+from ws_dist_queue.master.infrastructure.services.clients import ResponseClient, WorkerClient
 
 
 def response_client(c):
