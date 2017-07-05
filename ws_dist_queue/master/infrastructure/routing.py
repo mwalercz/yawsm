@@ -11,7 +11,7 @@ class Route:
     def handler(self):
         return self.controller.handle
 
-    def is_allowed_to_access(self, peer, auth_service):
+    def can_be_accessed(self, peer, auth_service):
         peer_role = auth_service.get_role(peer)
         return peer_role in self.allowed_roles
 
@@ -20,9 +20,9 @@ class Route:
             return False
         else:
             return (
-                self.path and
-                self.controller and
-                self.allowed_roles
+                self.path == other.path and
+                self.controller == other.controller and
+                self.allowed_roles == other.allowed_roles
             )
 
 
@@ -44,7 +44,7 @@ class Router:
     def get_available_paths(self, peer):
         return [
             path for path, route in self.routes.items()
-            if route.is_allowed_to_access(
+            if route.can_be_accessed(
                 peer=peer,
                 auth_service=self.auth,
             )
@@ -52,7 +52,7 @@ class Router:
 
     def get_route(self, path, peer):
         route = self.routes.get(path, self.default_route)
-        if not route.is_allowed_to_access(
+        if not route.can_be_accessed(
             peer=peer,
             auth_service=self.auth,
         ):

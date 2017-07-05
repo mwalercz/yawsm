@@ -1,10 +1,6 @@
-import time
 from enum import Enum
 
-import paramiko
-from paramiko import SSHClient
-
-from ws_dist_queue.master.exceptions import AuthenticationFailed, RoleNotFound, SessionNotFound
+from ws_dist_queue.master.exceptions import AuthenticationFailed, SessionNotFound
 
 
 class AuthenticationService:
@@ -14,10 +10,11 @@ class AuthenticationService:
     def register(self, auth_instance):
         self.auth_services.append(auth_instance)
 
-    def authenticate(self, headers, peer):
+    def authenticate(self, peer, headers):
         for auth in self.auth_services:
             try:
-                auth.authenticate(headers, peer)
+                auth.authenticate(peer, headers)
+                return
             except AuthenticationFailed:
                 continue
 
@@ -35,7 +32,7 @@ class AuthenticationService:
     def get_headers(self, peer):
         for auth in self.auth_services:
             try:
-                return auth.headers(peer)
+                return auth.get_headers(peer)
             except SessionNotFound:
                 continue
 
@@ -56,5 +53,3 @@ ALL_ROLES = [e for e in Role]
 ADMIN_ROLES = [Role.admin]
 USER_ROLES = [Role.admin, Role.user]
 WORKER_ROLES = [Role.worker]
-
-

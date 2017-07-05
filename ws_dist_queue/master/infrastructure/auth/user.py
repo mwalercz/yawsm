@@ -1,6 +1,6 @@
 import time
 
-from ws_dist_queue.master.exceptions import AuthenticationFailed, RoleNotFound, SessionNotFound
+from ws_dist_queue.master.exceptions import AuthenticationFailed, SessionNotFound
 from ws_dist_queue.master.infrastructure.auth.base import Role
 
 
@@ -81,7 +81,7 @@ class UserAuthenticationService:
         self.sessions = {}
         self.long_sessions = {}
 
-    def authenticate(self, headers, peer):
+    def authenticate(self, peer, headers):
         try:
             self._create_session_or_raise(
                 username=headers['username'],
