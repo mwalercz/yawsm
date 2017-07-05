@@ -1,7 +1,7 @@
 from ws_dist_queue.master.domain.work.model import CommandData
-from ws_dist_queue.master.infrastructure.validation import validate
-from ws_dist_queue.master.schema import NewWorkSchema
 from ws_dist_queue.master.domain.work.model import Work
+from ws_dist_queue.master.infrastructure.services.request import validate
+from ws_dist_queue.master.schema import NewWorkSchema
 
 
 class NewWorkController:

@@ -4,8 +4,8 @@ import pytest
 from knot import Container
 
 from ws_dist_queue.master.dependencies.app import register_domain
-from ws_dist_queue.master.infrastructure.clients import ResponseClient, WorkerClient
 from ws_dist_queue.master.infrastructure.db.work import Work, WorkEvent
+from ws_dist_queue.master.infrastructure.services.clients import ResponseClient, WorkerClient
 
 
 def register_mock_clients(c):

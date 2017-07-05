@@ -1,6 +1,5 @@
 from ws_dist_queue.master.domain.exceptions import WorkerNotFound
-from ws_dist_queue.master.infrastructure.request import Response
-from ws_dist_queue.master.infrastructure.validation import validate
+from ws_dist_queue.master.infrastructure.services.request import validate
 from ws_dist_queue.master.schema import WorkIdSchema
 
 

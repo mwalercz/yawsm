@@ -5,7 +5,7 @@ import pytest
 from ws_dist_queue.master.exceptions import AccessForbidden
 from ws_dist_queue.master.infrastructure.auth.base import USER_ROLES, AuthenticationService, Role, ALL_ROLES, \
     WORKER_ROLES
-from ws_dist_queue.master.infrastructure.routing import Route, Router
+from ws_dist_queue.master.infrastructure.services.routing import Route, Router
 
 
 @pytest.fixture

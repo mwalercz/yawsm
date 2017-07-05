@@ -7,7 +7,7 @@ from ws_dist_queue.master.domain.workers.model import Worker
 from ws_dist_queue.master.domain.workers.notifier import WorkersNotifier
 from ws_dist_queue.master.domain.workers.picker import FreeWorkersPicker
 from ws_dist_queue.master.domain.workers.repository import WorkersRepository
-from ws_dist_queue.master.infrastructure.clients import WorkerClient
+from ws_dist_queue.master.infrastructure.services.clients import WorkerClient
 
 
 @pytest.fixture

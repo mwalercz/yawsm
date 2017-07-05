@@ -1,20 +1,14 @@
 import ssl
 
-from ws_dist_queue.lib.router import Router
 from ws_dist_queue.master.infrastructure.ws.factory import MasterFactory
 from ws_dist_queue.master.infrastructure.ws.protocol import MasterProtocol
-
-
-def router(c):
-    return Router()
 
 
 def protocol(c):
     protocol = MasterProtocol
     protocol.auth = c('auth')
     protocol.deserializer = c('deserializer')
-    protocol.router = c('router')
-    protocol.task_scheduler = c('task_scheduler')
+    protocol.supervisor = c('supervisor')
     return protocol
 
 
@@ -39,7 +33,6 @@ def secure_context(c):
 
 
 def register(c):
-    c.add_service(router)
     c.add_service(protocol)
     c.add_service(factory)
     c.add_service(secure_context)

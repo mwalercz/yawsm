@@ -1,10 +1,10 @@
 import asyncio
 
+from ws_dist_queue.master.infrastructure.services.routing import Router
+from ws_dist_queue.master.infrastructure.services.supervisor import Supervisor
+
 from ws_dist_queue.lib.serializers import JsonDeserializer, JsonSerializer
-from ws_dist_queue.master.infrastructure.auth.base import AuthenticationService
-from ws_dist_queue.master.infrastructure.auth.user import UserAuthenticationService
-from ws_dist_queue.master.infrastructure.auth.worker import WorkerAuthenticationService
-from ws_dist_queue.master.infrastructure.executor import Executor
+from ws_dist_queue.master.infrastructure.services.executor import Executor
 
 
 def loop(c):
@@ -12,23 +12,16 @@ def loop(c):
     return loop
 
 
-def user_auth(c):
-    return UserAuthenticationService()
+def router(c):
+    return Router(auth=c('auth'))
 
 
-def worker_auth(c):
-    return WorkerAuthenticationService(c('conf')['worker']['api_key'])
-
-
-def auth(c):
-    auth = AuthenticationService()
-    auth.register(c('user_auth'))
-    auth.register(c('worker_auth'))
-    return auth
-
-
-def task_scheduler(c):
-    return Executor()
+def supervisor(c):
+    return Supervisor(
+        executor=Executor(),
+        response_client=c('response_client'),
+        router=c('router')
+    )
 
 
 def deserializer(c):
@@ -41,9 +34,7 @@ def serializer(c):
 
 def register(c):
     c.add_service(loop)
-    c.add_service(user_auth)
-    c.add_service(worker_auth)
-    c.add_service(auth)
-    c.add_service(task_scheduler)
+    c.add_service(router)
+    c.add_service(supervisor)
     c.add_service(deserializer)
     c.add_service(serializer)
