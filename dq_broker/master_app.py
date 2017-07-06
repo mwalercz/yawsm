@@ -6,10 +6,11 @@ from knot import Container
 from dq_broker.dependencies.app import register_app
 
 
-def make_app(config_path):
-    logging.config.fileConfig(config_path)
-    # logging.basicConfig(level=10)
-    # txaio.start_logging()
+def make_app(
+        config_path='conf/develop.ini',
+        logging_config_path='conf/logging/develop.ini'
+):
+    logging.config.fileConfig(logging_config_path)
     c = Container(dict(
         config_path=config_path,
     ))
@@ -52,5 +53,5 @@ class MasterApp:
             self.log.info('Master app closed...')
 
 if __name__ == '__main__':
-    app = make_app(config_path='conf/develop.ini')
+    app = make_app()
     app.run()

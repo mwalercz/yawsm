@@ -34,10 +34,9 @@ from dq_broker.dependencies.infrastructure.services import (
 from dq_broker.dependencies.infrastructure.ws import (
     register as register_ws_services
 )
-from dq_broker.infrastructure.auth.ssh import SSHService
-from dq_broker.infrastructure.loop_policy import StrictEventLoopPolicy
-
 from dq_broker.dependencies.routing import register_routing
+from dq_broker.infrastructure.auth.ssh import SSHService
+from dq_broker.lib.loop_policy import StrictEventLoopPolicy
 
 
 def conf(c):
