@@ -23,6 +23,23 @@ def pytest_addoption(parser):
 
 
 @pytest.fixture
+def user_headers():
+    return {
+        'username': 'some-user',
+        'password': 'some-pass',
+        'x-parent-pid': 'parent-pid',
+    }
+
+
+@pytest.fixture
+def cookie_headers():
+    return {
+        'x-cookie': 'some-cookie-1',
+        'x-parent-pid': 'parent-pid',
+    }
+
+
+@pytest.fixture
 def conf_path(request):
     conf_name = request.config.getoption("--settings")
     conf_path = os.path.join(ROOT_DIR, 'ws_dist_queue/master/conf/', conf_name)
@@ -45,7 +62,7 @@ def fixt_db(fixt_conf):
     return database
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture
 def event_loop(request):
     return asyncio.get_event_loop()
 

@@ -1,4 +1,4 @@
-from unittest.mock import Mock
+from unittest.mock import Mock, ANY
 
 import pytest
 from ws_dist_queue.master.infrastructure.services.clients import ResponseClient
@@ -115,6 +115,7 @@ class TestSupervisor:
             response=Response(
                 path=self.PATH,
                 status_code=500,
+                body=ANY,
             )
         )
 

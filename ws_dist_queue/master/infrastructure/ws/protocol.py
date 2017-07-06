@@ -6,6 +6,7 @@ from autobahn.websocket import ConnectionDeny
 from ws_dist_queue.master.exceptions import (
     AuthenticationFailed, ValidationError,
     SessionNotFound)
+from ws_dist_queue.master.infrastructure.auth.base import Role
 from ws_dist_queue.master.infrastructure.message import IncomingMessage
 
 log = logging.getLogger(__name__)
@@ -33,14 +34,15 @@ class MasterProtocol(WebSocketServerProtocol):
     async def onClose(self, wasClean, code, reason):
         try:
             log.info('Connection was closed. Reason: %s, peer: %s', reason, self.peer)
-            role = self.auth.get_role(self.peer).name
-            await self.supervisor.handle_message(
-                sender=self,
-                peer=self.peer,
-                message=IncomingMessage(
-                    path='{role}_disconnected'.format(role=role),
-                ),
-            )
+            if Role.worker == self.auth.get_role(self.peer):
+                await self.supervisor.handle_message(
+                    sender=self,
+                    peer=self.peer,
+                    message=IncomingMessage(
+                        path='worker_disconnected'
+                    ),
+                )
+
             self.auth.remove(self.peer)
         except SessionNotFound as exc:
             log.exception(exc)

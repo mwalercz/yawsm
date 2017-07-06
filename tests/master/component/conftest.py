@@ -3,7 +3,9 @@ from unittest.mock import Mock
 import pytest
 from knot import Container
 
-from ws_dist_queue.master.dependencies.app import register_domain, register_controllers
+from ws_dist_queue.master.dependencies.app import *
+from ws_dist_queue.master.dependencies.infrastructure.auth import user_auth, worker_auth, auth
+from ws_dist_queue.master.infrastructure.auth.ssh import SSHService
 from ws_dist_queue.master.infrastructure.db.work import Work, WorkEvent
 from ws_dist_queue.master.infrastructure.services.clients import ResponseClient, WorkerClient
 
@@ -13,24 +15,41 @@ def register_mock_clients(c):
     c.add_service(Mock(spec=WorkerClient), 'worker_client')
 
 
+def ssh(c):
+    ssh = Mock(spec=SSHService)
+    ssh.try_to_login.return_value = True
+    return ssh
+
+
 @pytest.fixture
-def container(conf_path):
+def container(conf_path, event_loop):
     container = Container(dict(
         config_path=conf_path
     ))
 
+    container.add_service(conf)
+    container.add_service(lambda c: event_loop, 'loop')
+
     register_mock_clients(container)
-    register_domain(container)
+    register_db_services(container)
+    register_domain_services(container)
+    register_infra_services(container)
+
+    register_usecases(container)
+
+    container.add_service(ssh)
+    register_auth(container)
+
     register_controllers(container)
 
     return container
 
 
 @pytest.yield_fixture
-def clean_db(objects):
-    with objects.allow_sync():
-        Work.delete().execute()
+def clean_db(container):
+    with container('objects').allow_sync():
         WorkEvent.delete().execute()
+        Work.delete().execute()
     yield
 
 
@@ -75,5 +94,22 @@ async def worker_client(container):
 
 
 @pytest.fixture
+async def response_client(container):
+    return container('response_client')
+
+
+@pytest.fixture
 async def work_finder(container):
     return container('work_finder')
+
+
+@pytest.fixture
+def auth(container):
+    return container('auth')
+
+
+@pytest.fixture
+def worker_headers(container):
+    return {
+        'x-api-key': container('conf')['worker']['api_key']
+    }

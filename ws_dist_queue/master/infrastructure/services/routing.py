@@ -57,7 +57,7 @@ class Router:
             auth_service=self.auth,
         ):
             msg = 'Peer: "{}" is not allowed to access route: "{}"'.format(
-                peer, route
+                peer, route.path
             )
             raise AccessForbidden(data=msg)
         else:

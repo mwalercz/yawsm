@@ -20,7 +20,7 @@ def worker_connected_usecase(c):
 
 def worker_disconnected_usecase(c):
     return WorkerDisconnectedUsecase(
-        workers_repo=c('worker_repo'),
+        workers_repo=c('workers_repo'),
         work_queue=c('work_queue'),
         event_saver=c('event_saver'),
         workers_notifier=c('workers_notifier'),

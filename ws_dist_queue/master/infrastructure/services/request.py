@@ -7,7 +7,7 @@ class Request:
     def __init__(self, message, sender, peer):
         self.message = message
         self.sender = sender
-        self.peer = peer,
+        self.peer = peer
         self.validated = None
 
     def get_response(self, status_code=200, body=None):

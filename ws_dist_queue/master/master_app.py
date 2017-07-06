@@ -1,19 +1,20 @@
 import logging
+import logging.config
 
+import txaio
 from knot import Container
+
+from ws_dist_queue.master.dependencies.app import register_app
 
 
 def make_app(config_path):
-    logging.basicConfig(
-        level=logging.INFO,
-    )
+    logging.config.fileConfig(config_path)
+    # logging.basicConfig(level=10)
+    # txaio.start_logging()
     c = Container(dict(
         config_path=config_path,
     ))
-    register(c)
-
-    c('router').register(path='work', controller=c('user_controller'))
-    c('router').register(path='worker', controller=c('worker_controller'))
+    register_app(c)
 
     return MasterApp(
         host=c('conf')['master']['host'],
@@ -31,6 +32,7 @@ class MasterApp:
         self.port = port
         self.secure_context = secure_context
         self.factory = factory
+        self.log = logging.getLogger(__name__)
 
     def run(self):
         coro = self.loop.create_server(
@@ -41,13 +43,14 @@ class MasterApp:
         )
         server = self.loop.run_until_complete(coro)
         try:
+            self.log.info('Master app starting...')
             self.loop.run_forever()
         except KeyboardInterrupt:
             pass
         finally:
             server.close()
             self.loop.close()
-
+            self.log.info('Master app closed...')
 
 if __name__ == '__main__':
     app = make_app(config_path='conf/develop.ini')

@@ -1,4 +1,5 @@
 import logging
+import traceback
 
 from ws_dist_queue.master.exceptions import ValidationError, AccessForbidden
 from ws_dist_queue.master.infrastructure.services.request import Request, Response
@@ -13,24 +14,24 @@ class Supervisor:
         self.router = router
 
     async def handle_message(self, sender, peer, message):
-        response = await self._handle_message_and_catch_exceptions(
+        response = await self.handle_message_and_catch_exceptions(
             peer=peer,
             sender=sender,
-            message=message,
+            message=message
         )
         if response:
             self.response_client.send(
                 recipient=sender,
-                response=response,
+                response=response
             )
 
-    async def _handle_message_and_catch_exceptions(self, sender, peer, message):
+    async def handle_message_and_catch_exceptions(self, sender, peer, message):
         try:
             route = self.router.get_route(message.path, peer)
             request = Request(
                 message=message,
                 sender=sender,
-                peer=peer,
+                peer=peer
             )
             return await self._execute_request(
                 request=request,
@@ -55,6 +56,7 @@ class Supervisor:
             return Response(
                 path=message.path,
                 status_code=500,
+                body={'error': traceback.format_exc(50)}
             )
 
     async def _execute_request(self, request, route):

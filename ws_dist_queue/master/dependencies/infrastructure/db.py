@@ -11,8 +11,7 @@ def db(c):
 
 
 def objects(c):
-    objects = Manager(database=c('db'), loop=c('loop'))
-    return objects
+    return Manager(database=c('db'), loop=c('loop'))
 
 
 def register(c):

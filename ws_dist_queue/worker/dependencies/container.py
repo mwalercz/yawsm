@@ -35,7 +35,7 @@ def loop(c):
 
 
 def ssl_context(c):
-    return ssl.SSLContext(protocol=ssl.PROTOCOL_TLSv1_2)
+    return ssl.SSLContext(protocol=ssl.PROTOCOL_SSLv23)
 
 
 def app(c):

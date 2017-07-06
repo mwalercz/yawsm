@@ -4,12 +4,6 @@ from ws_dist_queue.master.infrastructure.auth.user import UserAuthenticationServ
 from ws_dist_queue.master.infrastructure.auth.worker import WorkerAuthenticationService
 
 
-def ssh(c):
-    return SSHService(
-        hostname=c('conf')['ssh']['hostname']
-    )
-
-
 def user_auth(c):
     return UserAuthenticationService(
         cookie_maker=CookieMaker(),
@@ -32,7 +26,6 @@ def auth(c):
 
 
 def register(c):
-    c.add_service(ssh)
     c.add_service(user_auth)
     c.add_service(worker_auth)
     c.add_service(auth)
