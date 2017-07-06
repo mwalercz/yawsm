@@ -22,5 +22,5 @@ class NewWorkController:
         work_id = await self.usecase.perform(new_work)
         return req.get_response(
             status_code=202,
-            result={'work_id': work_id}
+            body={'work_id': work_id}
         )

@@ -1,5 +1,6 @@
 import asyncio
 
+from ws_dist_queue.master.infrastructure.loop_policy import StrictEventLoopPolicy
 from ws_dist_queue.master.infrastructure.services.routing import Router
 from ws_dist_queue.master.infrastructure.services.supervisor import Supervisor
 
@@ -8,6 +9,7 @@ from ws_dist_queue.master.infrastructure.services.executor import Executor
 
 
 def loop(c):
+    asyncio.set_event_loop_policy(StrictEventLoopPolicy())
     loop = asyncio.get_event_loop()
     return loop
 

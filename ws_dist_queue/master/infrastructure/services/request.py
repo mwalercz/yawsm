@@ -4,15 +4,15 @@ from ws_dist_queue.master import exceptions
 
 
 class Request:
-    def __init__(self, message, sender, peer, route):
+    def __init__(self, message, sender, peer):
         self.message = message
         self.sender = sender
         self.peer = peer,
-        self.route = route
+        self.validated = None
 
     def get_response(self, status_code=200, body=None):
         return Response(
-            path=self.route.path,
+            path=self.message.path,
             status_code=status_code,
             body=body,
         )
@@ -22,7 +22,6 @@ class Request:
             'message': str(self.message),
             'sender': self.sender,
             'peer': self.peer,
-            'route': str(self.route),
         }
 
     def __str__(self):
@@ -35,7 +34,7 @@ STATUS_CODE_MAPPING = {
     400: 'Bad Arguments',
     403: 'Forbidden',
     404: 'Not Found',
-    500: 'Server Internal Error',
+    500: 'Internal Error',
 }
 
 
@@ -47,10 +46,12 @@ class Response:
 
     def to_dict(self):
         return {
-            'headers': {
-                'path': self.path,
-                'status_code': self.status_code,
-                'status_description': STATUS_CODE_MAPPING.get(self.status_code, 'Unknown Error'),
+            'path': self.path,
+            'status': {
+                'code': self.status_code,
+                'description': STATUS_CODE_MAPPING.get(
+                    self.status_code, 'Unknown Error'
+                ),
             },
             'body': self.body,
         }
@@ -77,5 +78,7 @@ def validate(schema):
             else:
                 req.validated = schema_instance
                 return await func(self, req)
+
         return func_wrapper
+
     return validate_decorator

@@ -34,7 +34,6 @@ class TestValidate:
             ),
             sender=Mock(),
             peer=Mock(),
-            route=Mock()
         )
 
         result = await SomeClass().method(request)
@@ -49,7 +48,6 @@ class TestValidate:
             ),
             sender=Mock(),
             peer=Mock(),
-            route=Mock()
         )
         with pytest.raises(exceptions.ValidationError) as exc:
             await SomeClass().method(request)

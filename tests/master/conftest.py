@@ -45,11 +45,9 @@ def fixt_db(fixt_conf):
     return database
 
 
-@pytest.yield_fixture(scope='session')
+@pytest.fixture(scope='session')
 def event_loop(request):
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
+    return asyncio.get_event_loop()
 
 
 @pytest.fixture
@@ -73,9 +71,14 @@ def fixt_command_data():
 
 
 @pytest.fixture
-def fixt_credentials():
+def fixt_username():
+    return 'test-user'
+
+
+@pytest.fixture
+def fixt_credentials(fixt_username):
     return Credentials(
-        username='test-user',
+        username=fixt_username,
         password='test-pwd'
     )
 

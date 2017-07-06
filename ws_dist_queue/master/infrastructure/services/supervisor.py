@@ -28,10 +28,9 @@ class Supervisor:
         try:
             route = self.router.get_route(message.path, peer)
             request = Request(
-                sender=sender,
                 message=message,
+                sender=sender,
                 peer=peer,
-                route=route,
             )
             return await self._execute_request(
                 request=request,

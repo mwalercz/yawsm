@@ -11,6 +11,17 @@ class Work:
     def set_id(self, work_id):
         self.work_id = work_id
 
+    def __eq__(self, other):
+        if not isinstance(other, Work):
+            return False
+        if self.work_id:
+            return self.work_id == other.work_id
+
+        return (
+            self.command_data == other.command_data
+            and self.credentials == other.credentials
+        )
+
     @classmethod
     def new(cls, command_data, credentials):
         return cls(
@@ -25,6 +36,15 @@ class CommandData:
         self.command = command
         self.env = env
         self.cwd = cwd
+
+    def __eq__(self, other):
+        if not isinstance(other, CommandData):
+            return False
+        return (
+            self.command == other.command
+            and self.env == other.env
+            and self.cwd == other.cwd
+        )
 
 
 class WorkStatus(Enum):

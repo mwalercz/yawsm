@@ -17,7 +17,7 @@ class WorkIsDoneSchema(Model):
 class NewWorkSchema(Model):
     command = StringType(required=True)
     cwd = StringType(required=True)
-    env = DictType(StringType)
+    env = DictType(StringType, default={})
 
 
 class WorkIdSchema(Model):

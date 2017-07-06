@@ -3,7 +3,7 @@ from unittest.mock import Mock
 import pytest
 from knot import Container
 
-from ws_dist_queue.master.dependencies.app import register_domain
+from ws_dist_queue.master.dependencies.app import register_domain, register_controllers
 from ws_dist_queue.master.infrastructure.db.work import Work, WorkEvent
 from ws_dist_queue.master.infrastructure.services.clients import ResponseClient, WorkerClient
 
@@ -19,8 +19,9 @@ def container(conf_path):
         config_path=conf_path
     ))
 
-    register_domain(container)
     register_mock_clients(container)
+    register_domain(container)
+    register_controllers(container)
 
     return container
 
