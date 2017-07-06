@@ -1,4 +1,6 @@
-ws_dist_queue.egg-info/*
+dq_broker.egg-info/*
 .idea/*
 .cache/*
+.egg*
+__pycache__
 *pyc

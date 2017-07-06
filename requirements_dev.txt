@@ -7,4 +7,3 @@ freezegun
 pytest-runner==2.7.1
 flake8==3.3.0
 pylint
-tox

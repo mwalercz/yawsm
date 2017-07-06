@@ -18,16 +18,16 @@ def read_requirements(filename):
     return contents.split('\n') if contents else []
 
 setup(
-    name="ws_dist_queue",
+    name="dq_broker",
     version="0.0.1",
     author="Maciej Walerczuk",
     author_email="mwalerczuk@gmail.com",
-    description="ws_dist_queue",
+    description="dq_broker",
     license="BSD",
-    packages=find_packages(include=path_in_project('ws_dist_queue*'), exclude=['tests*']),
+    packages=find_packages(include=path_in_project('dq_broker*'), exclude=['tests*']),
     entry_points={
         'console_scripts': [
-            'queue = ws_dist_queue.work.cli:queue',
+            'queue = dq_broker.work.cli:queue',
         ],
     },
     include_package_data=True,

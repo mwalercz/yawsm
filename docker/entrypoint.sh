@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-EGGDIR="ws_dist_queue.egg-info"
+EGGDIR="dq_broker.egg-info"
 
 #if [ -d "$EGGDIR" ]; then
 #    rm -rf ${EGGDIR}

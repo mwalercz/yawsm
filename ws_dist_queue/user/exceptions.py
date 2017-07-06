@@ -1,2 +1,0 @@
-class NoCookieException(Exception):
-    pass
