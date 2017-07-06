@@ -26,8 +26,7 @@ class UserProtocol(WebSocketClientProtocol):
 
     def onMessage(self, payload, isBinary):
         message = self.deserializer.deserialize(payload)
-        print('MESSAGE: ' + message['info'])
-        pprint.PrettyPrinter(indent=4).pprint(message['body'])
+        pprint.PrettyPrinter(indent=4).pprint(message)
         self.sendClose(code=3200, reason='Finished')
 
     def onClose(self, wasClean, code, reason):

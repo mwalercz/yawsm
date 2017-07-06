@@ -1,5 +1,3 @@
-from concurrent.futures import ThreadPoolExecutor
-
 from ws_dist_queue.worker.components.master_client import MasterClient
 from ws_dist_queue.worker.components.validator import validate
 from ws_dist_queue.worker.components.worker import Worker

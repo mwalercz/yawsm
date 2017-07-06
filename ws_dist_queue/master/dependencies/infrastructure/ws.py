@@ -18,8 +18,8 @@ def factory(c):
     )
     factory.protocol = c('protocol')
     factory.setProtocolOptions(
-        autoPingInterval=c('conf')['websocket']['auto_ping_interval'],
-        autoPingTimeout=c('conf')['websocket']['auto_ping_timeout']
+        autoPingInterval=c('conf').getint('websocket', 'auto_ping_interval'),
+        autoPingTimeout=c('conf').getint('websocket', 'auto_ping_timeout')
     )
     return factory
 

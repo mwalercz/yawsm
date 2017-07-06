@@ -1,7 +1,6 @@
 import logging
 import logging.config
 
-import txaio
 from knot import Container
 
 from ws_dist_queue.master.dependencies.app import register_app

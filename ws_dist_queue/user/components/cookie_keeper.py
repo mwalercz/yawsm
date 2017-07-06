@@ -8,7 +8,7 @@ class CookieKeeper:
         self._secret_folder = secret_folder
         self._cookie_filename = cookie_filename
 
-    def save(self, cookie):
+    def save_cookie(self, cookie):
         user_filepath = self._get_user_filepath()
         if not os.path.exists(user_filepath):
             os.makedirs(user_filepath)

@@ -1,8 +1,5 @@
 from ws_dist_queue.user.components.cookie_keeper import CookieKeeper
-
-
-class NoCookieException(Exception):
-    pass
+from ws_dist_queue.user.exceptions import NoCookieException
 
 
 class Authentication:

@@ -17,7 +17,7 @@ class WorkerProtocol(WebSocketClientProtocol):
 
     def onOpen(self):
         self.master_client.send(
-            action_name='worker_created',
+            action_name='worker_connected',
         )
 
     def onMessage(self, payload, isBinary):

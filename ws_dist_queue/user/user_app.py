@@ -42,7 +42,7 @@ class UserApp:
             protocol_factory=self.factory,
             host=self.host,
             port=self.port,
-            ssl=ssl.SSLContext(protocol=ssl.PROTOCOL_TLSv1_2)
+            ssl=ssl.SSLContext(protocol=ssl.PROTOCOL_SSLv23)
         )
         self.loop.run_until_complete(coro)
         self.loop.run_forever()

@@ -8,14 +8,20 @@ from ws_dist_queue.worker.dependencies.container import register
 
 
 def make_app(config_path):
-    logging.basicConfig(level=logging.INFO,)
+    logging.basicConfig(level=logging.INFO)
     c = Container(dict(config_path=config_path))
     register(c)
-    return c('app')
+    return WorkerApp(
+        host=c('conf')['master']['host'],
+        port=c('conf')['master']['port'],
+        factory=c('factory'),
+        loop=c('loop'),
+        controller=c('worker_controller'),
+        ssl_context=c('ssl_context')
+    )
 
 
 class WorkerApp:
-
     def __init__(self, host, port, factory, loop, controller, ssl_context):
         self.host = host
         self.port = port

@@ -5,7 +5,8 @@ from autobahn.websocket import ConnectionDeny
 
 from ws_dist_queue.master.exceptions import (
     AuthenticationFailed, ValidationError,
-    SessionNotFound)
+    SessionNotFound
+)
 from ws_dist_queue.master.infrastructure.auth.base import Role
 from ws_dist_queue.master.infrastructure.message import IncomingMessage
 

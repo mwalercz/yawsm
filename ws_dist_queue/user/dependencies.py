@@ -40,10 +40,9 @@ def auth(c):
 
 
 def factory(c):
-    auth = c('authorization')
     factory = UserFactory(
         master_wss_uri=c('conf')['master']['wss_uri'],
-        headers=auth.get_headers(c('credentials'))
+        headers=c('auth').get_headers(c('credentials'))
     )
     factory.protocol = c('protocol')
     return factory
