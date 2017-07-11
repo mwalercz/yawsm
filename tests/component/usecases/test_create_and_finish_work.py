@@ -30,7 +30,7 @@ class TestCreateAndFinishWork:
         worker_client.send.assert_called_with(
             action_name='work_to_be_done',
             recipient=sentinel.worker_ref,
-            body=fixt_work,
+            body=fixt_work.to_flat_dict(),
         )
         await work_is_done_usecase.perform(
             dto=WorkIsDoneDto(

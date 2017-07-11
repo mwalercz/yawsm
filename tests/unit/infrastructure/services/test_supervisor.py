@@ -1,15 +1,15 @@
 from unittest.mock import Mock, ANY
 
 import pytest
-from dq_broker.infrastructure.message import IncomingMessage
-from dq_broker.infrastructure.services.clients import ResponseClient
-from dq_broker.infrastructure.services.executor import Executor
-from dq_broker.infrastructure.services.request import Response, validate
-from dq_broker.infrastructure.services.routing import Route, Router
-from dq_broker.infrastructure.services.supervisor import Supervisor
-from dq_broker.schema import WorkIdSchema
 
 from dq_broker.exceptions import AccessForbidden
+from dq_broker.schema import WorkIdSchema
+from infrastructure.websocket.clients import ResponseClient
+from infrastructure.websocket.executor import Executor
+from infrastructure.websocket.message import IncomingMessage
+from infrastructure.websocket.request import Response, validate
+from infrastructure.websocket.routing import Route, Router
+from infrastructure.websocket.supervisor import Supervisor
 
 pytestmark = pytest.mark.asyncio
 
@@ -89,7 +89,6 @@ class TestSupervisor:
         )
         mock_router.get_route.assert_called_once_with(
             message.path,
-            self.PEER,
         )
 
     async def test_when_controller_returns_nothing_then_nothing_should_be_sent(
@@ -161,7 +160,6 @@ class TestSupervisor:
         return Route(
             path=self.PATH,
             controller=controller,
-            allowed_roles=[Mock(), Mock()]
         )
 
     def get_message(self, message_body=None):

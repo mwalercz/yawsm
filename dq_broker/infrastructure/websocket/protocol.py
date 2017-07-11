@@ -2,18 +2,17 @@ import logging
 
 from autobahn.asyncio import WebSocketServerProtocol
 from autobahn.websocket import ConnectionDeny
-from dq_broker.infrastructure.auth.base import Role
-from dq_broker.infrastructure.message import IncomingMessage
 
 from dq_broker.exceptions import (
     AuthenticationFailed, ValidationError,
     SessionNotFound
 )
+from infrastructure.websocket.message import IncomingMessage
 
 log = logging.getLogger(__name__)
 
 
-class MasterProtocol(WebSocketServerProtocol):
+class DqBrokerProtocol(WebSocketServerProtocol):
     deserializer = NotImplemented
     auth = NotImplemented
     supervisor = NotImplemented
@@ -21,10 +20,10 @@ class MasterProtocol(WebSocketServerProtocol):
     def onConnect(self, request):
         try:
             log.info('New connection is being established. %s', request)
-            self.auth.authenticate(peer=self.peer, headers=request.headers)
-            headers = self.auth.get_headers(self.peer)
+            # self.auth.authenticate(peer=self.peer, headers=request.headers)
+            # headers = self.auth.get_headers(self.peer)
             log.info('New connection is opened and authenticated %s', request)
-            return None, headers
+            return None, {}
         except AuthenticationFailed as e:
             log.info(
                 'Failed to authenticate connection. %s. Reason: %s',
@@ -35,15 +34,13 @@ class MasterProtocol(WebSocketServerProtocol):
     async def onClose(self, wasClean, code, reason):
         try:
             log.info('Connection was closed. Reason: %s, peer: %s', reason, self.peer)
-            if Role.worker == self.auth.get_role(self.peer):
-                await self.supervisor.handle_message(
-                    sender=self,
-                    peer=self.peer,
-                    message=IncomingMessage(
-                        path='worker_disconnected'
-                    ),
-                )
-
+            await self.supervisor.handle_message(
+                sender=self,
+                peer=self.peer,
+                message=IncomingMessage(
+                    path='worker_disconnected'
+                ),
+            )
             self.auth.remove(self.peer)
         except SessionNotFound as exc:
             log.exception(exc)

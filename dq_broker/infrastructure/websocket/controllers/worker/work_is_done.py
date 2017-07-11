@@ -1,7 +1,7 @@
 from dq_broker.domain.workers.usecases.work_is_done import WorkIsDoneDto
 from dq_broker.schema import WorkIsDoneSchema
 
-from dq_broker.infrastructure.services.request import validate
+from infrastructure.websocket.request import validate
 
 
 class WorkIsDoneController:

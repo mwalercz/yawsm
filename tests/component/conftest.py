@@ -1,11 +1,12 @@
 from unittest.mock import Mock
 
 import pytest
+from knot import Container
+
 from dq_broker.dependencies.app import *
 from dq_broker.infrastructure.auth.ssh import SSHService
 from dq_broker.infrastructure.db.work import Work, WorkEvent
-from dq_broker.infrastructure.services.clients import ResponseClient, WorkerClient
-from knot import Container
+from infrastructure.websocket.clients import ResponseClient, WorkerClient
 
 
 def register_mock_clients(c):
@@ -29,16 +30,16 @@ def container(conf_path, event_loop):
     container.add_service(lambda c: event_loop, 'loop')
 
     register_mock_clients(container)
-    register_db_services(container)
-    register_domain_services(container)
-    register_infra_services(container)
+    register_db(container)
+    register_domain(container)
+    register_ws_services(container)
 
     register_usecases(container)
 
     container.add_service(ssh)
     register_auth(container)
 
-    register_controllers(container)
+    register_ws(container)
 
     return container
 
@@ -102,8 +103,8 @@ async def work_finder(container):
 
 
 @pytest.fixture
-def auth(container):
-    return container('auth')
+def worker_auth(container):
+    return container('worker_auth')
 
 
 @pytest.fixture

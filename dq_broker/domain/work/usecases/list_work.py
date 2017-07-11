@@ -16,7 +16,7 @@ class ListWorkUsecase:
             'cwd': work.cwd,
             'environment': work.env,
             'output': work.output,
-            'created_at': work.created_at,
+            'created_at': work.created_at.isoformat(),
         }
 
     def _format_work_list(self, work_list):

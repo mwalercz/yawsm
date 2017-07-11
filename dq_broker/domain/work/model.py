@@ -8,6 +8,16 @@ class Work:
         self.command_data = command_data
         self.credentials = credentials
 
+    def to_flat_dict(self):
+        return {
+            'work_id': self.work_id,
+            'command': self.command_data.command,
+            'env': self.command_data.env,
+            'cwd': self.command_data.cwd,
+            'username': self.credentials.username,
+            'password': self.credentials.password,
+        }
+
     def set_id(self, work_id):
         self.work_id = work_id
 

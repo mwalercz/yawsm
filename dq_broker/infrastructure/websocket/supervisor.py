@@ -1,9 +1,8 @@
 import logging
 import traceback
 
-from dq_broker.infrastructure.services.request import Request, Response
-
 from dq_broker.exceptions import ValidationError, AccessForbidden
+from infrastructure.websocket.request import Request, Response
 
 log = logging.getLogger(__name__)
 
@@ -28,7 +27,7 @@ class Supervisor:
 
     async def handle_message_and_catch_exceptions(self, sender, peer, message):
         try:
-            route = self.router.get_route(message.path, peer)
+            route = self.router.get_route(message.path)
             request = Request(
                 message=message,
                 sender=sender,

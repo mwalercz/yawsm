@@ -14,3 +14,7 @@ class AuthenticationFailed(Exception):
 
 class SessionNotFound(Exception):
     pass
+
+
+class RouteNotFound(Exception):
+    pass

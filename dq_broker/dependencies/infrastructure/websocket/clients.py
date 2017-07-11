@@ -1,4 +1,4 @@
-from dq_broker.infrastructure.services.clients import ResponseClient, WorkerClient
+from infrastructure.websocket.clients import ResponseClient, WorkerClient
 
 
 def response_client(c):

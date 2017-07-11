@@ -1,21 +1,36 @@
 import ssl
 
-from dq_broker.infrastructure.ws.factory import MasterFactory
+from dq_broker.lib.serializers import JsonDeserializer, JsonSerializer
+from infrastructure.websocket.executor import Executor
+from infrastructure.websocket.factory import DqBrokerFactory
+from infrastructure.websocket.protocol import DqBrokerProtocol
+from infrastructure.websocket.routing import Router
+from infrastructure.websocket.supervisor import Supervisor
 
-from dq_broker.infrastructure.ws.protocol import MasterProtocol
+
+def router(c):
+    return Router()
+
+
+def supervisor(c):
+    return Supervisor(
+        executor=Executor(),
+        response_client=c('response_client'),
+        router=c('router')
+    )
 
 
 def protocol(c):
-    protocol = MasterProtocol
-    protocol.auth = c('auth')
+    protocol = DqBrokerProtocol
+    protocol.auth = c('worker_auth')
     protocol.deserializer = c('deserializer')
     protocol.supervisor = c('supervisor')
     return protocol
 
 
 def factory(c):
-    factory = MasterFactory(
-        uri=c('conf')['master']['wss_uri']
+    factory = DqBrokerFactory(
+        url=c('conf')['websocket']['url']
     )
     factory.protocol = c('protocol')
     factory.setProtocolOptions(
@@ -34,6 +49,8 @@ def secure_context(c):
 
 
 def register(c):
+    c.add_service(router)
+    c.add_service(supervisor)
     c.add_service(protocol)
     c.add_service(factory)
     c.add_service(secure_context)

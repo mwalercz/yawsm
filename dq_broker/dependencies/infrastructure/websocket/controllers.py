@@ -1,8 +1,8 @@
-from dq_broker.infrastructure.controllers.worker.work_is_done import WorkIsDoneController
-from dq_broker.infrastructure.controllers.worker.worker_connected import WorkerConnectedController
-from dq_broker.infrastructure.controllers.worker.worker_requests_work import WorkerRequestsWorkController
+from dq_broker.infrastructure.websocket.controllers.worker.worker_connected import WorkerConnectedController
+from dq_broker.infrastructure.websocket.controllers.worker.worker_disconnected import WorkerDisconnectedController
+from dq_broker.infrastructure.websocket.controllers.worker.worker_requests_work import WorkerRequestsWorkController
 
-from dq_broker.infrastructure.controllers.worker.worker_disconnected import WorkerDisconnectedController
+from dq_broker.infrastructure.websocket.controllers.worker.work_is_done import WorkIsDoneController
 
 
 def work_is_done_controller(c):
