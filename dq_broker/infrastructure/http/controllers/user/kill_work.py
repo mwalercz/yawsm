@@ -2,18 +2,28 @@ from aiohttp import web
 from aiohttp_session import get_session
 
 from dq_broker.domain.exceptions import WorkerNotFound
+from infrastructure.auth.permits import users_must_match
+from infrastructure.http.controllers.schema import WorkDetailsSchema
+from infrastructure.http.validator import validate
 
 
 class KillWorkController:
     def __init__(self, usecase):
         self.usecase = usecase
 
+    @users_must_match
     async def handle(self, request):
-        session = await get_session(request)
+        validated = validate(
+            {
+                'work_id': request.match_info.get('work_id'),
+                'username': request.match_info.get('username')
+            },
+            schema=WorkDetailsSchema
+        )
         try:
             result = await self.usecase.perform(
-                work_id=request.match_info['work_id'],
-                username=session['user_info']['username'],
+                work_id=validated.work_id,
+                username=validated.username,
             )
             return web.json_response(result)
         except WorkerNotFound:

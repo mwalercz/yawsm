@@ -1,5 +1,5 @@
 from dq_broker.domain.workers.usecases.work_is_done import WorkIsDoneDto
-from dq_broker.schema import WorkIsDoneSchema
+from infrastructure.websocket.controllers.schema import WorkIsDoneSchema
 
 from infrastructure.websocket.request import validate
 
@@ -9,11 +9,11 @@ class WorkIsDoneController:
         self.usecase = usecase
 
     @validate(schema=WorkIsDoneSchema)
-    async def handle(self, req):
+    async def handle(self, request):
         dto = WorkIsDoneDto(
-            worker_id=req.peer,
-            work_id=req.validated.work_id,
-            status=req.validated.status,
-            output=req.validated.output,
+            worker_id=request.peer,
+            work_id=request.validated.work_id,
+            status=request.validated.status,
+            output=request.validated.output,
         )
         await self.usecase.perform(dto)

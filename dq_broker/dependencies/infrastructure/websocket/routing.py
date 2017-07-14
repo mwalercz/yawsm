@@ -1,4 +1,3 @@
-from dq_broker.infrastructure.auth.base import WORKER_ROLES
 from infrastructure.websocket.routing import Route as _
 
 
@@ -11,5 +10,7 @@ def register_ws_routing(r, c):
                  c('controllers.worker.worker_disconnected')))
     r.register(_('worker_requests_work',
                  c('controllers.worker.worker_requests_work')))
+    r.register(_('worker_has_work',
+                 c('controllers.worker.worker_has_work')))
 
 

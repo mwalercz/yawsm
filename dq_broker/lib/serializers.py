@@ -6,7 +6,7 @@ ENCODING = 'utf8'
 
 class JsonSerializer:
     def serialize(self, message):
-        return json.dumps(message).encode(ENCODING)
+        return json.dumps(message, indent=4).encode(ENCODING)
 
 
 class JsonDeserializer:

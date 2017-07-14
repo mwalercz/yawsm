@@ -66,6 +66,7 @@ class WorkStatus(Enum):
     killed = 6
     not_killed = 7
     waiting_for_reschedule = 8
+    server_shutdown = 9
 
 
 class WorkEvent:

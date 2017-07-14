@@ -3,15 +3,17 @@ from aiohttp_session import get_session
 
 from dq_broker.domain.work.model import CommandData
 from dq_broker.domain.work.model import Work
+from infrastructure.auth.permits import users_must_match
 from infrastructure.auth.user import Credentials
+from infrastructure.http.controllers.schema import NewWorkSchema
 from infrastructure.http.validator import validate
-from schema import NewWorkSchema
 
 
 class NewWorkController:
     def __init__(self, usecase):
         self.usecase = usecase
 
+    @users_must_match
     async def handle(self, request):
         data = await request.json()
         session = await get_session(request)

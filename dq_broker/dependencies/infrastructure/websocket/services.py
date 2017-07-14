@@ -1,7 +1,5 @@
 import ssl
 
-from dq_broker.lib.serializers import JsonDeserializer, JsonSerializer
-from infrastructure.websocket.executor import Executor
 from infrastructure.websocket.factory import DqBrokerFactory
 from infrastructure.websocket.protocol import DqBrokerProtocol
 from infrastructure.websocket.routing import Router
@@ -14,7 +12,6 @@ def router(c):
 
 def supervisor(c):
     return Supervisor(
-        executor=Executor(),
         response_client=c('response_client'),
         router=c('router')
     )

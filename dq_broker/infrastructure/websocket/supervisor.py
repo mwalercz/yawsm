@@ -1,6 +1,8 @@
 import logging
 import traceback
 
+import asyncio
+
 from dq_broker.exceptions import ValidationError, AccessForbidden
 from infrastructure.websocket.request import Request, Response
 
@@ -8,8 +10,7 @@ log = logging.getLogger(__name__)
 
 
 class Supervisor:
-    def __init__(self, executor, response_client, router):
-        self.executor = executor
+    def __init__(self, response_client, router):
         self.response_client = response_client
         self.router = router
 
@@ -33,10 +34,7 @@ class Supervisor:
                 sender=sender,
                 peer=peer
             )
-            return await self._execute_request(
-                request=request,
-                route=route
-            )
+            return await asyncio.ensure_future(route.handler(request))
         except AccessForbidden as exc:
             log.exception(exc)
             return Response(
@@ -58,8 +56,3 @@ class Supervisor:
                 status_code=500,
                 body={'error': traceback.format_exc(50)}
             )
-
-    async def _execute_request(self, request, route):
-        return await self.executor.execute(
-            func=route.handler, arg=request
-        )

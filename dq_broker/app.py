@@ -17,6 +17,7 @@ def run_app(
     ))
     register_all(c)
     log = logging.getLogger(__name__)
+    # c('before_startup')()
     asyncio.ensure_future(make_http_app(c), loop=c('loop'))
     log.info('http started...')
     asyncio.ensure_future(make_ws_app(c), loop=c('loop'))
@@ -25,6 +26,7 @@ def run_app(
     try:
         c('loop').run_forever()
     except KeyboardInterrupt:
+        # c('before_shutdown')()
         c('loop').close()
 
 

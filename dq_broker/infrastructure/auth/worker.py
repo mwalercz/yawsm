@@ -1,35 +1,31 @@
-from dq_broker.infrastructure.auth.base import Role
 
-from dq_broker.exceptions import AuthenticationFailed, SessionNotFound
+from dq_broker.exceptions import AuthenticationFailed
 
 
 class WorkerAuthenticationService:
-    ROLE = Role.worker
 
-    def __init__(self, api_key):
-        self.api_key = api_key
-        self.connected_peers = set()
+    def __init__(self, ssh_service):
+        self.ssh_service = ssh_service
 
-    def authenticate(self, peer, headers):
-        if self.api_key == headers.get('x-api-key'):
-            self.connected_peers.add(peer)
-        else:
+    def authenticate(self, headers):
+        try:
+            self._verify(
+                headers['username'],
+                headers['password'],
+            )
+            return {}
+        except KeyError:
             raise AuthenticationFailed()
 
-    def get_headers(self, peer):
-        if peer in self.connected_peers:
-            return {}
-        else:
-            raise SessionNotFound(peer)
+    def _verify(self, username, password):
+        if not self.ssh_service.try_to_login(username, password):
+            raise AuthenticationFailed(
+                'No such user/password combination.'
+            )
+        if not self._can_be_worker(username):
+            raise AuthenticationFailed(
+                'User cannot be worker.'
+            )
 
-    def get_role(self, peer):
-        if peer in self.connected_peers:
-            return self.ROLE
-        else:
-            raise SessionNotFound(peer)
-
-    def remove(self, peer):
-        try:
-            self.connected_peers.remove(peer)
-        except KeyError:
-            pass
+    def _can_be_worker(self, username):
+        return username in ['test', 'mwal']

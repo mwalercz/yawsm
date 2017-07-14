@@ -1,3 +1,4 @@
+from domain.workers.usecases.worker_has_work import WorkerHasWorkUsecase
 from dq_broker.domain.workers.usecases.work_is_done import WorkIsDoneUsecase
 from dq_broker.domain.workers.usecases.worker_disconnected import WorkerDisconnectedUsecase
 from dq_broker.domain.workers.usecases.worker_requests_work import WorkerRequestsWorkUsecase
@@ -37,9 +38,17 @@ def worker_requests_work_usecase(c):
     )
 
 
+def worker_has_work_usecase(c):
+    return WorkerHasWorkUsecase(
+        workers_repo=c('workers_repo'),
+        event_saver=c('event_saver')
+    )
+
+
 def register(c):
     c.add_service(work_is_done_usecase, 'usecases.worker.work_is_done')
     c.add_service(worker_connected_usecase, 'usecases.worker.worker_connected')
     c.add_service(worker_disconnected_usecase, 'usecases.worker.worker_disconnected')
     c.add_service(worker_requests_work_usecase, 'usecases.worker.worker_requests_work')
+    c.add_service(worker_has_work_usecase, 'usecases.worker.worker_has_work')
 

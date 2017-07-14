@@ -73,6 +73,11 @@ async def worker_requests_work_usecase(container):
 
 
 @pytest.fixture
+async def worker_has_work_usecase(container):
+    return container('usecases.worker.worker_has_work')
+
+
+@pytest.fixture
 async def work_is_done_usecase(container):
     return container('usecases.worker.work_is_done')
 
@@ -103,6 +108,11 @@ async def work_finder(container):
 
 
 @pytest.fixture
+async def work_saver(container):
+    return container('work_saver')
+
+
+@pytest.fixture
 def worker_auth(container):
     return container('worker_auth')
 
@@ -110,5 +120,6 @@ def worker_auth(container):
 @pytest.fixture
 def worker_headers(container):
     return {
-        'x-api-key': container('conf')['worker']['api_key']
+        'username': 'test',
+        'password': 'test'
     }

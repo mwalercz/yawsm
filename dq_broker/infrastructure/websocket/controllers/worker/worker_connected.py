@@ -5,9 +5,9 @@ class WorkerConnectedController:
     def __init__(self, usecase):
         self.usecase = usecase
 
-    def handle(self, req):
+    async def handle(self, request):
         worker = Worker(
-            worker_id=req.peer,
-            worker_ref=req.sender,
+            worker_id=request.peer,
+            worker_ref=request.sender,
         )
         self.usecase.perform(worker)

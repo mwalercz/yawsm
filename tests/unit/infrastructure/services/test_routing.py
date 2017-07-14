@@ -1,15 +1,7 @@
-from unittest.mock import Mock
-
 import pytest
 
 from dq_broker.exceptions import RouteNotFound
-from dq_broker.infrastructure.auth.base import AuthenticationService
 from infrastructure.websocket.routing import Route, Router
-
-
-@pytest.fixture
-def mock_auth():
-    return Mock(spec=AuthenticationService)
 
 
 @pytest.fixture

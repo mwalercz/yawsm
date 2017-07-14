@@ -1,4 +1,3 @@
-from dq_broker.infrastructure.auth.base import AuthenticationService
 from dq_broker.infrastructure.auth.user import UserAuthenticationService
 from dq_broker.infrastructure.auth.worker import WorkerAuthenticationService
 
@@ -11,7 +10,7 @@ def user_auth(c):
 
 def worker_auth(c):
     return WorkerAuthenticationService(
-        api_key=c('conf')['worker']['api_key']
+        ssh_service=c('ssh')
     )
 
 

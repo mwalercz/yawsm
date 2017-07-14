@@ -33,7 +33,7 @@ class WorkEventSaver:
     def __init__(self, objects):
         self.objects = objects
 
-    async def save_event(self, work_event: dq_broker.domain.work.model.WorkEvent) -> None:
+    async def save_event(self, work_event: dq_broker.domain.work.model.WorkEvent):
         await self.objects.execute(
             Work.update(
                 status=work_event.work_status

@@ -1,4 +1,9 @@
+import logging
+
+from domain.exceptions import WorkerNotFound
 from dq_broker.domain.work.model import WorkStatus, WorkEvent
+
+log = logging.getLogger(__name__)
 
 
 class WorkerDisconnectedUsecase:
@@ -12,7 +17,11 @@ class WorkerDisconnectedUsecase:
         self.workers_notifier = workers_notifier
 
     async def perform(self, worker_id):
-        worker = self.workers_repo.pop(worker_id)
+        try:
+            worker = self.workers_repo.pop(worker_id)
+        except WorkerNotFound as exc:
+            log.exception(exc)
+            return
         not_finished_work = worker.remove()
         if not_finished_work:
             self.work_queue.put(not_finished_work)

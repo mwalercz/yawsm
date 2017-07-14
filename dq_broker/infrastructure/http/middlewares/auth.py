@@ -11,14 +11,16 @@ class AuthMiddleware:
     async def auth_middleware(self, app, handler):
         async def middleware_handler(request):
             session = await get_session(request)
-            user_info = session.get('user_info')
-            if user_info:
-                return await handler(request)
             try:
-                session['user_info'] = self.auth.authenticate(request.headers)
+                user_info = self.auth.authenticate(request.headers)
+            except AuthenticationFailed:
+                user_info = session.get('user_info')
+                if user_info:
+                    return await handler(request)
+                return web.HTTPUnauthorized()
+            else:
+                session['user_info'] = user_info
                 session.changed()
                 return await handler(request)
-            except AuthenticationFailed:
-                return web.HTTPForbidden()
 
         return middleware_handler

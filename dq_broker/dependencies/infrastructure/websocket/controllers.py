@@ -3,6 +3,7 @@ from dq_broker.infrastructure.websocket.controllers.worker.worker_disconnected i
 from dq_broker.infrastructure.websocket.controllers.worker.worker_requests_work import WorkerRequestsWorkController
 
 from dq_broker.infrastructure.websocket.controllers.worker.work_is_done import WorkIsDoneController
+from infrastructure.websocket.controllers.worker.worker_has_work import WorkerHasWorkController
 
 
 def work_is_done_controller(c):
@@ -29,8 +30,16 @@ def worker_requests_work_controller(c):
     )
 
 
+def worker_has_work_controller(c):
+    return WorkerHasWorkController(
+        usecase=c('usecases.worker.worker_has_work')
+    )
+
+
 def register(c):
     c.add_service(work_is_done_controller, 'controllers.worker.work_is_done')
     c.add_service(worker_connected_controller, 'controllers.worker.worker_connected')
     c.add_service(worker_disconnected_controller, 'controllers.worker.worker_disconnected')
     c.add_service(worker_requests_work_controller, 'controllers.worker.worker_requests_work')
+    c.add_service(worker_has_work_controller, 'controllers.worker.worker_has_work')
+

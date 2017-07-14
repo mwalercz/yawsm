@@ -3,9 +3,8 @@ from unittest.mock import Mock, ANY
 import pytest
 
 from dq_broker.exceptions import AccessForbidden
-from dq_broker.schema import WorkIdSchema
+from infrastructure.http.controllers.schema import WorkDetailsSchema
 from infrastructure.websocket.clients import ResponseClient
-from infrastructure.websocket.executor import Executor
 from infrastructure.websocket.message import IncomingMessage
 from infrastructure.websocket.request import Response, validate
 from infrastructure.websocket.routing import Route, Router
@@ -32,14 +31,13 @@ def mock_router():
 @pytest.fixture
 async def supervisor(mock_response_client, mock_router):
     return Supervisor(
-        executor=Executor(),
         response_client=mock_response_client,
         router=mock_router,
     )
 
 
 class ReturningController:
-    def handle(self, req):
+    async def handle(self, req):
         return req.get_response(
             status_code=202,
             body={'req_body': req.message.body}
@@ -47,17 +45,17 @@ class ReturningController:
 
 
 class NotReturningController:
-    def handle(self, req):
+    async def handle(self, req):
         pass
 
 
 class ExceptionRaisingController:
-    def handle(self, req):
+    async def handle(self, req):
         raise KeyError('not found')
 
 
 class ValidationErrorRaisingController:
-    @validate(schema=WorkIdSchema)
+    @validate(schema=WorkDetailsSchema)
     def handle(self, req):
         pass
 
@@ -125,6 +123,7 @@ class TestSupervisor:
         message = self.get_message()
         expected_error = {
             'work_id': ['This field is required.'],
+            'username': ['This field is required.'],
         }
 
         await supervisor.handle_message(mock_sender, self.PEER, message)

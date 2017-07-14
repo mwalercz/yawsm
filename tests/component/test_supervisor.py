@@ -17,7 +17,7 @@ class TestWorkerFlows:
             self, worker_auth, worker_headers, supervisor
     ):
         worker_peer = 'worker-peer'
-        worker_auth.authenticate(worker_peer, worker_headers)
+        worker_auth.authenticate(worker_headers)
         await supervisor.handle_message(
             peer=worker_peer,
             sender=sentinel.sender,
@@ -39,6 +39,5 @@ class TestWorkerFlows:
                 'path': 'worker_disconnected'
             })
         )
-        worker_auth.remove(worker_peer)
 
         assert response is None
