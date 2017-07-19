@@ -1,4 +1,4 @@
-from domain.work.model import WorkEvent, WorkStatus
+from dq_broker.domain.work.model import WorkEvent, WorkStatus
 
 
 class WorkerHasWorkUsecase:

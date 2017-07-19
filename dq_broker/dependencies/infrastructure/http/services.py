@@ -6,8 +6,8 @@ from aiohttp_session import session_middleware
 from aiohttp_session.cookie_storage import EncryptedCookieStorage
 from cryptography.fernet import Fernet
 
-from infrastructure.http.middlewares.auth import AuthMiddleware
-from infrastructure.http.middlewares.error import error_middleware
+from dq_broker.infrastructure.http.middlewares.auth import AuthMiddleware
+from dq_broker.infrastructure.http.middlewares.error import error_middleware
 
 
 def http_router(c):

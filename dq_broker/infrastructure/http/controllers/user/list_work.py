@@ -1,8 +1,8 @@
 from aiohttp import web
 
-from infrastructure.auth.permits import users_must_match
-from infrastructure.http.controllers.schema import UsernameSchema
-from infrastructure.http.validator import validate
+from dq_broker.infrastructure.auth.permits import users_must_match
+from dq_broker.infrastructure.http.controllers.schema import UsernameSchema
+from dq_broker.infrastructure.http.validator import validate
 
 
 class ListWorkController:

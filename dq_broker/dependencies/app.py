@@ -5,13 +5,13 @@ from dq_broker.dependencies.infrastructure.websocket.controllers import (
     register as register_ws_controllers
 )
 
-from dependencies.infrastructure.websocket.clients import (
+from dq_broker.dependencies.infrastructure.websocket.clients import (
     register as register_clients
 )
-from dependencies.infrastructure.websocket.services import (
+from dq_broker.dependencies.infrastructure.websocket.services import (
     register as register_ws_services
 )
-from dependencies.infrastructure.websocket.routing import register_ws_routing
+from dq_broker.dependencies.infrastructure.websocket.routing import register_ws_routing
 from dq_broker.dependencies.domain.services import (
     register as register_domain
 )

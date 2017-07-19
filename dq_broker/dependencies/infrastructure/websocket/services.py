@@ -1,9 +1,12 @@
 import ssl
 
-from infrastructure.websocket.factory import DqBrokerFactory
-from infrastructure.websocket.protocol import DqBrokerProtocol
-from infrastructure.websocket.routing import Router
-from infrastructure.websocket.supervisor import Supervisor
+import os
+
+from definitions import ROOT_DIR
+from dq_broker.infrastructure.websocket.factory import DqBrokerFactory
+from dq_broker.infrastructure.websocket.protocol import DqBrokerProtocol
+from dq_broker.infrastructure.websocket.routing import Router
+from dq_broker.infrastructure.websocket.supervisor import Supervisor
 
 
 def router(c):
@@ -40,7 +43,8 @@ def factory(c):
 def secure_context(c):
     secure_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
     secure_context.load_cert_chain(
-        c('conf')['auth']['crt_path'], c('conf')['auth']['key_path']
+        os.path.join(ROOT_DIR, c('conf')['auth']['crt_path']),
+        os.path.join(ROOT_DIR, c('conf')['auth']['key_path']),
     )
     return secure_context
 

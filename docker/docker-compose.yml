@@ -1,7 +1,7 @@
 version: '2'
 services:
-  app:
-    image: master
+  broker:
+    image: broker
     build:
       context: ../
       dockerfile: ./docker/Dockerfile
@@ -9,13 +9,13 @@ services:
       - LANG=en_US.utf8
 
   tests:
-    extends: app
-    image: master-tests
+    extends: broker
+    image: broker-tests
 
   postgres:
     image: postgres:9.2-alpine
-    container_name: master-postgres
+    container_name: broker-postgres
     environment:
-      - POSTGRES_USER=master_dist_queue
-      - POSTGRES_PASSWORD=master_dist_queue
-      - POSTGRES_DB=master_dist_queue
+      - POSTGRES_USER=dq_broker
+      - POSTGRES_PASSWORD=dq_broker
+      - POSTGRES_DB=dq_broker

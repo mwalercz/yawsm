@@ -1,9 +1,13 @@
+import argparse
 import logging.config
 
 import asyncio
+
+import os
 from autobahn.websocket.util import parse_url
 from knot import Container
 
+from definitions import ROOT_DIR
 from dq_broker.dependencies.app import register_all
 
 
@@ -50,6 +54,19 @@ def make_http_app(c):
         ssl=c('secure_context'),
     )
 
-if __name__ == '__main__':
-    run_app()
 
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-c', dest='config_path', default='develop.ini')
+    parser.add_argument('-l', dest='logging_config_path', default='develop.ini')
+    args = parser.parse_args()
+    run_app(
+        config_path=os.path.join(ROOT_DIR, 'dq_broker/conf', args.config_path),
+        logging_config_path=os.path.join(
+            ROOT_DIR, 'dq_broker/conf/logging', args.logging_config_path
+        ),
+    )
+
+
+if __name__ == '__main__':
+    main()

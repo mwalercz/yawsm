@@ -25,6 +25,11 @@ setup(
     description="dq_broker",
     license="BSD",
     packages=find_packages(include=path_in_project('dq_broker*'), exclude=['tests*']),
+    entry_points={
+        'console_scripts': [
+            'broker = dq_broker.app:main',
+        ],
+    },
     include_package_data=True,
     install_requires=read_requirements('requirements.txt'),
     tests_require=read_requirements('requirements_dev.txt'),

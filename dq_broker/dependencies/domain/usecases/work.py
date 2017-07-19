@@ -1,7 +1,6 @@
 from dq_broker.domain.work.usecases.kill_work import KillWorkUsecase
 from dq_broker.domain.work.usecases.new_work import NewWorkUsecase
 from dq_broker.domain.work.usecases.work_details import WorkDetailsUsecase
-
 from dq_broker.domain.work.usecases.list_work import ListWorkUsecase
 
 

@@ -4,7 +4,7 @@ import traceback
 import asyncio
 
 from dq_broker.exceptions import ValidationError, AccessForbidden
-from infrastructure.websocket.request import Request, Response
+from dq_broker.infrastructure.websocket.request import Request, Response
 
 log = logging.getLogger(__name__)
 

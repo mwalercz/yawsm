@@ -1,7 +1,7 @@
-from infrastructure.http.controllers.user.kill_work import KillWorkController
-from infrastructure.http.controllers.user.list_work import ListWorkController
-from infrastructure.http.controllers.user.new_work import NewWorkController
-from infrastructure.http.controllers.user.work_details import WorkDetailsController
+from dq_broker.infrastructure.http.controllers.user.kill_work import KillWorkController
+from dq_broker.infrastructure.http.controllers.user.list_work import ListWorkController
+from dq_broker.infrastructure.http.controllers.user.new_work import NewWorkController
+from dq_broker.infrastructure.http.controllers.user.work_details import WorkDetailsController
 
 
 def kill_work_controller(c):

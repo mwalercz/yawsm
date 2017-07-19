@@ -1,6 +1,6 @@
 import logging
 
-from domain.exceptions import WorkerNotFound
+from dq_broker.domain.exceptions import WorkerNotFound
 from dq_broker.domain.work.model import WorkStatus, WorkEvent
 
 log = logging.getLogger(__name__)

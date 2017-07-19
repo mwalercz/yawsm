@@ -9,3 +9,5 @@ psycopg2==2.6.2
 pyOpenSSL==16.2.0
 knot==0.4.0
 schematics==2.0.1
+aiohttp
+aiohttp_session

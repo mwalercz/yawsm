@@ -3,7 +3,7 @@ from dq_broker.infrastructure.websocket.controllers.worker.worker_disconnected i
 from dq_broker.infrastructure.websocket.controllers.worker.worker_requests_work import WorkerRequestsWorkController
 
 from dq_broker.infrastructure.websocket.controllers.worker.work_is_done import WorkIsDoneController
-from infrastructure.websocket.controllers.worker.worker_has_work import WorkerHasWorkController
+from dq_broker.infrastructure.websocket.controllers.worker.worker_has_work import WorkerHasWorkController
 
 
 def work_is_done_controller(c):

@@ -6,7 +6,7 @@ from autobahn.websocket import ConnectionDeny
 from dq_broker.exceptions import (
     AuthenticationFailed, ValidationError,
 )
-from infrastructure.websocket.message import IncomingMessage
+from dq_broker.infrastructure.websocket.message import IncomingMessage
 
 log = logging.getLogger(__name__)
 

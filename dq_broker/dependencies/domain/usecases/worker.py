@@ -1,4 +1,4 @@
-from domain.workers.usecases.worker_has_work import WorkerHasWorkUsecase
+from dq_broker.domain.workers.usecases.worker_has_work import WorkerHasWorkUsecase
 from dq_broker.domain.workers.usecases.work_is_done import WorkIsDoneUsecase
 from dq_broker.domain.workers.usecases.worker_disconnected import WorkerDisconnectedUsecase
 from dq_broker.domain.workers.usecases.worker_requests_work import WorkerRequestsWorkUsecase

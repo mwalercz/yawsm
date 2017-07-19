@@ -1,7 +1,7 @@
-from domain.work.model import Work, CommandData
-from infrastructure.auth.user import Credentials
-from infrastructure.websocket.controllers.schema import WorkerHasWorkSchema
-from infrastructure.websocket.request import validate
+from dq_broker.domain.work.model import Work, CommandData
+from dq_broker.infrastructure.auth.user import Credentials
+from dq_broker.infrastructure.websocket.controllers.schema import WorkerHasWorkSchema
+from dq_broker.infrastructure.websocket.request import validate
 
 
 class WorkerHasWorkController:

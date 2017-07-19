@@ -1,7 +1,7 @@
 from schematics import Model
 from schematics.types import IntType, StringType, DictType
 
-from domain.work.model import ALL_WORK_STATUSES
+from dq_broker.domain.work.model import ALL_WORK_STATUSES
 
 
 class WorkIsDoneSchema(Model):

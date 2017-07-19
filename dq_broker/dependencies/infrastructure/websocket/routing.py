@@ -1,4 +1,4 @@
-from infrastructure.websocket.routing import Route as _
+from dq_broker.infrastructure.websocket.routing import Route as _
 
 
 def register_ws_routing(r, c):

@@ -1,7 +1,8 @@
 version: '2'
 services:
-  app:
-    container_name: master
+  broker:
+    container_name: broker
+    command: broker -c docker.ini
     ports:
       - 8000:8000
     volumes:
@@ -10,7 +11,7 @@ services:
       - postgres
 
   tests:
-    command: rm */**__pycache__ -rf && python setup.py test && rm */**__pycache__ -rf
+    command: python setup.py test
     volumes:
       - ../:/usr/src/app
     links:
