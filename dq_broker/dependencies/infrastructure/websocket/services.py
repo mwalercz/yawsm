@@ -30,7 +30,8 @@ def protocol(c):
 
 def factory(c):
     factory = DqBrokerFactory(
-        url=c('conf')['websocket']['url']
+        url=c('conf')['websocket']['url'],
+        loop=c('loop')
     )
     factory.protocol = c('protocol')
     factory.setProtocolOptions(

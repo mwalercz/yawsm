@@ -1,5 +1,6 @@
-import asynctest
+from unittest.mock import Mock
 
+import asyncio
 import pytest
 from dq_broker.infrastructure.auth.worker import WorkerAuthenticationService
 
@@ -11,8 +12,11 @@ pytestmark = pytest.mark.asyncio
 
 @pytest.fixture
 def mock_ssh():
-    ssh = asynctest.Mock(spec=SSHService)
-    ssh.try_to_login.return_value = True
+    ssh = SSHService(
+        hostname='some-hostname',
+        loop=asyncio.get_event_loop()
+    )
+    ssh._try_to_login = Mock(return_value=True)
     return ssh
 
 
@@ -50,6 +54,6 @@ class TestWorkerAuthentication:
     async def test_when_ssh_returns_false_then_authenticate_should_raise(
             self, worker_auth, worker_headers, mock_ssh
     ):
-        mock_ssh.try_to_login.return_value = False
+        mock_ssh._try_to_login.return_value = False
         with pytest.raises(AuthenticationFailed):
             await worker_auth.authenticate(worker_headers)

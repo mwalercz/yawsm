@@ -21,7 +21,7 @@ class DqBrokerProtocol(WebSocketServerProtocol):
             log.info('New connection is being established. %s', request)
             await self.auth.authenticate(headers=request.headers)
             log.info('New connection is opened and authenticated %s', request)
-            return None, {}
+            return None
         except AuthenticationFailed as e:
             log.info(
                 'Failed to authenticate connection. %s. Reason: %s',

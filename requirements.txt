@@ -1,5 +1,5 @@
 aiopg==0.12.0
-autobahn==17.6.2
+autobahn==0.17.2
 cryptography==1.5.2
 iso8601==0.1.11
 peewee==2.8.5
