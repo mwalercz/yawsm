@@ -1,3 +1,4 @@
+import functools
 import paramiko
 from paramiko import SSHClient, SSHException
 
@@ -9,7 +10,8 @@ class SSHService:
 
     async def try_to_login(self, username, password):
         return await self.loop.run_in_executor(
-            functools.partial(self._try_to_login, username, password)
+            executor=None,
+            func=functools.partial(self._try_to_login, username, password)
         )
 
     def _try_to_login(self, username, password):

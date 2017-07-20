@@ -17,9 +17,8 @@ class Credentials:
 
 
 class UserAuthenticationService:
-    def __init__(self, ssh_service, loop):
+    def __init__(self, ssh_service):
         self.ssh_service = ssh_service
-        self.loop = loop
 
     async def authenticate(self, headers):
         try:
