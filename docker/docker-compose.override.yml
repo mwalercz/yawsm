@@ -4,7 +4,8 @@ services:
     container_name: broker
     command: broker -c docker.ini
     ports:
-      - 8000:8000
+      - 9000:9000
+      - 9001:9001
     volumes:
       - ../:/usr/src/app
     links:

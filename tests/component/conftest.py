@@ -1,5 +1,6 @@
 from unittest.mock import Mock
 
+import asynctest
 import pytest
 from knot import Container
 
@@ -15,7 +16,7 @@ def register_mock_clients(c):
 
 
 def ssh(c):
-    ssh = Mock(spec=SSHService)
+    ssh = asynctest.Mock(spec=SSHService)
     ssh.try_to_login.return_value = True
     return ssh
 

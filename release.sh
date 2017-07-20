@@ -8,7 +8,7 @@ IMAGE=dq_broker
 VERSION=`git rev-parse --short HEAD`
 echo "version: $VERSION"
 
-build.sh
+./build.sh
 
 docker tag ${USERNAME}/${IMAGE}:latest ${USERNAME}/${IMAGE}:${VERSION}
 docker push ${USERNAME}/${IMAGE}:latest

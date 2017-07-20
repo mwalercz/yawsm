@@ -3,12 +3,12 @@ from unittest.mock import Mock, ANY
 import pytest
 
 from dq_broker.exceptions import AccessForbidden
-from infrastructure.http.controllers.schema import WorkDetailsSchema
-from infrastructure.websocket.clients import ResponseClient
-from infrastructure.websocket.message import IncomingMessage
-from infrastructure.websocket.request import Response, validate
-from infrastructure.websocket.routing import Route, Router
-from infrastructure.websocket.supervisor import Supervisor
+from dq_broker.infrastructure.http.controllers.schema import WorkDetailsSchema
+from dq_broker.infrastructure.websocket.clients import ResponseClient
+from dq_broker.infrastructure.websocket.message import IncomingMessage
+from dq_broker.infrastructure.websocket.request import Response, validate
+from dq_broker.infrastructure.websocket.routing import Route, Router
+from dq_broker.infrastructure.websocket.supervisor import Supervisor
 
 pytestmark = pytest.mark.asyncio
 

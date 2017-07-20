@@ -17,20 +17,21 @@ class Credentials:
 
 
 class UserAuthenticationService:
-    def __init__(self, ssh_service):
+    def __init__(self, ssh_service, loop):
         self.ssh_service = ssh_service
+        self.loop = loop
 
-    def authenticate(self, headers):
+    async def authenticate(self, headers):
         try:
-            return self._verify_and_get_user_info(
+            return await self._verify_and_get_user_info(
                 username=headers['username'],
                 password=headers['password'],
             )
         except KeyError:
             raise AuthenticationFailed()
 
-    def _verify_and_get_user_info(self, username, password):
-        if not self.ssh_service.try_to_login(username, password):
+    async def _verify_and_get_user_info(self, username, password):
+        if not await self.ssh_service.try_to_login(username, password):
             raise AuthenticationFailed()
         return {
             'username': username,

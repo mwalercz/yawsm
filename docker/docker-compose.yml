@@ -14,7 +14,7 @@ services:
 
   postgres:
     image: postgres:9.2-alpine
-    container_name: broker-postgres
+    container_name: postgres
     environment:
       - POSTGRES_USER=dq_broker
       - POSTGRES_PASSWORD=dq_broker

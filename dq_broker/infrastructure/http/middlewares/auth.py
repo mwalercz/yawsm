@@ -12,7 +12,7 @@ class AuthMiddleware:
         async def middleware_handler(request):
             session = await get_session(request)
             try:
-                user_info = self.auth.authenticate(request.headers)
+                user_info = await self.auth.authenticate(request.headers)
             except AuthenticationFailed:
                 user_info = session.get('user_info')
                 if user_info:

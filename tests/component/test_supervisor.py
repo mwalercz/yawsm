@@ -2,7 +2,7 @@ from unittest.mock import sentinel
 
 import pytest
 
-from infrastructure.websocket.message import IncomingMessage
+from dq_broker.infrastructure.websocket.message import IncomingMessage
 
 pytestmark = pytest.mark.asyncio
 
@@ -17,7 +17,7 @@ class TestWorkerFlows:
             self, worker_auth, worker_headers, supervisor
     ):
         worker_peer = 'worker-peer'
-        worker_auth.authenticate(worker_headers)
+        await worker_auth.authenticate(worker_headers)
         await supervisor.handle_message(
             peer=worker_peer,
             sender=sentinel.sender,

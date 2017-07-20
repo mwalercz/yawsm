@@ -7,9 +7,9 @@ class WorkerAuthenticationService:
     def __init__(self, ssh_service):
         self.ssh_service = ssh_service
 
-    def authenticate(self, headers):
+    async def authenticate(self, headers):
         try:
-            self._verify(
+            await self._verify(
                 headers['username'],
                 headers['password'],
             )
@@ -17,8 +17,8 @@ class WorkerAuthenticationService:
         except KeyError:
             raise AuthenticationFailed()
 
-    def _verify(self, username, password):
-        if not self.ssh_service.try_to_login(username, password):
+    async def _verify(self, username, password):
+        if not await self.ssh_service.try_to_login(username, password):
             raise AuthenticationFailed(
                 'No such user/password combination.'
             )

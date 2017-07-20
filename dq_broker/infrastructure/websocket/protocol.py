@@ -16,10 +16,10 @@ class DqBrokerProtocol(WebSocketServerProtocol):
     auth = NotImplemented
     supervisor = NotImplemented
 
-    def onConnect(self, request):
+    async def onConnect(self, request):
         try:
             log.info('New connection is being established. %s', request)
-            self.auth.authenticate(headers=request.headers)
+            await self.auth.authenticate(headers=request.headers)
             log.info('New connection is opened and authenticated %s', request)
             return None, {}
         except AuthenticationFailed as e:

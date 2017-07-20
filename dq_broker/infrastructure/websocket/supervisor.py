@@ -34,7 +34,7 @@ class Supervisor:
                 sender=sender,
                 peer=peer
             )
-            return await asyncio.ensure_future(route.handler(request))
+            return await route.handler(request)
         except AccessForbidden as exc:
             log.exception(exc)
             return Response(
