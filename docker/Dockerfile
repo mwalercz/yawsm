@@ -5,6 +5,10 @@ RUN apk update \
     musl-dev postgresql-dev make openssh ca-certificates \
     bash
 
+ENV BROKER_DATABASE_NAME=dq_broker \
+    BROKER_DATABASE_USER=dq_broker \
+    BROKER_DATABASE_PASSWORD=dq_broker
+
 # python
 RUN mkdir -p /usr/src/app
 COPY requirements.txt /usr/src/app/

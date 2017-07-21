@@ -4,7 +4,13 @@ from dq_broker.infrastructure.db.work import database, Work, WorkEvent
 
 
 def db(c):
-    database.init(**c('conf')['db'])
+    db_conf = c('conf')['db']
+    database.init(
+        database=db_conf['database'],
+        user=db_conf['user'],
+        password=db_conf['password'],
+        host=db_conf['host']
+    )
     Work.create_table(True)
     WorkEvent.create_table(True)
     return database

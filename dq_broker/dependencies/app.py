@@ -1,6 +1,7 @@
 import asyncio
-from configparser import ConfigParser
+from configparser import SafeConfigParser
 
+import os
 from dq_broker.dependencies.infrastructure.websocket.controllers import (
     register as register_ws_controllers
 )
@@ -46,7 +47,7 @@ from dq_broker.lib.loop_policy import StrictEventLoopPolicy
 
 
 def conf(c):
-    conf = ConfigParser()
+    conf = SafeConfigParser(os.environ)
     conf.read(c('config_path'))
     return conf
 
@@ -60,7 +61,7 @@ def loop(c):
 
 def ssh(c):
     return SSHService(
-        hostname=c('conf')['ssh']['hostname'],
+        hostname=c('conf')['ssh']['host'],
         loop=c('loop'),
     )
 

@@ -2,7 +2,7 @@ version: '2'
 services:
   broker:
     container_name: broker
-    command: broker -c docker.ini
+    command: broker -c env.ini
     ports:
       - 9000:9000
       - 9001:9001
