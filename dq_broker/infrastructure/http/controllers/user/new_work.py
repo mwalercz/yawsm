@@ -3,7 +3,7 @@ from aiohttp_session import get_session
 
 from dq_broker.domain.work.model import CommandData
 from dq_broker.domain.work.model import Work
-from dq_broker.infrastructure.auth.permits import users_must_match
+from dq_broker.infrastructure.auth.permits import users_must_match, auth_required
 from dq_broker.infrastructure.auth.user import Credentials
 from dq_broker.infrastructure.http.controllers.schema import NewWorkSchema
 from dq_broker.infrastructure.http.validator import validate
@@ -13,6 +13,7 @@ class NewWorkController:
     def __init__(self, usecase):
         self.usecase = usecase
 
+    @auth_required
     @users_must_match
     async def handle(self, request):
         data = await request.json()

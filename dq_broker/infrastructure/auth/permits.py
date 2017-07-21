@@ -15,3 +15,8 @@ def users_must_match(func):
         return await func(self, request)
 
     return wrapper
+
+
+def auth_required(func):
+    func._auth_required = True
+    return func

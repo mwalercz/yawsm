@@ -9,6 +9,9 @@ class AuthMiddleware:
         self.auth = auth
 
     async def auth_middleware(self, app, handler):
+        if getattr(handler, '_auth_required', False) is False:
+            return handler
+
         async def middleware_handler(request):
             session = await get_session(request)
             try:
