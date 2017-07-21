@@ -3,7 +3,7 @@ FROM python:3.6.1-alpine
 RUN apk update \
     && apk add gcc libffi-dev openssl openssl-dev python3-dev \
     musl-dev postgresql-dev make openssh ca-certificates \
-    bash
+    bash curl
 
 ENV BROKER_DATABASE_NAME=dq_broker \
     BROKER_DATABASE_USER=dq_broker \
