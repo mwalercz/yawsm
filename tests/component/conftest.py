@@ -4,10 +4,11 @@ import asynctest
 import pytest
 from knot import Container
 
+from dq_broker.dependencies.infrastructure.db import connect_to_db_and_create_tables
 from dq_broker.dependencies.app import *
 from dq_broker.infrastructure.auth.ssh import SSHService
 from dq_broker.infrastructure.db.work import Work, WorkEvent
-from infrastructure.websocket.clients import ResponseClient, WorkerClient
+from dq_broker.infrastructure.websocket.clients import ResponseClient, WorkerClient
 
 
 def register_mock_clients(c):
@@ -41,6 +42,7 @@ def container(conf_path, event_loop):
     register_auth(container)
 
     register_ws(container)
+    connect_to_db_and_create_tables()
 
     return container
 

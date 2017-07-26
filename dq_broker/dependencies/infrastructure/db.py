@@ -11,13 +11,17 @@ def db(c):
         password=db_conf['password'],
         host=db_conf['host']
     )
-    Work.create_table(True)
-    WorkEvent.create_table(True)
     return database
 
 
 def objects(c):
     return Manager(database=c('db'), loop=c('loop'))
+
+
+def connect_to_db_and_create_tables():
+    database.connect()
+    Work.create_table(True)
+    WorkEvent.create_table(True)
 
 
 def register(c):

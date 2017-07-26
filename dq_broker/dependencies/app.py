@@ -26,7 +26,7 @@ from dq_broker.dependencies.infrastructure.auth import (
     register as register_auth
 )
 from dq_broker.dependencies.infrastructure.db import (
-    register as register_db
+    register as register_db,
 )
 from dq_broker.dependencies.infrastructure.serialization import (
     register as register_serialization
@@ -40,7 +40,6 @@ from dq_broker.dependencies.infrastructure.http.services import (
 from dq_broker.dependencies.infrastructure.http.routing import (
     register_http_routing
 )
-
 
 from dq_broker.infrastructure.auth.ssh import SSHService
 from dq_broker.lib.loop_policy import StrictEventLoopPolicy
@@ -87,7 +86,6 @@ def register_http(c):
         r=c('http_router'),
         c=c
     )
-
 
 
 def register_all(c):

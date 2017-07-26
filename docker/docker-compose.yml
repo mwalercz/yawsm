@@ -1,7 +1,7 @@
 version: '2'
 services:
   broker:
-    image: broker
+    image: compose_broker
     build:
       context: ../
       dockerfile: ./docker/Dockerfile
@@ -14,7 +14,7 @@ services:
 
   postgres:
     image: postgres:9.2-alpine
-    container_name: postgres
+    container_name: compose_postgres
     environment:
       - POSTGRES_USER=dq_broker
       - POSTGRES_PASSWORD=dq_broker

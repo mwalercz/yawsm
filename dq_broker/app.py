@@ -4,10 +4,13 @@ import logging.config
 import asyncio
 
 import os
+import time
 from autobahn.websocket.util import parse_url
 from knot import Container
+from peewee import OperationalError
 
 from definitions import ROOT_DIR
+from dq_broker.dependencies.infrastructure.db import connect_to_db_and_create_tables
 from dq_broker.dependencies.app import register_all
 
 
@@ -19,9 +22,10 @@ def run_app(
     c = Container(dict(
         config_path=config_path,
     ))
-    register_all(c)
     log = logging.getLogger(__name__)
-    # c('before_startup')()
+    register_all(c)
+    try_to_connect_to_db(log)
+
     asyncio.ensure_future(make_http_app(c), loop=c('loop'))
     log.info('http started...')
     asyncio.ensure_future(make_ws_app(c), loop=c('loop'))
@@ -32,6 +36,16 @@ def run_app(
     except KeyboardInterrupt:
         # c('before_shutdown')()
         c('loop').close()
+
+
+def try_to_connect_to_db(log):
+    while True:
+        try:
+            connect_to_db_and_create_tables()
+            break
+        except OperationalError as exc:
+            log.info('DB is probably unavailable. ' + str(exc))
+            time.sleep(1)
 
 
 def make_ws_app(c):

@@ -1,7 +1,7 @@
 version: '2'
 services:
   broker:
-    container_name: broker
+    container_name: compose_broker
     command: broker -c env.ini
     ports:
       - 9000:9000
@@ -10,6 +10,9 @@ services:
       - ../:/usr/src/app
     links:
       - postgres
+    environment:
+     - BROKER_DATABASE_HOSTNAME=postgres
+     - BROKER_DATABASE_PASSWORD=dq_broker
 
   tests:
     command: python setup.py test
