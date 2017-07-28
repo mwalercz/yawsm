@@ -7,7 +7,7 @@ from dq_broker.domain.workers.model import Worker
 from dq_broker.domain.workers.notifier import WorkersNotifier
 from dq_broker.domain.workers.picker import FreeWorkersPicker
 from dq_broker.domain.workers.repository import WorkersRepository
-from infrastructure.websocket.clients import WorkerClient
+from dq_broker.infrastructure.websocket.clients import WorkerClient
 
 
 @pytest.fixture

@@ -2,19 +2,31 @@ version: '2'
 services:
   broker:
     image: compose_broker
+    container_name: compose_broker
+    command: broker -c env.ini
     build:
       context: ../
       dockerfile: ./docker/Dockerfile
+    ports:
+      - 9000:9000
+      - 9001:9001
+    network_mode: "host"
+    volumes:
+      - ../:/usr/src/app
     environment:
-      - LANG=en_US.utf8
-
-  tests:
-    extends: broker
-    image: broker-tests
+     - LANG=en_US.utf8
+     - BROKER_DATABASE_HOSTNAME=localhost
+     - BROKER_DATABASE_NAME=dq_broker
+     - BROKER_DATABASE_USER=dq_broker
+     - BROKER_DATABASE_PASSWORD=dq_broker
+     - BROKER_SSH_HOSTNAME=localhost
 
   postgres:
     image: postgres:9.2-alpine
     container_name: compose_postgres
+    ports:
+      - 5432:5432
+    network_mode: "host"
     environment:
       - POSTGRES_USER=dq_broker
       - POSTGRES_PASSWORD=dq_broker

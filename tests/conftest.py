@@ -23,23 +23,6 @@ def pytest_addoption(parser):
 
 
 @pytest.fixture
-def user_headers():
-    return {
-        'username': 'some-user',
-        'password': 'some-pass',
-        'x-parent-pid': 'parent-pid',
-    }
-
-
-@pytest.fixture
-def cookie_headers():
-    return {
-        'x-cookie': 'some-cookie-1',
-        'x-parent-pid': 'parent-pid',
-    }
-
-
-@pytest.fixture
 def conf_path(request):
     conf_name = request.config.getoption("--settings")
     conf_path = os.path.join(ROOT_DIR, 'dq_broker/conf/', conf_name)
@@ -76,6 +59,23 @@ def fixt_objects(fixt_db, event_loop):
 @pytest.fixture
 def fixt_work(fixt_command_data, fixt_credentials):
     return Work.new(fixt_command_data, fixt_credentials)
+
+
+@pytest.fixture
+def user_headers():
+    return {
+        'username': 'some-user',
+        'password': 'some-pass',
+        'x-parent-pid': 'parent-pid',
+    }
+
+
+@pytest.fixture
+def cookie_headers():
+    return {
+        'x-cookie': 'some-cookie-1',
+        'x-parent-pid': 'parent-pid',
+    }
 
 
 @pytest.fixture

@@ -1,9 +1,0 @@
-version: '2'
-services:
-  postgres:
-    image: postgres:9.2-alpine
-    container_name: dq_postgres_exposed
-    environment:
-      - POSTGRES_USER=dq_broker
-    ports:
-      - 5432:5432

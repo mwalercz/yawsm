@@ -1,7 +1,7 @@
 import pytest
 
 from dq_broker.exceptions import ValidationError
-from infrastructure.websocket.message import IncomingMessage
+from dq_broker.infrastructure.websocket.message import IncomingMessage
 
 
 class TestIncomingMessage:

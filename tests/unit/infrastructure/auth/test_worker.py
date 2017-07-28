@@ -5,7 +5,7 @@ import pytest
 from dq_broker.infrastructure.auth.worker import WorkerAuthenticationService
 
 from dq_broker.exceptions import AuthenticationFailed
-from infrastructure.auth.ssh import SSHService
+from dq_broker.infrastructure.auth.ssh import SSHService
 
 pytestmark = pytest.mark.asyncio
 

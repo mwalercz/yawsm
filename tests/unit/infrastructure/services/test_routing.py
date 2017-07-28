@@ -1,7 +1,7 @@
 import pytest
 
 from dq_broker.exceptions import RouteNotFound
-from infrastructure.websocket.routing import Route, Router
+from dq_broker.infrastructure.websocket.routing import Route, Router
 
 
 @pytest.fixture

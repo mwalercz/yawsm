@@ -13,13 +13,15 @@ DOCKER_DIR=${ROOT_DIR}/docker
 KEYS_DIR=${ROOT_DIR}/keys
 
 case ${ARG} in
-    postgres-exposed-up)
-        docker-compose -f ${DOCKER_DIR}/docker-compose.postgres-exposed.yml up -d postgres ;;
-    postgres-exposed-down)
-        docker-compose -f ${DOCKER_DIR}/docker-compose.postgres-exposed.yml down ;;
+    postgres-up)
+        docker-compose -f ${DOCKER_DIR}/docker-compose.yml up -d postgres ;;
+    broker-up)
+        docker-compose -f ${DOCKER_DIR}/docker-compose.yml up -d broker ;;
+    down)
+        docker-compose -f ${DOCKER_DIR}/docker-compose.yml down ;;
     tests)
         docker-compose -f ${DOCKER_DIR}/docker-compose.yml -f \
-        ${DOCKER_DIR}/docker-compose.override.yml up tests ;;
+        ${DOCKER_DIR}/docker-compose.yml up tests ;;
     generate_keys)
         if [ -d "$KEYS_DIR" ]; then
             rm ${KEYS_DIR} -rf
