@@ -57,12 +57,12 @@ def clean_db(container):
 
 @pytest.fixture
 async def new_work_usecase(container):
-    return container('usecases.user.new_work')
+    return container('usecases.work.new_work')
 
 
 @pytest.fixture
 async def kill_work_usecase(container):
-    return container('usecases.user.kill_work')
+    return container('usecases.work.kill_work')
 
 
 @pytest.fixture
@@ -86,13 +86,28 @@ async def work_is_done_usecase(container):
 
 
 @pytest.fixture
+async def worker_system_stat_usecase(container):
+    return container('usecases.worker.system_stat')
+
+
+@pytest.fixture
+async def worker_details_usecase(container):
+    return container('usecases.worker.details')
+
+
+@pytest.fixture
+async def worker_list_usecase(container):
+    return container('usecases.worker.list')
+
+
+@pytest.fixture
 async def work_details_usecase(container):
-    return container('usecases.user.work_details')
+    return container('usecases.work.work_details')
 
 
 @pytest.fixture
 async def list_work_usecase(container):
-    return container('usecases.user.list_work')
+    return container('usecases.work.list_work')
 
 
 @pytest.fixture

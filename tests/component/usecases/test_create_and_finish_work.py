@@ -25,7 +25,7 @@ class TestCreateAndFinishWork:
         and last event should have output.
         """
         work_id = await new_work_usecase.perform(fixt_work)
-        worker_connected_usecase.perform(fixt_worker)
+        await worker_connected_usecase.perform(fixt_worker)
         await worker_requests_work_usecase.perform(fixt_worker.worker_id)
         worker_client.send.assert_called_with(
             action_name='work_to_be_done',
@@ -40,11 +40,10 @@ class TestCreateAndFinishWork:
                 output='doc.txt something.sh'
             )
         )
-        result = await work_details_usecase.perform(
+        work_details = await work_details_usecase.perform(
             work_id, fixt_work.credentials.username
         )
 
-        work_details = result['work']
         assert work_details['status'] == 'finished_with_success'
         work_events = work_details['events']
         assert len(work_events) == 3

@@ -13,6 +13,7 @@ from peewee_async import Manager
 
 from definitions import ROOT_DIR
 from dq_broker.domain.workers.model import Worker
+from dq_broker.infrastructure.websocket.controllers.worker.worker_system_stat import WorkerSystemStat
 
 
 def pytest_addoption(parser):
@@ -111,3 +112,21 @@ def fixt_worker(fixt_worker_id):
         worker_id=fixt_worker_id,
         worker_ref=sentinel.worker_ref,
     )
+
+
+@pytest.fixture
+def worker_system_stat():
+    stat = WorkerSystemStat(
+        {
+            'cpu': {
+                'count': 3,
+                'percent': 15.5
+            },
+            'memory': {
+                'total': 123,
+                'available': 20
+            }
+        }
+    )
+    stat.validate()
+    return stat

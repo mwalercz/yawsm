@@ -48,7 +48,7 @@ class TestCreateAndKillWork:
         Then work_status should be killed.
         """
         work_id = await new_work_usecase.perform(fixt_work)
-        worker_connected_usecase.perform(fixt_worker)
+        await worker_connected_usecase.perform(fixt_worker)
         await worker_requests_work_usecase.perform(worker_id=fixt_worker_id)
         kill_work_result = await kill_work_usecase.perform(
             work_id=work_id, username=fixt_work.credentials.username
@@ -66,10 +66,10 @@ class TestCreateAndKillWork:
             )
         )
 
-        result = await work_details_usecase.perform(
+        work_details = await work_details_usecase.perform(
             work_id=work_id, username=fixt_work.credentials.username
         )
 
-        assert result['work']['status'] == 'killed'
-        assert result['work']['output'] is None
+        assert work_details['status'] == 'killed'
+        assert work_details['output'] is None
 

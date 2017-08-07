@@ -6,7 +6,7 @@ class WorkDetailsUsecase:
         work = await self.work_finder.find_by_work_id_and_username_with_events(
             work_id, username
         )
-        return {'work': self._format_work(work)}
+        return self._format_work(work)
 
     def _format_work(self, work):
         return {

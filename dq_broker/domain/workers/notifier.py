@@ -7,10 +7,11 @@ class WorkersNotifier:
         self.worker_client = worker_client
         self.picker = picker
 
-    def notify(self):
+    async def notify(self):
         if self.work_queue.empty:
             return
-        best_workers = self.picker.pick_best(self.workers_repo.all())
+        workers = self.workers_repo.get_all_workers()
+        best_workers = await self.picker.pick_best(workers)
         for worker in best_workers:
             self.worker_client.send(
                 recipient=worker.worker_ref,

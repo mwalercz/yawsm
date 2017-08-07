@@ -9,6 +9,7 @@ class WorkerHasWorkUsecase:
     async def perform(self, worker_id, work):
         worker = self.workers_repo.get(worker_id)
         worker.assign(work)
+        self.workers_repo.put(worker)
         await self._save_event(worker_id, work)
 
     async def _save_event(self, worker_id, work):

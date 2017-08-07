@@ -26,6 +26,7 @@ class WorkIsDoneUsecase:
         try:
             worker = self.workers_repo.get(dto.worker_id)
             worker.work_finished(dto.work_id)
+            self.workers_repo.put(worker)
         except WorkerNotFound:
             log.warning(
                 'Worker: %s not found in repository, '

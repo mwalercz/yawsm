@@ -3,7 +3,7 @@ from unittest.mock import Mock
 import pytest
 
 from dq_broker import exceptions
-from dq_broker.infrastructure.websocket.controllers.schema import WorkIsDoneSchema
+from dq_broker.infrastructure.websocket.controllers.worker.work_is_done import WorkIsDoneSchema
 from dq_broker.infrastructure.websocket.message import IncomingMessage
 from dq_broker.infrastructure.websocket.request import Request, validate
 

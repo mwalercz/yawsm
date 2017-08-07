@@ -1,4 +1,9 @@
+from typing import List
+
+from copy import copy
+
 from dq_broker.domain.exceptions import WorkerNotFound
+from dq_broker.domain.workers.model import Worker
 
 
 class WorkersRepository:
@@ -11,9 +16,9 @@ class WorkersRepository:
     def remove(self, worker_id):
         del self.workers[worker_id]
 
-    def get(self, worker_id):
+    def get(self, worker_id) -> Worker:
         try:
-            return self.workers[worker_id]
+            return copy(self.workers[worker_id])
         except KeyError:
             raise WorkerNotFound(worker_id)
 
@@ -30,5 +35,8 @@ class WorkersRepository:
         except IndexError:
             raise WorkerNotFound()
 
-    def all(self):
+    def get_all_workers(self) -> List[Worker]:
         return [w for w in self.workers.values()]
+
+    def get_free_workers(self):
+        return [w for w in self.get_all_workers() if not w.has_work()]

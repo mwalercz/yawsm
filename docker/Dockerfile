@@ -26,7 +26,7 @@ RUN ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa \
 && 	ssh-keygen -f /etc/ssh/ssh_host_dsa_key -N '' -t dsa \
 &&  mkdir -p /var/run/sshd
 
-# user
+# work
 RUN adduser -S test -s /bin/bash
 RUN echo 'test:test' | chpasswd
 

@@ -4,7 +4,7 @@ import pytest
 from dq_broker.domain.exceptions import WorkNotFound
 from dq_broker.domain.work.model import WorkStatus
 from dq_broker.domain.work.repository import WorkFinder
-from dq_broker.domain.work.usecases.work_details import WorkDetailsUsecase
+from dq_broker.domain.work.usecases.details import WorkDetailsUsecase
 from dq_broker.infrastructure.db.work import WorkEvent, Work
 from tests.unit.domain.utils import parse_to_datetime
 
@@ -85,44 +85,42 @@ class TestWorkDetails:
             .find_by_work_id_and_username_with_events \
             .assert_called_once_with(fixt_db_work_id, 'test-user')
         assert result == {
-            'work': {
-                'work_id': fixt_db_work_id,
-                'command': 'ls',
-                'cwd': '/home/user',
-                'environment': {},
-                'output': 'this.txt that.sh',
-                'status': 'finished_with_success',
-                'created_at': '2017-01-02T20:21:23',
-                'events': [
-                    {
-                        'event_id': 1,
-                        'event_type': 'work_created',
-                        'status': 'new',
-                        'created_at': '2017-01-02T20:21:23',
-                        'context': {},
-                    },
-                    {
-                        'event_id': 2,
-                        'event_type': 'work_assigned',
-                        'status': 'processing',
-                        'created_at': '2017-01-02T20:21:24',
-                        'context': {
-                            'worker_id': fixt_worker_id
-                        }
-                    },
-                    {
-                        'event_id': 3,
-                        'event_type': 'work_finished',
-                        'status': 'finished_with_success',
-                        'created_at': '2017-01-02T20:21:25',
-                        'context': {
-                            'worker_id': fixt_worker_id,
-                            'output': 'this.txt that.sh',
-                        }
+            'work_id': fixt_db_work_id,
+            'command': 'ls',
+            'cwd': '/home/user',
+            'environment': {},
+            'output': 'this.txt that.sh',
+            'status': 'finished_with_success',
+            'created_at': '2017-01-02T20:21:23',
+            'events': [
+                {
+                    'event_id': 1,
+                    'event_type': 'work_created',
+                    'status': 'new',
+                    'created_at': '2017-01-02T20:21:23',
+                    'context': {},
+                },
+                {
+                    'event_id': 2,
+                    'event_type': 'work_assigned',
+                    'status': 'processing',
+                    'created_at': '2017-01-02T20:21:24',
+                    'context': {
+                        'worker_id': fixt_worker_id
                     }
-                ]
+                },
+                {
+                    'event_id': 3,
+                    'event_type': 'work_finished',
+                    'status': 'finished_with_success',
+                    'created_at': '2017-01-02T20:21:25',
+                    'context': {
+                        'worker_id': fixt_worker_id,
+                        'output': 'this.txt that.sh',
+                    }
+                }
+            ]
 
-            }
         }
 
     async def test_work_details_when_work_not_found(self, fixt_db_work_id):

@@ -8,7 +8,7 @@ class WorkerConnectedUsecase:
         self.workers_repo = workers_repo
         self.workers_notifier = workers_notifier
 
-    def perform(self, worker):
+    async def perform(self, worker):
         self.workers_repo.put(worker)
-        self.workers_notifier.notify()
+        await self.workers_notifier.notify()
         log.info('New worker: %s connected', worker.worker_id)

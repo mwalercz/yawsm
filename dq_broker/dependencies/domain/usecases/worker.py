@@ -1,8 +1,12 @@
+import datetime
+
+from dq_broker.domain.workers.usecases.details import WorkerDetailsUsecase
+from dq_broker.domain.workers.usecases.list import WorkerListUsecase
 from dq_broker.domain.workers.usecases.worker_has_work import WorkerHasWorkUsecase
 from dq_broker.domain.workers.usecases.work_is_done import WorkIsDoneUsecase
 from dq_broker.domain.workers.usecases.worker_disconnected import WorkerDisconnectedUsecase
 from dq_broker.domain.workers.usecases.worker_requests_work import WorkerRequestsWorkUsecase
-
+from dq_broker.domain.workers.usecases.worker_system_stat import WorkerSystemStatUsecase
 from dq_broker.domain.workers.usecases.worker_connected import WorkerConnectedUsecase
 
 
@@ -45,10 +49,31 @@ def worker_has_work_usecase(c):
     )
 
 
+def worker_system_stat_usecase(c):
+    return WorkerSystemStatUsecase(
+        workers_repo=c('workers_repo'),
+        current_datetime=datetime.datetime.now,
+    )
+
+
+def worker_list_usecase(c):
+    return WorkerListUsecase(
+        workers_repo=c('workers_repo')
+    )
+
+
+def worker_details_usecase(c):
+    return WorkerDetailsUsecase(
+        workers_repo=c('workers_repo')
+    )
+
+
 def register(c):
     c.add_service(work_is_done_usecase, 'usecases.worker.work_is_done')
     c.add_service(worker_connected_usecase, 'usecases.worker.worker_connected')
     c.add_service(worker_disconnected_usecase, 'usecases.worker.worker_disconnected')
     c.add_service(worker_requests_work_usecase, 'usecases.worker.worker_requests_work')
     c.add_service(worker_has_work_usecase, 'usecases.worker.worker_has_work')
-
+    c.add_service(worker_system_stat_usecase, 'usecases.worker.system_stat')
+    c.add_service(worker_list_usecase, 'usecases.worker.list')
+    c.add_service(worker_details_usecase, 'usecases.worker.details')

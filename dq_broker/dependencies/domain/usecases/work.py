@@ -1,7 +1,7 @@
-from dq_broker.domain.work.usecases.kill_work import KillWorkUsecase
-from dq_broker.domain.work.usecases.new_work import NewWorkUsecase
-from dq_broker.domain.work.usecases.work_details import WorkDetailsUsecase
-from dq_broker.domain.work.usecases.list_work import ListWorkUsecase
+from dq_broker.domain.work.usecases.kill import KillWorkUsecase
+from dq_broker.domain.work.usecases.new import NewWorkUsecase
+from dq_broker.domain.work.usecases.details import WorkDetailsUsecase
+from dq_broker.domain.work.usecases.list import ListWorkUsecase
 
 
 def kill_work_usecase(c):
@@ -35,7 +35,7 @@ def work_details_usecase(c):
 
 
 def register(c):
-    c.add_service(kill_work_usecase, 'usecases.user.kill_work')
-    c.add_service(list_work_usecase, 'usecases.user.list_work')
-    c.add_service(new_work_usecase, 'usecases.user.new_work')
-    c.add_service(work_details_usecase, 'usecases.user.work_details')
+    c.add_service(kill_work_usecase, 'usecases.work.kill_work')
+    c.add_service(list_work_usecase, 'usecases.work.list_work')
+    c.add_service(new_work_usecase, 'usecases.work.new_work')
+    c.add_service(work_details_usecase, 'usecases.work.work_details')

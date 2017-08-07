@@ -35,8 +35,8 @@ class UserAuthenticationService:
         return {
             'username': username,
             'password': password,
-            'is_super_user': self._is_super_user(username)
+            'is_admin': self._is_admin(username)
         }
 
-    def _is_super_user(self, usernamer):
+    def _is_admin(self, username):
         return False

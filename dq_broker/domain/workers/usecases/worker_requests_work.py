@@ -24,6 +24,7 @@ class WorkerRequestsWorkUsecase:
         work = self.work_queue.pop()
         worker = self.workers_repo.get(worker_id)
         worker.assign(work)
+        self.workers_repo.put(worker)
         self.worker_client.send(
             recipient=worker.worker_ref,
             action_name='work_to_be_done',

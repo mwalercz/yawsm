@@ -8,5 +8,5 @@ class NewWorkUsecase:
         work_id = await self.work_saver.save_new(work)
         work.set_id(work_id)
         self.work_queue.put(work)
-        self.workers_notifier.notify()
+        await self.workers_notifier.notify()
         return work_id

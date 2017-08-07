@@ -1,12 +1,19 @@
 from aiohttp import web
 from aiohttp_session import get_session
+from schematics import Model
+from schematics.types import StringType, DictType
 
 from dq_broker.domain.work.model import CommandData
 from dq_broker.domain.work.model import Work
 from dq_broker.infrastructure.auth.permits import users_must_match, auth_required
 from dq_broker.infrastructure.auth.user import Credentials
-from dq_broker.infrastructure.http.controllers.schema import NewWorkSchema
 from dq_broker.infrastructure.http.validator import validate
+
+
+class NewWorkSchema(Model):
+    command = StringType(required=True)
+    cwd = StringType(required=True)
+    env = DictType(StringType, default={})
 
 
 class NewWorkController:

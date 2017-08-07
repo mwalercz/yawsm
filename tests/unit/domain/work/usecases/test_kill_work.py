@@ -5,7 +5,7 @@ import pytest
 from dq_broker.domain.exceptions import WorkNotFound, WorkerNotFound
 from dq_broker.domain.work.model import WorkStatus
 from dq_broker.domain.work.repository import WorkEventSaver, WorkFinder
-from dq_broker.domain.work.usecases.kill_work import KillWorkUsecase
+from dq_broker.domain.work.usecases.kill import KillWorkUsecase
 from dq_broker.domain.workers.repository import WorkersRepository
 from dq_broker.infrastructure.db.work import Work
 

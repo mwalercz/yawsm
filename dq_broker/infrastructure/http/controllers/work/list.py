@@ -5,7 +5,7 @@ from dq_broker.infrastructure.http.controllers.schema import UsernameSchema
 from dq_broker.infrastructure.http.validator import validate
 
 
-class ListWorkController:
+class ListWorksController:
     def __init__(self, usecase):
         self.usecase = usecase
 

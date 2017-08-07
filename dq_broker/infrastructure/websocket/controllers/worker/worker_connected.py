@@ -10,4 +10,4 @@ class WorkerConnectedController:
             worker_id=request.peer,
             worker_ref=request.sender,
         )
-        self.usecase.perform(worker)
+        await self.usecase.perform(worker)

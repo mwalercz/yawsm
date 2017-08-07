@@ -1,7 +1,18 @@
+from schematics import Model
+from schematics.types import IntType, StringType, DictType
+
 from dq_broker.domain.work.model import Work, CommandData
 from dq_broker.infrastructure.auth.user import Credentials
-from dq_broker.infrastructure.websocket.controllers.schema import WorkerHasWorkSchema
 from dq_broker.infrastructure.websocket.request import validate
+
+
+class WorkerHasWorkSchema(Model):
+    work_id = IntType(required=True)
+    username = StringType(required=True)
+    password = StringType(required=True)
+    command = StringType(required=True)
+    cwd = StringType(required=True)
+    env = DictType(field=StringType, required=True)
 
 
 class WorkerHasWorkController:

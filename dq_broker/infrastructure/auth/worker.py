@@ -20,7 +20,7 @@ class WorkerAuthenticationService:
     async def _verify(self, username, password):
         if not await self.ssh_service.try_to_login(username, password):
             raise AuthenticationFailed(
-                'No such user/password combination.'
+                'No such work/password combination.'
             )
         if not self._can_be_worker(username):
             raise AuthenticationFailed(

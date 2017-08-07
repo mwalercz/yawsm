@@ -3,7 +3,7 @@ from unittest.mock import sentinel
 import asynctest
 import pytest
 from dq_broker.domain.work.repository import WorkSaver
-from dq_broker.domain.work.usecases.new_work import NewWorkUsecase
+from dq_broker.domain.work.usecases.new import NewWorkUsecase
 from dq_broker.domain.workers.repository import WorkersRepository
 
 from dq_broker.domain.work.work_queue import WorkQueue

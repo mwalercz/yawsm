@@ -4,12 +4,12 @@ from dq_broker.domain.exceptions import InvalidStateException
 
 log = logging.getLogger(__name__)
 
-
 class Worker:
     def __init__(self, worker_id, worker_ref, current_work=None):
         self.worker_id = worker_id
         self.worker_ref = worker_ref
         self.current_work = current_work
+        self.system_stats = []
 
     def has_work(self):
         return bool(self.current_work)
@@ -58,3 +58,11 @@ class Worker:
                 worker_id=self.worker_id, work=not_finished_work))
         return not_finished_work
 
+    def append_system_stat(self, system_stat):
+        self.system_stats.append(system_stat)
+
+    def get_last_system_stat(self):
+        if len(self.system_stats) > 0:
+            return self.system_stats[-1]
+        else:
+            return None

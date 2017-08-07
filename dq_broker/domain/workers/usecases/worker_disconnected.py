@@ -25,7 +25,7 @@ class WorkerDisconnectedUsecase:
         not_finished_work = worker.remove()
         if not_finished_work:
             self.work_queue.put(not_finished_work)
-            self.workers_notifier.notify()
+            await self.workers_notifier.notify()
             event = WorkEvent(
                 work_id=not_finished_work.work_id,
                 event_type='worker_disconnected',
