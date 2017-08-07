@@ -7,7 +7,7 @@ def users_must_match(func):
         param_username = request.match_info['username']
         session = await get_session(request)
         if (
-                session['user_info']['is_super_user']
+                session['user_info']['is_admin']
                 or session['user_info']['username'] == param_username
         ):
             return await func(self, request)
