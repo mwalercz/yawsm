@@ -2,11 +2,11 @@ from unittest.mock import sentinel
 
 import asynctest
 import pytest
-from dq_broker.domain.work.repository import WorkSaver
-from dq_broker.domain.work.usecases.new import NewWorkUsecase
-from dq_broker.domain.workers.repository import WorkersRepository
 
+from dq_broker.domain.work.usecases.new import NewWorkUsecase
 from dq_broker.domain.work.work_queue import WorkQueue
+from dq_broker.infrastructure.repositories.work import WorkSaver
+from dq_broker.infrastructure.repositories.worker import WorkerRepository
 from tests.unit.domain.utils import assert_work_is_ready_sent_to_2_workers
 
 
@@ -16,9 +16,9 @@ class TestNewWorkUsecase:
             self, notifier, fixt_work, mock_worker_client
     ):
         """
-        Given two workers in repo and no work in queue,
+        Given two worker in repo and no work in queue,
         When new work comes,
-        Then two workers should be notified.
+        Then two worker should be notified.
         """
         work_saver = asynctest.Mock(spec=WorkSaver)
         work_queue = WorkQueue()
@@ -38,13 +38,13 @@ class TestNewWorkUsecase:
             self, notifier, fixt_work, mock_worker_client
     ):
         """
-        Given no workers in repo and no work in queue,
+        Given no worker in repo and no work in queue,
         When new work comes,
         Then nobody should be notified.
         """
         work_saver = asynctest.Mock(spec=WorkSaver)
         work_queue = WorkQueue()
-        notifier.workers_repo = WorkersRepository()
+        notifier.workers_repo = WorkerRepository()
         work_saver.save_new.return_value = sentinel.work_id
         usecase = NewWorkUsecase(
             work_queue=work_queue,

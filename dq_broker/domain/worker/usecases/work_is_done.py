@@ -1,9 +1,8 @@
 import logging
 
 from dq_broker.domain.exceptions import WorkerNotFound
-from dq_broker.domain.workers.repository import WorkersRepository
-
 from dq_broker.domain.work.model import WorkEvent
+from dq_broker.infrastructure.repositories.worker import WorkerRepository
 
 
 log = logging.getLogger(__name__)
@@ -18,7 +17,7 @@ class WorkIsDoneDto:
 
 
 class WorkIsDoneUsecase:
-    def __init__(self, workers_repo: WorkersRepository, event_saver):
+    def __init__(self, workers_repo: WorkerRepository, event_saver):
         self.workers_repo = workers_repo
         self.event_saver = event_saver
 

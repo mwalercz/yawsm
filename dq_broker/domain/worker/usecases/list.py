@@ -1,10 +1,10 @@
-from dq_broker.domain.workers.model import Worker
-from dq_broker.domain.workers.repository import WorkersRepository
+from dq_broker.domain.worker.model import Worker
+from dq_broker.infrastructure.repositories.worker import WorkerRepository
 from dq_broker.infrastructure.websocket.controllers.worker.worker_system_stat import WorkerSystemStat
 
 
 class WorkerListUsecase:
-    def __init__(self, workers_repo: WorkersRepository):
+    def __init__(self, workers_repo: WorkerRepository):
         self.workers_repo = workers_repo
 
     async def perform(self):

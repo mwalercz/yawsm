@@ -1,5 +1,7 @@
 from typing import List
 
+from peewee_async import Manager
+
 import dq_broker
 from dq_broker.domain.exceptions import WorkNotFound
 from dq_broker.domain.work.model import WorkStatus
@@ -8,7 +10,7 @@ from dq_broker.infrastructure.db.work import Work, WorkEvent
 
 
 class WorkSaver:
-    def __init__(self, objects):
+    def __init__(self, objects: Manager):
         self.objects = objects
 
     async def save_new(self, work) -> int:
@@ -30,7 +32,7 @@ class WorkSaver:
 
 
 class WorkEventSaver:
-    def __init__(self, objects):
+    def __init__(self, objects: Manager):
         self.objects = objects
 
     async def save_event(self, work_event: dq_broker.domain.work.model.WorkEvent):
@@ -51,7 +53,7 @@ class WorkEventSaver:
 
 
 class WorkFinder:
-    def __init__(self, objects):
+    def __init__(self, objects: Manager):
         self.objects = objects
 
     async def find_by_work_id_and_username(

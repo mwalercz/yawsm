@@ -1,13 +1,13 @@
 import datetime
 
-from dq_broker.domain.workers.usecases.details import WorkerDetailsUsecase
-from dq_broker.domain.workers.usecases.list import WorkerListUsecase
-from dq_broker.domain.workers.usecases.worker_has_work import WorkerHasWorkUsecase
-from dq_broker.domain.workers.usecases.work_is_done import WorkIsDoneUsecase
-from dq_broker.domain.workers.usecases.worker_disconnected import WorkerDisconnectedUsecase
-from dq_broker.domain.workers.usecases.worker_requests_work import WorkerRequestsWorkUsecase
-from dq_broker.domain.workers.usecases.worker_system_stat import WorkerSystemStatUsecase
-from dq_broker.domain.workers.usecases.worker_connected import WorkerConnectedUsecase
+from dq_broker.domain.worker.usecases.details import WorkerDetailsUsecase
+from dq_broker.domain.worker.usecases.list import WorkerListUsecase
+from dq_broker.domain.worker.usecases.worker_has_work import WorkerHasWorkUsecase
+from dq_broker.domain.worker.usecases.work_is_done import WorkIsDoneUsecase
+from dq_broker.domain.worker.usecases.worker_disconnected import WorkerDisconnectedUsecase
+from dq_broker.domain.worker.usecases.worker_requests_work import WorkerRequestsWorkUsecase
+from dq_broker.domain.worker.usecases.worker_system_stat import WorkerSystemStatUsecase
+from dq_broker.domain.worker.usecases.worker_connected import WorkerConnectedUsecase
 
 
 def work_is_done_usecase(c):

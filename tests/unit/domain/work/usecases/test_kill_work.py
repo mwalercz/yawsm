@@ -2,14 +2,14 @@ from unittest.mock import Mock, sentinel
 
 import asynctest
 import pytest
+
 from dq_broker.domain.exceptions import WorkNotFound, WorkerNotFound
 from dq_broker.domain.work.model import WorkStatus
-from dq_broker.domain.work.repository import WorkEventSaver, WorkFinder
 from dq_broker.domain.work.usecases.kill import KillWorkUsecase
-from dq_broker.domain.workers.repository import WorkersRepository
+from dq_broker.domain.worker.model import Worker
 from dq_broker.infrastructure.db.work import Work
-
-from dq_broker.domain.workers.model import Worker
+from dq_broker.infrastructure.repositories.work import WorkEventSaver, WorkFinder
+from dq_broker.infrastructure.repositories.worker import WorkerRepository
 
 
 @pytest.fixture
@@ -24,7 +24,7 @@ def mock_work_finder():
 
 @pytest.fixture
 def mock_workers_repo():
-    return Mock(spec=WorkersRepository)
+    return Mock(spec=WorkerRepository)
 
 
 @pytest.fixture

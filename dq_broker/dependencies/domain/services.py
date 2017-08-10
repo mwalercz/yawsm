@@ -1,9 +1,8 @@
-from dq_broker.domain.work.repository import WorkEventSaver, WorkSaver, WorkFinder
-from dq_broker.domain.workers.notifier import WorkersNotifier
-from dq_broker.domain.workers.picker import FreeWorkersPicker
-from dq_broker.domain.workers.repository import WorkersRepository
-
 from dq_broker.domain.work.work_queue import WorkQueue
+from dq_broker.domain.worker.notifier import WorkersNotifier
+from dq_broker.domain.worker.picker import FreeWorkersPicker
+from dq_broker.infrastructure.repositories.work import WorkEventSaver, WorkSaver, WorkFinder
+from dq_broker.infrastructure.repositories.worker import WorkerRepository
 
 
 def picker(c):
@@ -24,7 +23,7 @@ def work_queue(c):
 
 
 def workers_repo(c):
-    return WorkersRepository()
+    return WorkerRepository()
 
 
 def event_saver(c):

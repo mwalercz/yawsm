@@ -4,6 +4,7 @@ from dq_broker.domain.exceptions import InvalidStateException
 
 log = logging.getLogger(__name__)
 
+
 class Worker:
     def __init__(self, worker_id, worker_ref, current_work=None):
         self.worker_id = worker_id

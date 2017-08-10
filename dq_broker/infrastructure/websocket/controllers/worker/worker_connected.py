@@ -1,4 +1,4 @@
-from dq_broker.domain.workers.model import Worker
+from dq_broker.domain.worker.model import Worker
 
 
 class WorkerConnectedController:

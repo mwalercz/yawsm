@@ -42,7 +42,7 @@ class DqBrokerProtocol(WebSocketServerProtocol):
     async def onMessage(self, payload, isBinary):
         try:
             raw_message = self.deserializer.deserialize(payload)
-            log.info('New message: %s from: %s', raw_message, self.peer)
+            log.debug('New message: %s from: %s', raw_message, self.peer)
             message = IncomingMessage.from_raw(raw_message)
         except ValidationError as exc:
             log.exception(exc)
@@ -59,6 +59,10 @@ class DqBrokerProtocol(WebSocketServerProtocol):
 
     async def onPong(self, payload):
         system_info = self.deserializer.deserialize(payload)
+        log.info(
+            'pong, worker_system_info: %s from %s',
+            system_info, self.peer
+        )
         self.supervisor.handle_message(
             sender=self,
             peer=self.peer,

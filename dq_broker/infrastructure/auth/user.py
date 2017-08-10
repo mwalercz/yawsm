@@ -1,8 +1,15 @@
+import logging
+from typing import Dict
+
 from dq_broker.exceptions import AuthenticationFailed
+from dq_broker.infrastructure.auth.ssh import SSHService
+from dq_broker.infrastructure.repositories.user import UserRepository
+
+log = logging.getLogger(__name__)
 
 
 class Credentials:
-    def __init__(self, username, password):
+    def __init__(self, username: str, password: str):
         self.username = username
         self.password = password
 
@@ -17,10 +24,11 @@ class Credentials:
 
 
 class UserAuthenticationService:
-    def __init__(self, ssh_service):
+    def __init__(self, ssh_service: SSHService, user_repo: UserRepository):
         self.ssh_service = ssh_service
+        self.user_repo = user_repo
 
-    async def authenticate(self, headers):
+    async def authenticate(self, headers: Dict[str, str]):
         try:
             return await self._verify_and_get_user_info(
                 username=headers['username'],
@@ -32,11 +40,11 @@ class UserAuthenticationService:
     async def _verify_and_get_user_info(self, username, password):
         if not await self.ssh_service.try_to_login(username, password):
             raise AuthenticationFailed()
+        user, was_created = await self.user_repo.get_or_create(username)
+        if was_created:
+            log.info('New user was created: {}'.format(user.username))
         return {
-            'username': username,
+            'username': user.username,
             'password': password,
-            'is_admin': self._is_admin(username)
+            'is_admin': user.is_admin,
         }
-
-    def _is_admin(self, username):
-        return False

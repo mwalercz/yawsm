@@ -15,11 +15,12 @@ services:
       - ../:/usr/src/app
     environment:
      - LANG=en_US.utf8
-     - BROKER_DATABASE_HOSTNAME=localhost
+     - BROKER_DATABASE_HOSTNAME=127.0.0.1
      - BROKER_DATABASE_NAME=dq_broker
      - BROKER_DATABASE_USER=dq_broker
      - BROKER_DATABASE_PASSWORD=dq_broker
-     - BROKER_SSH_HOSTNAME=localhost
+     - BROKER_WEBSOCKET_PING_INTERVAL=2
+     - BROKER_WEBSOCKET_PING_TIMEOUT=2
 
   postgres:
     image: postgres:9.2-alpine

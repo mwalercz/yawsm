@@ -8,6 +8,11 @@ class WorkNotFound(Exception):
         self.username = username
 
 
+class UserNotFound(Exception):
+    def __init__(self, username):
+        self.username = username
+
+
 class InvalidArgumentException(Exception):
     pass
 

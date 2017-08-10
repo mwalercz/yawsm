@@ -1,10 +1,10 @@
 import pytest
 
-from dq_broker.domain.workers.model import Worker
-from dq_broker.domain.workers.usecases.details import WorkerDetailsUsecase
-from dq_broker.domain.workers.usecases.list import WorkerListUsecase
-from dq_broker.domain.workers.usecases.worker_connected import WorkerConnectedUsecase
-from dq_broker.domain.workers.usecases.worker_system_stat import WorkerSystemStatUsecase
+from dq_broker.domain.worker.model import Worker
+from dq_broker.domain.worker.usecases.details import WorkerDetailsUsecase
+from dq_broker.domain.worker.usecases.list import WorkerListUsecase
+from dq_broker.domain.worker.usecases.worker_connected import WorkerConnectedUsecase
+from dq_broker.domain.worker.usecases.worker_system_stat import WorkerSystemStatUsecase
 
 from dq_broker.infrastructure.websocket.controllers.worker.worker_system_stat import WorkerSystemStat
 

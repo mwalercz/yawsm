@@ -1,7 +1,7 @@
 import pytest
 
 from dq_broker.domain.work.model import WorkStatus
-from dq_broker.domain.workers.usecases.work_is_done import WorkIsDoneDto
+from dq_broker.domain.worker.usecases.work_is_done import WorkIsDoneDto
 
 pytestmark = pytest.mark.asyncio
 
@@ -11,7 +11,7 @@ class TestCreateAndKillWork:
             self, fixt_work, new_work_usecase, kill_work_usecase
     ):
         """
-        Given new work was submitted, no workers in system and kill_work was submitted_once,
+        Given new work was submitted, no worker in system and kill_work was submitted_once,
         When kill_work is performed second time,
         Then work_already_in_final_status should be returned.
         """

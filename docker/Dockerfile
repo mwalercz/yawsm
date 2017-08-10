@@ -19,7 +19,7 @@ COPY ./docker/entrypoint.sh /usr/bin/entrypoint
 COPY ./bin/dq.sh /usr/bin/dq
 RUN chmod 755 /usr/bin/entrypoint \
 && chmod 755 /usr/bin/dq
-RUN ["dq", "generate_keys"]
+RUN ["dq", "generate_keys", "broker"]
 
 # ssh
 RUN ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa \

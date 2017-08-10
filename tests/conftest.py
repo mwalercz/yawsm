@@ -8,11 +8,11 @@ import pytest
 import dq_broker
 from dq_broker.domain.work.model import Work, CommandData
 from dq_broker.infrastructure.auth.user import Credentials
-from dq_broker.infrastructure.db.work import database
+from dq_broker.infrastructure.db.base import database
 from peewee_async import Manager
 
 from definitions import ROOT_DIR
-from dq_broker.domain.workers.model import Worker
+from dq_broker.domain.worker.model import Worker
 from dq_broker.infrastructure.websocket.controllers.worker.worker_system_stat import WorkerSystemStat
 
 

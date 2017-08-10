@@ -1,6 +1,8 @@
 from peewee_async import Manager
 
-from dq_broker.infrastructure.db.work import database, Work, WorkEvent
+from dq_broker.infrastructure.db.base import database
+from dq_broker.infrastructure.db.user import User
+from dq_broker.infrastructure.db.work import Work, WorkEvent
 
 
 def db(c):
@@ -20,6 +22,7 @@ def objects(c):
 
 def connect_to_db_and_create_tables():
     database.connect()
+    User.create_table(True)
     Work.create_table(True)
     WorkEvent.create_table(True)
 
