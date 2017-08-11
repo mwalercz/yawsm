@@ -7,7 +7,7 @@ from dq_broker.domain.work.usecases.list import ListWorkUsecase
 def kill_work_usecase(c):
     return KillWorkUsecase(
         work_queue=c('work_queue'),
-        workers_repo=c('workers_repo'),
+        worker_repo=c('worker_repo'),
         event_saver=c('event_saver'),
         work_finder=c('work_finder'),
         worker_client=c('worker_client')

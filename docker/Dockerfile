@@ -26,9 +26,11 @@ RUN ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa \
 && 	ssh-keygen -f /etc/ssh/ssh_host_dsa_key -N '' -t dsa \
 &&  mkdir -p /var/run/sshd
 
-# work
-RUN adduser -S test -s /bin/bash
-RUN echo 'test:test' | chpasswd
+# users
+RUN adduser -S test -s /bin/bash \
+&& echo 'test:test' | chpasswd \
+&& adduser -S admin -s /bin/bash \
+&& echo 'admin:admin' | chpasswd
 
 RUN pip install -e . \
 && pip install -r requirements_dev.txt

@@ -1,3 +1,4 @@
+import logging
 from peewee_async import Manager
 
 from dq_broker.infrastructure.db.base import database
@@ -25,6 +26,17 @@ def connect_to_db_and_create_tables():
     User.create_table(True)
     Work.create_table(True)
     WorkEvent.create_table(True)
+
+
+def create_admin_if_does_not_exist():
+    user, was_created = User.get_or_create(
+        is_admin=True,
+        defaults=dict(
+            username='admin',
+            password='admin',
+            is_admin=True
+        )
+    )
 
 
 def register(c):

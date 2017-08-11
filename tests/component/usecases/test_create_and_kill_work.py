@@ -8,22 +8,22 @@ pytestmark = pytest.mark.asyncio
 
 class TestCreateAndKillWork:
     async def test_kill_work_twice(
-            self, fixt_work, new_work_usecase, kill_work_usecase
+            self, fixt_new_work, new_work_usecase, kill_work_usecase, fixt_user
     ):
         """
         Given new work was submitted, no worker in system and kill_work was submitted_once,
         When kill_work is performed second time,
         Then work_already_in_final_status should be returned.
         """
-        work_id = await new_work_usecase.perform(fixt_work)
+        work_id = await new_work_usecase.perform(fixt_new_work, fixt_user)
         kill_work_1_result = await kill_work_usecase.perform(
             work_id=work_id,
-            username=fixt_work.credentials.username,
+            user_id=fixt_user.user_id,
         )
 
         kill_work_2_result = await kill_work_usecase.perform(
             work_id=work_id,
-            username=fixt_work.credentials.username
+            user_id=fixt_user.user_id
         )
 
         assert kill_work_1_result == {'status': 'work_killed_in_queue'}
@@ -33,7 +33,12 @@ class TestCreateAndKillWork:
         }
 
     async def test_kill_work_after_giving_job_to_worker(
-            self, fixt_work, fixt_worker, fixt_worker_id,
+            self,
+            fixt_work,
+            fixt_new_work,
+            fixt_user,
+            fixt_worker,
+            fixt_worker_id,
             new_work_usecase,
             kill_work_usecase,
             worker_connected_usecase,
@@ -47,11 +52,11 @@ class TestCreateAndKillWork:
         When work_details is performed,
         Then work_status should be killed.
         """
-        work_id = await new_work_usecase.perform(fixt_work)
+        work_id = await new_work_usecase.perform(fixt_new_work, fixt_user)
         await worker_connected_usecase.perform(fixt_worker)
         await worker_requests_work_usecase.perform(worker_id=fixt_worker_id)
         kill_work_result = await kill_work_usecase.perform(
-            work_id=work_id, username=fixt_work.credentials.username
+            work_id=work_id, user_id=fixt_user.user_id
         )
         assert kill_work_result == {
             'status': 'sig_kill_sent_to_worker',
@@ -67,7 +72,7 @@ class TestCreateAndKillWork:
         )
 
         work_details = await work_details_usecase.perform(
-            work_id=work_id, username=fixt_work.credentials.username
+            work_id=work_id, user_id=fixt_user.user_id
         )
 
         assert work_details['status'] == 'killed'

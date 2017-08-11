@@ -3,7 +3,7 @@ from unittest.mock import Mock, ANY
 import pytest
 
 from dq_broker.exceptions import AccessForbidden
-from dq_broker.infrastructure.http.controllers.schema import WorkDetailsSchema
+from dq_broker.infrastructure.http.controllers.schema import WorkIdSchema
 from dq_broker.infrastructure.websocket.clients import ResponseClient
 from dq_broker.infrastructure.websocket.message import IncomingMessage
 from dq_broker.infrastructure.websocket.request import Response, validate
@@ -55,7 +55,7 @@ class ExceptionRaisingController:
 
 
 class ValidationErrorRaisingController:
-    @validate(schema=WorkDetailsSchema)
+    @validate(schema=WorkIdSchema)
     def handle(self, req):
         pass
 
@@ -123,7 +123,6 @@ class TestSupervisor:
         message = self.get_message()
         expected_error = {
             'work_id': ['This field is required.'],
-            'username': ['This field is required.'],
         }
 
         await supervisor.handle_message(mock_sender, self.PEER, message)

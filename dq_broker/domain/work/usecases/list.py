@@ -1,9 +1,12 @@
+from dq_broker.infrastructure.repositories.work import WorkFinder
+
+
 class ListWorkUsecase:
-    def __init__(self, work_finder):
+    def __init__(self, work_finder: WorkFinder):
         self.work_finder = work_finder
 
-    async def perform(self, username):
-        work_list = await self.work_finder.find_by_username(username)
+    async def perform(self, user_id):
+        work_list = await self.work_finder.find_by_user_id(user_id)
         return {
             'works': self._format_work_list(work_list)
         }

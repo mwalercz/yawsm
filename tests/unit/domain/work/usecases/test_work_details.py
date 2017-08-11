@@ -66,7 +66,7 @@ def fixt_db_work(fixt_db_work_id, fixt_db_events):
 @pytest.mark.asyncio
 class TestWorkDetails:
     async def test_work_details_when_work_exists(
-            self, fixt_db_work, fixt_db_work_id, fixt_worker_id
+            self, fixt_db_work, fixt_db_work_id, fixt_worker_id, fixt_user
     ):
         """
         Given work with three events found in repository,
@@ -75,15 +75,15 @@ class TestWorkDetails:
         """
         mock_work_finder = asynctest.Mock(spec=WorkFinder)
         mock_work_finder \
-            .find_by_work_id_and_username_with_events \
+            .find_by_work_id_and_user_id_with_events \
             .return_value = fixt_db_work
         work_details_usecase = WorkDetailsUsecase(work_finder=mock_work_finder)
 
-        result = await work_details_usecase.perform(fixt_db_work_id, 'test-user')
+        result = await work_details_usecase.perform(fixt_db_work_id, fixt_user.user_id)
 
         mock_work_finder \
-            .find_by_work_id_and_username_with_events \
-            .assert_called_once_with(fixt_db_work_id, 'test-user')
+            .find_by_work_id_and_user_id_with_events \
+            .assert_called_once_with(fixt_db_work_id, fixt_user.user_id)
         assert result == {
             'work_id': fixt_db_work_id,
             'command': 'ls',
@@ -123,7 +123,7 @@ class TestWorkDetails:
 
         }
 
-    async def test_work_details_when_work_not_found(self, fixt_db_work_id):
+    async def test_work_details_when_work_not_found(self, fixt_db_work_id, fixt_user):
         """
         Given work not found in repository,
         When work_details is performed,
@@ -131,18 +131,18 @@ class TestWorkDetails:
         """
         mock_work_finder = asynctest.Mock(spec=WorkFinder)
         mock_work_finder \
-            .find_by_work_id_and_username_with_events \
-            .side_effect = WorkNotFound(work_id=fixt_db_work_id, username='test-user')
+            .find_by_work_id_and_user_id_with_events \
+            .side_effect = WorkNotFound(work_id=fixt_db_work_id, user_id=fixt_user.user_id)
         work_details_usecase = WorkDetailsUsecase(work_finder=mock_work_finder)
 
         with pytest.raises(WorkNotFound) as exc:
             await work_details_usecase.perform(
                 work_id=fixt_db_work_id,
-                username='test-user'
+                user_id=fixt_user.user_id
             )
 
         assert exc.value.work_id == fixt_db_work_id
-        assert exc.value.username == 'test-user'
+        assert exc.value.username == fixt_user.user_id
         mock_work_finder \
-            .find_by_work_id_and_username_with_events \
-            .assert_called_once_with(fixt_db_work_id, 'test-user')
+            .find_by_work_id_and_user_id_with_events \
+            .assert_called_once_with(fixt_db_work_id, fixt_user.user_id)

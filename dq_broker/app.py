@@ -10,7 +10,7 @@ from knot import Container
 from peewee import OperationalError
 
 from definitions import ROOT_DIR
-from dq_broker.dependencies.infrastructure.db import connect_to_db_and_create_tables
+from dq_broker.dependencies.infrastructure.db import connect_to_db_and_create_tables, create_admin_if_does_not_exist
 from dq_broker.dependencies.app import register_all
 
 
@@ -42,6 +42,7 @@ def try_to_connect_to_db(log):
     while True:
         try:
             connect_to_db_and_create_tables()
+            create_admin_if_does_not_exist()
             break
         except OperationalError as exc:
             log.info('DB is probably unavailable. ' + str(exc))

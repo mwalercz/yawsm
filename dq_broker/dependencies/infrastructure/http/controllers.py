@@ -54,6 +54,6 @@ def register(c):
     c.add_service(work_details_controller, 'controllers.work.details')
     c.add_service(work_list_controller, 'controllers.work.list')
 
-    c.add_service(worker_details_controller, 'controllers.worker.details')
-    c.add_service(worker_details_controller, 'controllers.worker.list')
+    c.add_service(worker_details_controller, 'controllers.workers.details')
+    c.add_service(worker_details_controller, 'controllers.workers.list')
 

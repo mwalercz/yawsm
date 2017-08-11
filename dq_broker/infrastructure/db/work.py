@@ -5,6 +5,7 @@ from playhouse.sqlite_ext import JSONField
 
 from dq_broker.domain.work.model import ALL_WORK_STATUSES
 from dq_broker.infrastructure.db.base import BaseModel
+from dq_broker.infrastructure.db.user import User
 
 
 class Work(BaseModel):
@@ -13,17 +14,17 @@ class Work(BaseModel):
         order_by = ('created_at', 'work_id')
 
     work_id = PrimaryKeyField()
+    user = ForeignKeyField(User, index=True)
     command = CharField()
     cwd = CharField()
     env = JSONField(default={}, null=True)
-    username = CharField(max_length=30, index=True)
     output = TextField(null=True)
     status = CharField(choices=ALL_WORK_STATUSES)
     created_at = DateTimeField(default=datetime.datetime.utcnow)
 
 
 class WorkEvent(BaseModel):
-    work_id = ForeignKeyField(Work, related_name='events')
+    work = ForeignKeyField(Work, related_name='events')
     event_id = PrimaryKeyField()
     event_type = CharField()
     status = CharField(max_length=100, choices=ALL_WORK_STATUSES)

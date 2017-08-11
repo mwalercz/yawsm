@@ -3,9 +3,9 @@ class WorkerNotFound(Exception):
 
 
 class WorkNotFound(Exception):
-    def __init__(self, work_id=None, username=None):
+    def __init__(self, work_id=None, user_id=None):
         self.work_id = work_id
-        self.username = username
+        self.username = user_id
 
 
 class UserNotFound(Exception):

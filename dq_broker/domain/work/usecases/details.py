@@ -1,14 +1,18 @@
+from dq_broker.infrastructure.db.work import Work
+from dq_broker.infrastructure.repositories.work import WorkFinder
+
+
 class WorkDetailsUsecase:
-    def __init__(self, work_finder):
+    def __init__(self, work_finder: WorkFinder):
         self.work_finder = work_finder
 
-    async def perform(self, work_id, username):
-        work = await self.work_finder.find_by_work_id_and_username_with_events(
-            work_id, username
+    async def perform(self, work_id, user_id):
+        work = await self.work_finder.find_by_work_id_and_user_id_with_events(
+            work_id, user_id
         )
         return self._format_work(work)
 
-    def _format_work(self, work):
+    def _format_work(self, work: Work):
         return {
             'work_id': work.work_id,
             'command': work.command,

@@ -9,7 +9,7 @@ pytestmark = pytest.mark.asyncio
 
 class TestCreateAndFinishWork:
     async def test_create_and_finish_work(
-            self,  fixt_work, fixt_worker,
+            self, fixt_work, fixt_new_work, fixt_worker, fixt_user,
             new_work_usecase,
             worker_connected_usecase,
             worker_requests_work_usecase,
@@ -24,7 +24,8 @@ class TestCreateAndFinishWork:
         Then work_status should be finished_with success
         and last event should have output.
         """
-        work_id = await new_work_usecase.perform(fixt_work)
+        work_id = await new_work_usecase.perform(fixt_new_work, fixt_user)
+        fixt_work.set_id(work_id)
         await worker_connected_usecase.perform(fixt_worker)
         await worker_requests_work_usecase.perform(fixt_worker.worker_id)
         worker_client.send.assert_called_with(
@@ -41,7 +42,7 @@ class TestCreateAndFinishWork:
             )
         )
         work_details = await work_details_usecase.perform(
-            work_id, fixt_work.credentials.username
+            work_id, fixt_user.user_id
         )
 
         assert work_details['status'] == 'finished_with_success'

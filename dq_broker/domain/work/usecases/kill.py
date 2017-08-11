@@ -1,21 +1,29 @@
 from dq_broker.domain.exceptions import WorkNotFound
 
 from dq_broker.domain.work.model import WorkStatus, FINAL_STATUSES, WorkEvent
+from dq_broker.domain.work.work_queue import WorkQueue
+from dq_broker.infrastructure.repositories.work import WorkFinder, WorkEventSaver
+from dq_broker.infrastructure.repositories.worker import WorkerRepository
+from dq_broker.infrastructure.websocket.clients import WorkerClient
 
 
 class KillWorkUsecase:
     def __init__(
-            self, work_queue, workers_repo,
-            worker_client, work_finder, event_saver
+            self,
+            work_queue: WorkQueue,
+            worker_repo: WorkerRepository,
+            worker_client: WorkerClient,
+            work_finder: WorkFinder,
+            event_saver: WorkEventSaver,
     ):
         self.work_queue = work_queue
-        self.workers_repo = workers_repo
+        self.workers_repo = worker_repo
         self.worker_client = worker_client
         self.event_saver = event_saver
         self.work_finder = work_finder
 
-    async def perform(self, work_id, username):
-        err = await self._validate(work_id, username)
+    async def perform(self, work_id, user_id):
+        err = await self._validate(work_id, user_id)
         if err:
             return err
 
@@ -46,10 +54,10 @@ class KillWorkUsecase:
                 'worker_id': worker.worker_id,
             }
 
-    async def _validate(self, work_id, username):
+    async def _validate(self, work_id, user_id):
         try:
-            work = await self.work_finder.find_by_work_id_and_username(
-                work_id, username
+            work = await self.work_finder.find_by_work_id_and_user_id(
+                work_id, user_id
             )
         except WorkNotFound:
             return {

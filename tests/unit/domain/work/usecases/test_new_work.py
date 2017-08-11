@@ -13,7 +13,7 @@ from tests.unit.domain.utils import assert_work_is_ready_sent_to_2_workers
 @pytest.mark.asyncio
 class TestNewWorkUsecase:
     async def test_new_work_two_workers_no_work_in_queue(
-            self, notifier, fixt_work, mock_worker_client
+            self, notifier, fixt_new_work, fixt_user, mock_worker_client
     ):
         """
         Given two worker in repo and no work in queue,
@@ -22,20 +22,19 @@ class TestNewWorkUsecase:
         """
         work_saver = asynctest.Mock(spec=WorkSaver)
         work_queue = WorkQueue()
-        work_saver.save_new.return_value = sentinel.work_id
+        work_saver.save.return_value = sentinel.work_id
         usecase = NewWorkUsecase(
             work_queue=work_queue,
             work_saver=work_saver,
             workers_notifier=notifier
         )
 
-        await usecase.perform(fixt_work)
+        await usecase.perform(fixt_new_work, fixt_user)
 
-        assert fixt_work.work_id == sentinel.work_id
         assert_work_is_ready_sent_to_2_workers(mock_worker_client)
 
     async def test_new_work_zero_workers_no_work_in_queue(
-            self, notifier, fixt_work, mock_worker_client
+            self, notifier, fixt_new_work, fixt_user, mock_worker_client
     ):
         """
         Given no worker in repo and no work in queue,
@@ -45,15 +44,14 @@ class TestNewWorkUsecase:
         work_saver = asynctest.Mock(spec=WorkSaver)
         work_queue = WorkQueue()
         notifier.workers_repo = WorkerRepository()
-        work_saver.save_new.return_value = sentinel.work_id
+        work_saver.save.return_value = sentinel.work_id
         usecase = NewWorkUsecase(
             work_queue=work_queue,
             work_saver=work_saver,
             workers_notifier=notifier
         )
 
-        await usecase.perform(fixt_work)
+        await usecase.perform(fixt_new_work, fixt_user)
 
-        assert fixt_work.work_id == sentinel.work_id
         mock_worker_client.send.assert_not_called()
 

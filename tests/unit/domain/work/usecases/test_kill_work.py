@@ -34,7 +34,7 @@ def kill_work_usecase(
 ):
     return KillWorkUsecase(
         work_queue=work_queue,
-        workers_repo=mock_workers_repo,
+        worker_repo=mock_workers_repo,
         worker_client=mock_worker_client,
         event_saver=mock_event_saver,
         work_finder=mock_work_finder,
@@ -52,8 +52,8 @@ class TestKillWorkUsecase:
         when kill work comes,
         then 'work_does_not_exist' should be returned.
         """
-        mock_work_finder.find_by_work_id_and_username.side_effect = (
-            WorkNotFound(work_id=5, username='does-not-exist')
+        mock_work_finder.find_by_work_id_and_user_id.side_effect = (
+            WorkNotFound(work_id=5, user_id='does-not-exist')
         )
 
         result = await kill_work_usecase.perform(5, 'does-not-exist')
@@ -69,7 +69,7 @@ class TestKillWorkUsecase:
         when kill work comes,
         then 'work_already_in_final_status' should be returned.
         """
-        mock_work_finder.find_by_work_id_and_username.return_value = (
+        mock_work_finder.find_by_work_id_and_user_id.return_value = (
             Work(
                 work_id=5,
                 status=WorkStatus.finished_with_failure.name
@@ -92,7 +92,7 @@ class TestKillWorkUsecase:
         when kill work comes,
         then work is removed.
         """
-        mock_work_finder.find_by_work_id_and_username.return_value = (
+        mock_work_finder.find_by_work_id_and_user_id.return_value = (
             Work(
                 work_id=5,
                 status=WorkStatus.processing.name,
@@ -104,7 +104,7 @@ class TestKillWorkUsecase:
 
         result = await kill_work_usecase.perform(
             work_id=5,
-            username='test-usr',
+            user_id='test-usr',
         )
 
         assert result == {'status': 'work_killed_in_queue'}
@@ -121,7 +121,7 @@ class TestKillWorkUsecase:
         when kill work comes,
         kill_work is sent to worker.
         """
-        mock_work_finder.find_by_work_id_and_username.return_value = (
+        mock_work_finder.find_by_work_id_and_user_id.return_value = (
             Work(
                 work_id=5,
                 status=WorkStatus.processing.name,
@@ -137,7 +137,7 @@ class TestKillWorkUsecase:
 
         result = await kill_work_usecase.perform(
             work_id=5,
-            username='test-user'
+            user_id='test-user'
         )
 
         assert result == {
@@ -159,7 +159,7 @@ class TestKillWorkUsecase:
         when kill work comes,
         exception is raised.
         """
-        mock_work_finder.find_by_work_id_and_username.return_value = (
+        mock_work_finder.find_by_work_id_and_user_id.return_value = (
             Work(
                 work_id=5,
                 status=WorkStatus.processing.name,
@@ -172,7 +172,7 @@ class TestKillWorkUsecase:
         with pytest.raises(WorkerNotFound):
             await kill_work_usecase.perform(
                 work_id=5,
-                username='test-user'
+                user_id='test-user'
             )
 
         mock_worker_client.send.assert_not_called()

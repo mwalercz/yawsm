@@ -19,7 +19,7 @@ class UserRepository:
             raise UserNotFound(username=username)
 
     async def get_or_create(self, username) -> User:
-        return self.objects.get_or_create(
+        return await self.objects.get_or_create(
             User,
             defaults={
                 'username': username,

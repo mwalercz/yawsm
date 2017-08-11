@@ -5,6 +5,7 @@ from dq_broker.infrastructure.auth.worker import WorkerAuthenticationService
 def user_auth(c):
     return UserAuthenticationService(
         ssh_service=c('ssh'),
+        user_repo=c('user_repo'),
     )
 
 

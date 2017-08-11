@@ -13,14 +13,14 @@ class WorkSaver:
     def __init__(self, objects: Manager):
         self.objects = objects
 
-    async def save_new(self, work) -> int:
+    async def save(self, work, user_id) -> int:
         created_work = await self.objects.create(
             Work,
             command=work.command_data.command,
             cwd=work.command_data.cwd,
             env=work.command_data.env,
             status=WorkStatus.new.name,
-            username=work.credentials.username,
+            user_id=user_id,
         )
         await self.objects.create(
             WorkEvent,
@@ -56,39 +56,43 @@ class WorkFinder:
     def __init__(self, objects: Manager):
         self.objects = objects
 
-    async def find_by_work_id_and_username(
-            self, work_id, username
-    ) -> List[Work]:
+    async def find_by_work_id_and_user_id(
+            self, work_id, user_id
+    ) -> Work:
         query = Work.select().where(
             Work.work_id == work_id,
-            Work.username == username,
+            Work.user_id == user_id,
         ).limit(1)
 
         result = await self.objects.execute(query)
         try:
             return list(result)[0]
         except IndexError:
-            raise WorkNotFound(work_id=work_id, username=username)
+            raise WorkNotFound(work_id=work_id, user_id=user_id)
 
-    async def find_by_work_id_and_username_with_events(
-            self, work_id, username
+    async def find_by_work_id_and_user_id_with_events(
+            self, work_id: int, user_id: int
     ) -> Work:
         query = Work.select(Work, WorkEvent).join(
             WorkEvent
         ).where(
             Work.work_id == work_id,
-            Work.username == username,
+            Work.user_id == user_id,
         ).limit(1)
 
         result = await self.objects.execute(query)
         try:
             return list(result)[0]
         except IndexError:
-            raise WorkNotFound(work_id=work_id, username=username)
+            raise WorkNotFound(work_id=work_id, user_id=user_id)
 
-    async def find_by_username(self, username) -> List[Work]:
+    async def find_by_user_id(self, user_id: int) -> List[Work]:
         query = Work.select().where(
-            Work.username == username
+            Work.user_id == user_id,
         )
-        work_list = await self.objects.execute(query)
-        return work_list or []
+        result = await self.objects.execute(query)
+        try:
+            list(result)[0]
+        except IndexError:
+            return []
+        return result
