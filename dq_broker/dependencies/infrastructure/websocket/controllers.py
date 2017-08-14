@@ -4,6 +4,7 @@ from dq_broker.infrastructure.websocket.controllers.worker.worker_requests_work 
 
 from dq_broker.infrastructure.websocket.controllers.worker.work_is_done import WorkIsDoneController
 from dq_broker.infrastructure.websocket.controllers.worker.worker_has_work import WorkerHasWorkController
+from dq_broker.infrastructure.websocket.controllers.worker.worker_system_stat import WorkerSystemStatController
 
 
 def work_is_done_controller(c):
@@ -36,10 +37,16 @@ def worker_has_work_controller(c):
     )
 
 
+def worker_system_stat_controller(c):
+    return WorkerSystemStatController(
+        usecase=c('usecases.worker.system_stat')
+    )
+
+
 def register(c):
     c.add_service(work_is_done_controller, 'controllers.worker.work_is_done')
     c.add_service(worker_connected_controller, 'controllers.worker.worker_connected')
     c.add_service(worker_disconnected_controller, 'controllers.worker.worker_disconnected')
     c.add_service(worker_requests_work_controller, 'controllers.worker.worker_requests_work')
     c.add_service(worker_has_work_controller, 'controllers.worker.worker_has_work')
-
+    c.add_service(worker_system_stat_controller, 'controllers.worker.system_stat')

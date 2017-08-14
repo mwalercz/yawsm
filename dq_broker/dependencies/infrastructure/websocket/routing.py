@@ -12,5 +12,7 @@ def register_ws_routing(r, c):
                  c('controllers.worker.worker_requests_work')))
     r.register(_('worker_has_work',
                  c('controllers.worker.worker_has_work')))
+    r.register(_('worker_system_stat',
+                 c('controllers.worker.system_stat')))
 
 

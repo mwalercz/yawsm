@@ -5,6 +5,8 @@ import asyncio
 
 import os
 import time
+
+import txaio
 from autobahn.websocket.util import parse_url
 from knot import Container
 from peewee import OperationalError
@@ -18,12 +20,16 @@ def run_app(
         config_path='dq_broker/conf/develop.ini',
         logging_config_path='dq_broker/conf/logging/develop.ini'
 ):
+
     logging.config.fileConfig(logging_config_path)
+    txaio.start_logging(level='debug')
     c = Container(dict(
         config_path=config_path,
     ))
     log = logging.getLogger(__name__)
     register_all(c)
+    txaio.use_asyncio()
+    txaio.config.loop = c('loop')
     try_to_connect_to_db(log)
 
     asyncio.ensure_future(make_http_app(c), loop=c('loop'))

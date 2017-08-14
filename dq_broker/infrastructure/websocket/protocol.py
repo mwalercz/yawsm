@@ -58,16 +58,4 @@ class DqBrokerProtocol(WebSocketServerProtocol):
             )
 
     async def onPong(self, payload):
-        system_info = self.deserializer.deserialize(payload)
-        log.info(
-            'pong, worker_system_info: %s from %s',
-            system_info, self.peer
-        )
-        self.supervisor.handle_message(
-            sender=self,
-            peer=self.peer,
-            message=IncomingMessage(
-                path='worker_system_info',
-                body=system_info,
-            )
-        )
+        log.info('pong from %s', self.peer)
