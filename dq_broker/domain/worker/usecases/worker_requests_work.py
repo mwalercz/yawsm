@@ -28,7 +28,14 @@ class WorkerRequestsWorkUsecase:
         self.worker_client.send(
             recipient=worker.worker_ref,
             action_name='work_to_be_done',
-            body=work.to_flat_dict(),
+            body={
+                'work_id': work.work_id,
+                'cwd': work.cwd,
+                'command': work.command,
+                'env': work.env,
+                'username': work.credentials.username,
+                'password': work.credentials.password,
+            },
         )
         await self._update_work(work.work_id, worker_id)
 

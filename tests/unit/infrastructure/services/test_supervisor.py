@@ -3,7 +3,7 @@ from unittest.mock import Mock, ANY
 import pytest
 
 from dq_broker.exceptions import AccessForbidden
-from dq_broker.infrastructure.http.controllers.schema import WorkIdSchema
+from dq_broker.infrastructure.http.controllers.schema import WorkIdDto
 from dq_broker.infrastructure.websocket.clients import ResponseClient
 from dq_broker.infrastructure.websocket.message import IncomingMessage
 from dq_broker.infrastructure.websocket.request import Response, validate
@@ -55,7 +55,7 @@ class ExceptionRaisingController:
 
 
 class ValidationErrorRaisingController:
-    @validate(schema=WorkIdSchema)
+    @validate(schema=WorkIdDto)
     def handle(self, req):
         pass
 

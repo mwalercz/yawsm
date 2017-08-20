@@ -30,12 +30,12 @@ class TestWorkSaverAndFinder:
     async def test_save_work_and_retrieve_work_with_events(
             self, fixt_work_saver, fixt_work, fixt_finder, fixt_saved_user
     ):
-        work_id = await fixt_work_saver.save(fixt_work, fixt_saved_user.user_id)
+        db_work = await fixt_work_saver.save(fixt_work, fixt_saved_user.user_id)
         work_found = await fixt_finder.find_by_work_id_and_user_id_with_events(
-            work_id, fixt_saved_user.user_id
+            db_work.work_id, fixt_saved_user.user_id
         )
 
-        assert work_found.work_id == work_id
+        assert work_found.work_id == db_work.work_id
         assert work_found.status == 'new'
         event = work_found.events[0]
         assert event.status == 'new'
@@ -105,21 +105,21 @@ class TestWorkSaverAndFinder:
     async def test_find_by_work_id_and_username(
             self, fixt_work_saver, fixt_work, fixt_finder, fixt_saved_user
     ):
-        work_id = await fixt_work_saver.save(fixt_work, fixt_saved_user.user_id)
+        db_work = await fixt_work_saver.save(fixt_work, fixt_saved_user.user_id)
 
         work_found = await fixt_finder.find_by_work_id_and_user_id(
             user_id=fixt_saved_user.user_id,
-            work_id=work_id,
+            work_id=db_work.work_id,
         )
 
-        assert work_found.work_id == work_id
+        assert work_found.work_id == db_work.work_id
         assert work_found.status == 'new'
         assert work_found.user_id == fixt_saved_user.user_id
 
     async def test_find_by_user_id(
             self, fixt_work_saver, fixt_work, fixt_finder, fixt_saved_user
     ):
-        work_id = await fixt_work_saver.save(fixt_work, fixt_saved_user.user_id)
+        db_work = await fixt_work_saver.save(fixt_work, fixt_saved_user.user_id)
 
         work_list = await fixt_finder.find_by_user_id(
             user_id=fixt_saved_user.user_id
@@ -127,7 +127,7 @@ class TestWorkSaverAndFinder:
 
         assert [
             work for work in work_list
-            if work.work_id == work_id
+            if work.work_id == db_work.work_id
         ][0].user_id == fixt_saved_user.user_id
 
 

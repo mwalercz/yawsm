@@ -5,7 +5,7 @@ from dq_broker.domain.exceptions import WorkerNotFound
 from dq_broker.domain.user.model import User
 from dq_broker.domain.work.usecases.kill import KillWorkUsecase
 from dq_broker.infrastructure.auth.permits import users_must_match, auth_required
-from dq_broker.infrastructure.http.controllers.schema import WorkIdSchema
+from dq_broker.infrastructure.http.controllers.schema import WorkIdDto
 from dq_broker.infrastructure.http.validator import validate
 
 
@@ -20,7 +20,7 @@ class KillWorkController:
         user = User.from_session(session)
         validated = validate(
             {'work_id': request.match_info.get('work_id')},
-            schema=WorkIdSchema
+            schema=WorkIdDto
         )
         try:
             result = await self.usecase.perform(

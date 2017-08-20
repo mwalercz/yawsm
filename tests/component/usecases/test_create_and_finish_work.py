@@ -2,6 +2,7 @@ from unittest.mock import sentinel
 
 import pytest
 
+from dq_broker.domain.work.model import Work
 from dq_broker.domain.worker.usecases.work_is_done import WorkIsDoneDto
 
 pytestmark = pytest.mark.asyncio
@@ -9,7 +10,7 @@ pytestmark = pytest.mark.asyncio
 
 class TestCreateAndFinishWork:
     async def test_create_and_finish_work(
-            self, fixt_work, fixt_new_work, fixt_worker, fixt_user,
+            self, fixt_new_work, fixt_worker, fixt_user,
             new_work_usecase,
             worker_connected_usecase,
             worker_requests_work_usecase,
@@ -25,13 +26,19 @@ class TestCreateAndFinishWork:
         and last event should have output.
         """
         work_id = await new_work_usecase.perform(fixt_new_work, fixt_user)
-        fixt_work.set_id(work_id)
         await worker_connected_usecase.perform(fixt_worker)
         await worker_requests_work_usecase.perform(fixt_worker.worker_id)
         worker_client.send.assert_called_with(
             action_name='work_to_be_done',
             recipient=sentinel.worker_ref,
-            body=fixt_work.to_flat_dict(),
+            body={
+                'work_id': work_id,
+                'cwd': fixt_new_work.cwd,
+                'command': fixt_new_work.command,
+                'env': fixt_new_work.env,
+                'username': fixt_user.username,
+                'password':fixt_user.password,
+            }
         )
         await work_is_done_usecase.perform(
             dto=WorkIsDoneDto(
@@ -49,8 +56,3 @@ class TestCreateAndFinishWork:
         work_events = work_details['events']
         assert len(work_events) == 3
         assert work_events[-1]['context']['output'] == 'doc.txt something.sh'
-
-
-
-
-

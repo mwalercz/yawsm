@@ -1,6 +1,7 @@
 import logging
 
 from dq_broker.domain.exceptions import InvalidStateException
+from dq_broker.domain.work.model import Work
 
 log = logging.getLogger(__name__)
 
@@ -9,13 +10,13 @@ class Worker:
     def __init__(self, worker_id, worker_ref, current_work=None):
         self.worker_id = worker_id
         self.worker_ref = worker_ref
-        self.current_work = current_work
+        self.current_work: Work = current_work
         self.system_stats = []
 
     def has_work(self):
         return bool(self.current_work)
 
-    def assign(self, work):
+    def assign(self, work: Work):
         if self.current_work is None:
             self.current_work = work
         else:

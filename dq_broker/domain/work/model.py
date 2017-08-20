@@ -1,59 +1,26 @@
+from typing import NamedTuple, Dict
+
 from enum import Enum
 
 
-class Work:
-    def __init__(self, work_id, command_data, credentials):
-        self.work_id = work_id
-        self.command_data = command_data
-        self.credentials = credentials
-
-    def to_flat_dict(self):
-        return {
-            'work_id': self.work_id,
-            'command': self.command_data.command,
-            'env': self.command_data.env,
-            'cwd': self.command_data.cwd,
-            'username': self.credentials.username,
-            'password': self.credentials.password,
-        }
-
-    def set_id(self, work_id):
-        self.work_id = work_id
-
-    def __eq__(self, other):
-        if not isinstance(other, Work):
-            return False
-        if self.work_id:
-            return self.work_id == other.work_id
-
-        return (
-            self.command_data == other.command_data
-            and self.credentials == other.credentials
-        )
-
-    @classmethod
-    def new(cls, command_data, credentials):
-        return cls(
-            work_id=None,
-            command_data=command_data,
-            credentials=credentials,
-        )
+class Credentials(NamedTuple):
+    username: str
+    password: str
 
 
-class CommandData:
-    def __init__(self, command, env, cwd):
-        self.command = command
-        self.env = env
-        self.cwd = cwd
+class Work(NamedTuple):
+    work_id: int
+    command: str
+    env: Dict[str, str]
+    cwd: str
+    credentials: Credentials
 
-    def __eq__(self, other):
-        if not isinstance(other, CommandData):
-            return False
-        return (
-            self.command == other.command
-            and self.env == other.env
-            and self.cwd == other.cwd
-        )
+
+class WorkEvent(NamedTuple):
+    work_id: int
+    event_type: str
+    work_status: str
+    context: Dict[str, str] = {}
 
 
 class WorkStatus(Enum):
@@ -66,14 +33,6 @@ class WorkStatus(Enum):
     not_killed = 7
     waiting_for_reschedule = 8
     server_shutdown = 9
-
-
-class WorkEvent:
-    def __init__(self, work_id, event_type, work_status, context=None):
-        self.work_id = work_id
-        self.event_type = event_type
-        self.work_status = work_status
-        self.context = context or {}
 
 
 ALL_WORK_STATUSES = [e.name for e in WorkStatus]

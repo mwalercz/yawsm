@@ -7,18 +7,19 @@ from dq_broker.domain.exceptions import WorkNotFound
 from dq_broker.domain.work.model import WorkStatus
 
 from dq_broker.infrastructure.db.work import Work, WorkEvent
+from dq_broker.infrastructure.http.controllers.schema import NewWorkDto
 
 
 class WorkSaver:
     def __init__(self, objects: Manager):
         self.objects = objects
 
-    async def save(self, work, user_id) -> int:
+    async def save(self, work: NewWorkDto, user_id: int) -> Work:
         created_work = await self.objects.create(
             Work,
-            command=work.command_data.command,
-            cwd=work.command_data.cwd,
-            env=work.command_data.env,
+            command=work.command,
+            cwd=work.cwd,
+            env=work.env,
             status=WorkStatus.new.name,
             user_id=user_id,
         )
@@ -28,7 +29,7 @@ class WorkSaver:
             status=WorkStatus.new.name,
             event_type='work_created',
         )
-        return created_work.work_id
+        return created_work
 
 
 class WorkEventSaver:

@@ -34,7 +34,6 @@ class TestCreateAndKillWork:
 
     async def test_kill_work_after_giving_job_to_worker(
             self,
-            fixt_work,
             fixt_new_work,
             fixt_user,
             fixt_worker,

@@ -1,8 +1,7 @@
 from schematics import Model
 from schematics.types import IntType, StringType, DictType
 
-from dq_broker.domain.work.model import Work, CommandData
-from dq_broker.infrastructure.auth.user import Credentials
+from dq_broker.domain.work.model import Work, Credentials
 from dq_broker.infrastructure.websocket.request import validate
 
 
@@ -23,11 +22,9 @@ class WorkerHasWorkController:
     async def handle(self, request):
         work = Work(
             work_id=request.validated.work_id,
-            command_data=CommandData(
-                command=request.validated.command,
-                env=request.validated.env,
-                cwd=request.validated.cwd,
-            ),
+            command=request.validated.command,
+            env=request.validated.env,
+            cwd=request.validated.cwd,
             credentials=Credentials(
                 username=request.validated.username,
                 password=request.validated.password,

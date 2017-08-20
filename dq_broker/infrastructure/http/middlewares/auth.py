@@ -17,7 +17,7 @@ class AuthMiddleware:
             session = await get_session(request)
             try:
                 user = await self.auth.authenticate(request.headers)
-                session['user'] = user.to_dict()
+                session['user'] = user._asdict()
                 session.changed()
                 return await handler(request)
             except AuthenticationFailed:

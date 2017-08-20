@@ -1,5 +1,5 @@
 import logging
-from typing import Dict
+from typing import Dict, NamedTuple
 
 from dq_broker.domain.user.model import User
 from dq_broker.exceptions import AuthenticationFailed
@@ -7,21 +7,6 @@ from dq_broker.infrastructure.auth.ssh import SSHService
 from dq_broker.infrastructure.repositories.user import UserRepository
 
 log = logging.getLogger(__name__)
-
-
-class Credentials:
-    def __init__(self, username: str, password: str):
-        self.username = username
-        self.password = password
-
-    def __eq__(self, other):
-        if not isinstance(other, Credentials):
-            return False
-        else:
-            return (
-                self.username == other.username
-                and self.password == other.password
-            )
 
 
 class UserAuthenticationService:

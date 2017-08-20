@@ -4,18 +4,18 @@ from unittest.mock import sentinel
 
 import os
 import pytest
+import random
 
 import dq_broker
 from dq_broker.domain.user.model import User
-from dq_broker.domain.work.model import Work, CommandData
+from dq_broker.domain.work.model import Work, Credentials
 from dq_broker.infrastructure.db.user import User as DbUser
-from dq_broker.infrastructure.auth.user import Credentials
 from dq_broker.infrastructure.db.base import database
 from peewee_async import Manager
 
 from definitions import ROOT_DIR
 from dq_broker.domain.worker.model import Worker
-from dq_broker.infrastructure.http.controllers.schema import NewWorkSchema
+from dq_broker.infrastructure.http.controllers.schema import NewWorkDto
 from dq_broker.infrastructure.websocket.controllers.worker.worker_system_stat import WorkerSystemStat
 
 
@@ -61,13 +61,31 @@ def fixt_objects(fixt_db, event_loop) -> Manager:
 
 
 @pytest.fixture
-def fixt_work(fixt_command_data, fixt_credentials):
-    return Work.new(fixt_command_data, fixt_credentials)
+def fixt_work(fixt_new_work, fixt_credentials):
+    work_id = random.randint(0, 9999999)
+    return Work(
+        work_id=work_id,
+        command=fixt_new_work.command,
+        env=fixt_new_work.env,
+        cwd=fixt_new_work.cwd,
+        credentials=fixt_credentials
+    )
+
+
+@pytest.fixture
+def fixt_db_work(fixt_work):
+    return dq_broker.infrastructure.db.work.Work(
+        work_id=fixt_work.work_id,
+        command=fixt_work.command,
+        cwd=fixt_work.cwd,
+        env=fixt_work.env,
+        user_id=1
+    )
 
 
 @pytest.fixture
 def fixt_new_work():
-    instance = NewWorkSchema({
+    instance = NewWorkDto({
         'command': 'ls',
         'env': {},
         'cwd': 'home/some-dir'
@@ -111,15 +129,6 @@ def cookie_headers():
         'x-cookie': 'some-cookie-1',
         'x-parent-pid': 'parent-pid',
     }
-
-
-@pytest.fixture
-def fixt_command_data(fixt_new_work):
-    return CommandData(
-        command=fixt_new_work.command,
-        env=fixt_new_work.env,
-        cwd=fixt_new_work.cwd
-    )
 
 
 @pytest.fixture

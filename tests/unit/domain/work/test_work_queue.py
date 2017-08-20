@@ -41,10 +41,10 @@ class TestWorkQueue:
         assert fixt_work == fixt_work_queue.pop()
 
     def test_when_two_elements_added_first_they_should_be_popped_in_fifo(
-            self, fixt_work_queue, fixt_command_data, fixt_credentials
+            self, fixt_work, fixt_work_queue
     ):
-        work_1 = Work(1, fixt_command_data, fixt_credentials)
-        work_2 = Work(2, fixt_command_data, fixt_credentials)
+        work_1 = fixt_work
+        work_2 = fixt_work._replace(work_id=5)
 
         fixt_work_queue.put(work_1)
         fixt_work_queue.put(work_2)

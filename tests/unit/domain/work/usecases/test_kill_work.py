@@ -4,7 +4,7 @@ import asynctest
 import pytest
 
 from dq_broker.domain.exceptions import WorkNotFound, WorkerNotFound
-from dq_broker.domain.work.model import WorkStatus
+from dq_broker.domain.work.model import WorkStatus, Credentials
 from dq_broker.domain.work.usecases.kill import KillWorkUsecase
 from dq_broker.domain.worker.model import Worker
 from dq_broker.infrastructure.db.work import Work
@@ -94,16 +94,15 @@ class TestKillWorkUsecase:
         """
         mock_work_finder.find_by_work_id_and_user_id.return_value = (
             Work(
-                work_id=5,
+                work_id=fixt_work.work_id,
                 status=WorkStatus.processing.name,
                 username='test-usr'
             )
         )
-        fixt_work.work_id = 5
         work_queue.put(fixt_work)
 
         result = await kill_work_usecase.perform(
-            work_id=5,
+            work_id=fixt_work.work_id,
             user_id='test-usr',
         )
 
@@ -112,7 +111,7 @@ class TestKillWorkUsecase:
             work_queue.pop_by_id(5)
 
     async def test_when_work_in_db_exist_and_work_is_in_workers(
-            self, kill_work_usecase, fixt_work, mock_workers_repo,
+            self, kill_work_usecase, fixt_credentials, mock_workers_repo,
             mock_work_finder, mock_worker_client
     ):
         """
@@ -121,22 +120,22 @@ class TestKillWorkUsecase:
         when kill work comes,
         kill_work is sent to worker.
         """
+        work = self._get_work_not_in_queue()
         mock_work_finder.find_by_work_id_and_user_id.return_value = (
             Work(
-                work_id=5,
+                work_id=work.work_id,
                 status=WorkStatus.processing.name,
                 username='test-usr'
             )
         )
-        fixt_work.work_id = 5
         mock_workers_repo.find_by_work_id.return_value = Worker(
             worker_id=sentinel.worker_id,
             worker_ref=sentinel.worker_ref,
-            current_work=fixt_work
+            current_work=work.work_id
         )
 
         result = await kill_work_usecase.perform(
-            work_id=5,
+            work_id=work.work_id,
             user_id='test-user'
         )
 
@@ -149,8 +148,20 @@ class TestKillWorkUsecase:
             action_name='kill_work'
         )
 
+    def _get_work_not_in_queue(self):
+        return Work(
+            work_id=5,
+            cwd='lala',
+            command='blabla',
+            env={},
+            credentials=Credentials(
+                username='test-usr',
+                password='test-pwd'
+            ),
+        )
+
     async def test_when_work_in_db_exist_but_not_in_system(
-            self, kill_work_usecase, fixt_work, mock_workers_repo,
+            self, kill_work_usecase, mock_workers_repo,
             mock_work_finder, mock_worker_client
     ):
         """
@@ -159,19 +170,19 @@ class TestKillWorkUsecase:
         when kill work comes,
         exception is raised.
         """
+        work = self._get_work_not_in_queue()
         mock_work_finder.find_by_work_id_and_user_id.return_value = (
             Work(
-                work_id=5,
+                work_id=work.work_id,
                 status=WorkStatus.processing.name,
                 username='test-usr'
             )
         )
-        fixt_work.work_id = 5
         mock_workers_repo.find_by_work_id.side_effect = WorkerNotFound
 
         with pytest.raises(WorkerNotFound):
             await kill_work_usecase.perform(
-                work_id=5,
+                work_id=work.work_id,
                 user_id='test-user'
             )
 
