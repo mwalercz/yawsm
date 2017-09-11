@@ -18,7 +18,7 @@ class NewWorkController:
         data = await request.json()
         session = await get_session(request)
         validated_work = validate(data, schema=NewWorkDto)
-        user = User.from_dict(session['user'])
+        user = User.from_session(session)
         work_id = await self.usecase.perform(
             new_work=validated_work,
             user=user,
