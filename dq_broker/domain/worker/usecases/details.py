@@ -4,11 +4,11 @@ from dq_broker.infrastructure.websocket.controllers.worker.worker_system_stat im
 
 
 class WorkerDetailsUsecase:
-    def __init__(self, workers_repo: WorkerRepository):
-        self.workers_repo = workers_repo
+    def __init__(self, workers: WorkerRepository):
+        self.workers = workers
 
     async def perform(self, worker_id):
-        worker = self.workers_repo.get(worker_id)
+        worker = self.workers.get(worker_id)
         return self._format_worker(worker)
 
     def _format_worker(self, worker: Worker):

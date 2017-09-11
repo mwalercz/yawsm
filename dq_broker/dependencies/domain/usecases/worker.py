@@ -12,21 +12,21 @@ from dq_broker.domain.worker.usecases.worker_connected import WorkerConnectedUse
 
 def work_is_done_usecase(c):
     return WorkIsDoneUsecase(
-        workers_repo=c('worker_repo'),
+        workers=c('workers'),
         event_saver=c('event_saver')
     )
 
 
 def worker_connected_usecase(c):
     return WorkerConnectedUsecase(
-        workers_repo=c('worker_repo'),
+        workers=c('workers'),
         workers_notifier=c('workers_notifier')
     )
 
 
 def worker_disconnected_usecase(c):
     return WorkerDisconnectedUsecase(
-        workers_repo=c('worker_repo'),
+        workers=c('workers'),
         work_queue=c('work_queue'),
         event_saver=c('event_saver'),
         workers_notifier=c('workers_notifier'),
@@ -36,35 +36,36 @@ def worker_disconnected_usecase(c):
 def worker_requests_work_usecase(c):
     return WorkerRequestsWorkUsecase(
         work_queue=c('work_queue'),
-        workers_repo=c('worker_repo'),
+        workers=c('workers'),
         worker_client=c('worker_client'),
-        event_saver=c('event_saver')
+        event_saver=c('event_saver'),
+        notifier=c('workers_notifier')
     )
 
 
 def worker_has_work_usecase(c):
     return WorkerHasWorkUsecase(
-        workers_repo=c('worker_repo'),
+        workers=c('workers'),
         event_saver=c('event_saver')
     )
 
 
 def worker_system_stat_usecase(c):
     return WorkerSystemStatUsecase(
-        workers_repo=c('worker_repo'),
+        workers=c('workers'),
         current_datetime=datetime.datetime.now,
     )
 
 
 def worker_list_usecase(c):
     return WorkerListUsecase(
-        workers_repo=c('worker_repo')
+        workers=c('workers')
     )
 
 
 def worker_details_usecase(c):
     return WorkerDetailsUsecase(
-        workers_repo=c('worker_repo')
+        workers=c('workers')
     )
 
 

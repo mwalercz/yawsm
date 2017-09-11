@@ -18,7 +18,7 @@ def work_queue(fixt_work):
 
 
 @pytest.fixture
-def workers_repo():
+def workers():
     repo = WorkerRepository()
     repo.put(
         Worker(
@@ -46,10 +46,10 @@ def mock_worker_client():
 
 
 @pytest.fixture
-def notifier(work_queue, workers_repo, mock_worker_client, picker):
+def notifier(work_queue, workers, mock_worker_client, picker):
     return WorkersNotifier(
         work_queue=work_queue,
-        workers_repo=workers_repo,
+        workers=workers,
         worker_client=mock_worker_client,
         picker=picker
     )

@@ -43,7 +43,7 @@ class TestNewWorkUsecase:
         """
         work_saver = asynctest.Mock(spec=WorkSaver)
         work_queue = WorkQueue()
-        notifier.workers_repo = WorkerRepository()
+        notifier.workers = WorkerRepository()
         work_saver.save.return_value = fixt_db_work
         usecase = NewWorkUsecase(
             work_queue=work_queue,

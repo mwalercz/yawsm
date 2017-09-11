@@ -34,7 +34,9 @@ class TestConnectedWorkerShouldBeReturnedInDetailsAndList:
         assert worker_details['current_work'] is None
         assert worker_details['system_stats'][0]['cpu'] == {
             'count': 3,
-            'percent': 15.5
+            'load_1': 1.1,
+            'load_5': 2.4,
+            'load_15': 1.9
         }
         assert worker_details['system_stats'][0]['memory'] == {
             'total': 123,
@@ -57,7 +59,4 @@ class TestConnectedWorkerShouldBeReturnedInDetailsAndList:
 
         worker_list = await worker_list_usecase.perform()
         assert worker_list[-1]['worker_id'] == fixt_worker.worker_id
-        assert worker_list[-1]['last_system_stat']['cpu'] == {
-            'count': 3,
-            'percent': 15.5
-        }
+        assert worker_list[-1]['last_system_stat']['cpu'] is not None

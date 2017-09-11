@@ -1,3 +1,8 @@
+import logging
+
+log = logging.getLogger(__name__)
+
+
 class ResponseClient:
     def __init__(self, serializer):
         self.serializer = serializer
@@ -19,3 +24,4 @@ class WorkerClient:
         }
         serialized_message = self.serializer.serialize(message)
         recipient.sendMessage(serialized_message)
+        log.info('Message to :"%s" was sent. Body :"%s"', recipient.peer, message)

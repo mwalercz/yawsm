@@ -23,18 +23,18 @@ def mock_work_finder():
 
 
 @pytest.fixture
-def mock_workers_repo():
+def mock_workers():
     return Mock(spec=WorkerRepository)
 
 
 @pytest.fixture
 def kill_work_usecase(
-        work_queue, mock_workers_repo, mock_worker_client,
+        work_queue, mock_workers, mock_worker_client,
         mock_event_saver, mock_work_finder
 ):
     return KillWorkUsecase(
         work_queue=work_queue,
-        worker_repo=mock_workers_repo,
+        workers=mock_workers,
         worker_client=mock_worker_client,
         event_saver=mock_event_saver,
         work_finder=mock_work_finder,
@@ -111,7 +111,7 @@ class TestKillWorkUsecase:
             work_queue.pop_by_id(5)
 
     async def test_when_work_in_db_exist_and_work_is_in_workers(
-            self, kill_work_usecase, fixt_credentials, mock_workers_repo,
+            self, kill_work_usecase, fixt_credentials, mock_workers,
             mock_work_finder, mock_worker_client
     ):
         """
@@ -128,7 +128,7 @@ class TestKillWorkUsecase:
                 username='test-usr'
             )
         )
-        mock_workers_repo.find_by_work_id.return_value = Worker(
+        mock_workers.find_by_work_id.return_value = Worker(
             worker_id=sentinel.worker_id,
             worker_ref=sentinel.worker_ref,
             current_work=work.work_id
@@ -161,7 +161,7 @@ class TestKillWorkUsecase:
         )
 
     async def test_when_work_in_db_exist_but_not_in_system(
-            self, kill_work_usecase, mock_workers_repo,
+            self, kill_work_usecase, mock_workers,
             mock_work_finder, mock_worker_client
     ):
         """
@@ -178,7 +178,7 @@ class TestKillWorkUsecase:
                 username='test-usr'
             )
         )
-        mock_workers_repo.find_by_work_id.side_effect = WorkerNotFound
+        mock_workers.find_by_work_id.side_effect = WorkerNotFound
 
         with pytest.raises(WorkerNotFound):
             await kill_work_usecase.perform(

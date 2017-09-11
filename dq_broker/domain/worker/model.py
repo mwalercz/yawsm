@@ -21,8 +21,9 @@ class Worker:
             self.current_work = work
         else:
             raise InvalidStateException(
-                'Work: {work_id} was assigned to worker: {worker_id}, '
-                'which already had work: {current_work_id}'.format(
+                'Assign was called on worker {worker_id}, which already had work. '
+                'New work: {work_id} '
+                'Current work: {current_work_id}.'.format(
                     work_id=work.work_id,
                     worker_id=self.worker_id,
                     current_work_id=self.current_work.work_id

@@ -27,7 +27,7 @@ class TestNotifier:
     async def test_when_there_are_no_workers_no_message_should_be_sent(
             self, notifier, mock_worker_client,
     ):
-        notifier.workers_repo = WorkerRepository()
+        notifier.workers = WorkerRepository()
 
         await notifier.notify()
 

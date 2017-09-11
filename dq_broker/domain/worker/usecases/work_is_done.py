@@ -17,15 +17,15 @@ class WorkIsDoneDto:
 
 
 class WorkIsDoneUsecase:
-    def __init__(self, workers_repo: WorkerRepository, event_saver):
-        self.workers_repo = workers_repo
+    def __init__(self, workers: WorkerRepository, event_saver):
+        self.workers = workers
         self.event_saver = event_saver
 
     async def perform(self, dto: WorkIsDoneDto):
         try:
-            worker = self.workers_repo.get(dto.worker_id)
+            worker = self.workers.get(dto.worker_id)
             worker.work_finished(dto.work_id)
-            self.workers_repo.put(worker)
+            self.workers.put(worker)
         except WorkerNotFound:
             log.warning(
                 'Worker: %s not found in repository, '

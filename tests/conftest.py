@@ -163,7 +163,9 @@ def worker_system_stat():
         {
             'cpu': {
                 'count': 3,
-                'percent': 15.5
+                'load_1': 1.1,
+                'load_5': 2.4,
+                'load_15': 1.9,
             },
             'memory': {
                 'total': 123,

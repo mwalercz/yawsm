@@ -1,14 +1,14 @@
 class WorkersNotifier:
-    def __init__(self, work_queue, workers_repo, worker_client, picker):
+    def __init__(self, work_queue, workers, worker_client, picker):
         self.work_queue = work_queue
-        self.workers_repo = workers_repo
+        self.workers = workers
         self.worker_client = worker_client
         self.picker = picker
 
     async def notify(self):
         if self.work_queue.empty:
             return
-        workers = self.workers_repo.get_all_workers()
+        workers = self.workers.get_all_workers()
         best_workers = await self.picker.pick_best(workers)
         for worker in best_workers:
             self.worker_client.send(

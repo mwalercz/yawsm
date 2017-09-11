@@ -1,5 +1,6 @@
 import logging
 
+from dq_broker.domain.exceptions import InvalidStateException
 from dq_broker.domain.work.model import WorkEvent, WorkStatus
 
 
@@ -7,11 +8,12 @@ log = logging.getLogger(__name__)
 
 
 class WorkerRequestsWorkUsecase:
-    def __init__(self, work_queue, workers_repo, worker_client, event_saver):
+    def __init__(self, work_queue, workers, worker_client, event_saver, notifier):
         self.work_queue = work_queue
-        self.workers_repo = workers_repo
+        self.workers = workers
         self.worker_client = worker_client
         self.event_saver = event_saver
+        self.notifier = notifier
 
     async def perform(self, worker_id):
         if self.work_queue.empty:
@@ -22,9 +24,15 @@ class WorkerRequestsWorkUsecase:
             )
             return
         work = self.work_queue.pop()
-        worker = self.workers_repo.get(worker_id)
-        worker.assign(work)
-        self.workers_repo.put(worker)
+        worker = self.workers.get(worker_id)
+        try:
+            worker.assign(work)
+        except InvalidStateException as exc:
+            log.exception('Putting work back to queue', exc_info=1)
+            self.work_queue.put(work)
+            self.notifier.notify()
+            return
+        self.workers.put(worker)
         self.worker_client.send(
             recipient=worker.worker_ref,
             action_name='work_to_be_done',

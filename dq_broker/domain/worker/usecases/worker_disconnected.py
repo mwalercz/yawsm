@@ -8,17 +8,17 @@ log = logging.getLogger(__name__)
 
 class WorkerDisconnectedUsecase:
     def __init__(
-            self, workers_repo, work_queue, event_saver,
+            self, workers, work_queue, event_saver,
             workers_notifier
     ):
-        self.workers_repo = workers_repo
+        self.workers = workers
         self.work_queue = work_queue
         self.event_saver = event_saver
         self.workers_notifier = workers_notifier
 
     async def perform(self, worker_id):
         try:
-            worker = self.workers_repo.pop(worker_id)
+            worker = self.workers.pop(worker_id)
         except WorkerNotFound as exc:
             log.exception(exc)
             return

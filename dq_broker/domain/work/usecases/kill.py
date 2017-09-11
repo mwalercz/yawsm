@@ -11,13 +11,13 @@ class KillWorkUsecase:
     def __init__(
             self,
             work_queue: WorkQueue,
-            worker_repo: WorkerRepository,
+            workers: WorkerRepository,
             worker_client: WorkerClient,
             work_finder: WorkFinder,
             event_saver: WorkEventSaver,
     ):
         self.work_queue = work_queue
-        self.workers_repo = worker_repo
+        self.workers = workers
         self.worker_client = worker_client
         self.event_saver = event_saver
         self.work_finder = work_finder
@@ -37,7 +37,7 @@ class KillWorkUsecase:
             await self.event_saver.save_event(event)
             return {'status': 'work_killed_in_queue'}
         except WorkNotFound:
-            worker = self.workers_repo.find_by_work_id(work_id)
+            worker = self.workers.find_by_work_id(work_id)
             self.worker_client.send(
                 recipient=worker.worker_ref,
                 action_name='kill_work',

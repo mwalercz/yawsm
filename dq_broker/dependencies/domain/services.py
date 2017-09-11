@@ -14,7 +14,7 @@ def workers_notifier(c):
     return WorkersNotifier(
         work_queue=c('work_queue'),
         picker=c('picker'),
-        workers_repo=c('worker_repo'),
+        workers=c('workers'),
         worker_client=c('worker_client'),
     )
 
@@ -29,7 +29,7 @@ def user_repo(c):
     )
 
 
-def worker_repo(c):
+def workers(c):
     return WorkerRepository()
 
 
@@ -57,7 +57,7 @@ def register(c):
 
     c.add_service(user_repo)
     c.add_service(work_queue)
-    c.add_service(worker_repo)
+    c.add_service(workers)
 
     c.add_service(event_saver)
     c.add_service(work_saver)

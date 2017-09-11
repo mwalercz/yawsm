@@ -6,7 +6,9 @@ from dq_broker.infrastructure.websocket.request import validate
 
 class Cpu(Model):
     count = IntType(required=True)
-    percent = FloatType(required=True)
+    load_1 = FloatType(required=True)
+    load_5 = FloatType(required=True)
+    load_15 = FloatType(required=True)
 
 
 class Memory(Model):
