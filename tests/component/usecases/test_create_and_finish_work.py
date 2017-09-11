@@ -27,7 +27,7 @@ class TestCreateAndFinishWork:
         """
         work_id = await new_work_usecase.perform(fixt_new_work, fixt_user)
         await worker_connected_usecase.perform(fixt_worker)
-        await worker_requests_work_usecase.perform(fixt_worker.worker_id)
+        await worker_requests_work_usecase.perform(fixt_worker.worker_socket)
         worker_client.send.assert_called_with(
             action_name='work_to_be_done',
             recipient=sentinel.worker_ref,
@@ -42,7 +42,7 @@ class TestCreateAndFinishWork:
         )
         await work_is_done_usecase.perform(
             dto=WorkIsDoneDto(
-                worker_id=fixt_worker.worker_id,
+                worker_socket=fixt_worker.worker_socket,
                 work_id=work_id,
                 status='finished_with_success',
                 output='doc.txt something.sh'

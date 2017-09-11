@@ -145,14 +145,14 @@ def fixt_credentials(fixt_username):
 
 
 @pytest.fixture
-def fixt_worker_id():
+def fixt_worker_socket():
     return '1.27.11.1:8181'
 
 
 @pytest.fixture
-def fixt_worker(fixt_worker_id):
+def fixt_worker(fixt_worker_socket):
     return Worker(
-        worker_id=fixt_worker_id,
+        worker_socket=fixt_worker_socket,
         worker_ref=sentinel.worker_ref,
     )
 

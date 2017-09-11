@@ -23,7 +23,7 @@ class WorkIsDoneController:
     @validate(schema=WorkIsDoneSchema)
     async def handle(self, request):
         dto = WorkIsDoneDto(
-            worker_id=request.peer,
+            worker_socket=request.peer,
             work_id=request.validated.work_id,
             status=request.validated.status,
             output=request.validated.output,

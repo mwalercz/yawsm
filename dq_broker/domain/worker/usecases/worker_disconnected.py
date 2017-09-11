@@ -16,9 +16,9 @@ class WorkerDisconnectedUsecase:
         self.event_saver = event_saver
         self.workers_notifier = workers_notifier
 
-    async def perform(self, worker_id):
+    async def perform(self, worker_socket):
         try:
-            worker = self.workers.pop(worker_id)
+            worker = self.workers.pop(worker_socket)
         except WorkerNotFound as exc:
             log.exception(exc)
             return
@@ -30,7 +30,7 @@ class WorkerDisconnectedUsecase:
                 work_id=not_finished_work.work_id,
                 event_type='worker_disconnected',
                 work_status=WorkStatus.waiting_for_reschedule.name,
-                context={'worker_id': worker_id}
+                context={'worker_socket': worker_socket}
             )
             await self.event_saver.save_event(
                 event=event,

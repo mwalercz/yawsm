@@ -15,22 +15,22 @@ class WorkerRequestsWorkUsecase:
         self.event_saver = event_saver
         self.notifier = notifier
 
-    async def perform(self, worker_id):
+    async def perform(self, worker_socket):
         if self.work_queue.empty:
             log.info(
                 'Worker: %s requested work, '
                 'but work_queue is empty',
-                worker_id
+                worker_socket
             )
             return
         work = self.work_queue.pop()
-        worker = self.workers.get(worker_id)
+        worker = self.workers.get(worker_socket)
         try:
             worker.assign(work)
         except InvalidStateException as exc:
             log.exception('Putting work back to queue', exc_info=1)
             self.work_queue.put(work)
-            self.notifier.notify()
+            await self.notifier.notify()
             return
         self.workers.put(worker)
         self.worker_client.send(
@@ -45,14 +45,14 @@ class WorkerRequestsWorkUsecase:
                 'password': work.credentials.password,
             },
         )
-        await self._update_work(work.work_id, worker_id)
+        await self._update_work(work.work_id, worker_socket)
 
-    async def _update_work(self, work_id, worker_id):
+    async def _update_work(self, work_id, worker_socket):
         event = WorkEvent(
             work_id=work_id,
             event_type='work_assigned',
             work_status=WorkStatus.processing.name,
-            context={'worker_id': worker_id}
+            context={'worker_socket': worker_socket}
         )
         await self.event_saver.save_event(
             work_event=event,

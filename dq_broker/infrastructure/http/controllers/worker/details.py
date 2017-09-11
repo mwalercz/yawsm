@@ -11,14 +11,14 @@ class WorkerDetailsController:
     @auth_required
     @admin_only
     async def handle(self, request):
-        worker_id = request.match_info['worker_id']
+        worker_socket = request.match_info['worker_socket']
         try:
             result = await self.usecase.perform(
-                worker_id=worker_id
+                worker_socket=worker_socket
             )
             return web.json_response(result)
         except WorkerNotFound:
             return web.json_response(
-                {'error': 'worker not found {}'.format(worker_id)},
+                {'error': 'worker not found {}'.format(worker_socket)},
                 status=404,
             )

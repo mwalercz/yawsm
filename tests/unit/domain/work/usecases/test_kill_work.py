@@ -129,7 +129,7 @@ class TestKillWorkUsecase:
             )
         )
         mock_workers.find_by_work_id.return_value = Worker(
-            worker_id=sentinel.worker_id,
+            worker_socket=sentinel.worker_socket,
             worker_ref=sentinel.worker_ref,
             current_work=work.work_id
         )
@@ -141,7 +141,7 @@ class TestKillWorkUsecase:
 
         assert result == {
             'status': 'sig_kill_sent_to_worker',
-            'worker_id': sentinel.worker_id,
+            'worker_socket': sentinel.worker_socket,
         }
         mock_worker_client.send.assert_called_once_with(
             recipient=sentinel.worker_ref,

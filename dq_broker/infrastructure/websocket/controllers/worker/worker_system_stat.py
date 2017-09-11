@@ -29,6 +29,6 @@ class WorkerSystemStatController:
     @validate(schema=WorkerSystemStat)
     async def handle(self, request):
         await self.usecase.perform(
-            worker_id=request.peer,
+            worker_socket=request.peer,
             system_stat=request.validated
         )

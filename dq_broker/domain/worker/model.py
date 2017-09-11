@@ -7,8 +7,8 @@ log = logging.getLogger(__name__)
 
 
 class Worker:
-    def __init__(self, worker_id, worker_ref, current_work=None):
-        self.worker_id = worker_id
+    def __init__(self, worker_socket, worker_ref, current_work=None):
+        self.worker_socket = worker_socket
         self.worker_ref = worker_ref
         self.current_work: Work = current_work
         self.system_stats = []
@@ -21,11 +21,11 @@ class Worker:
             self.current_work = work
         else:
             raise InvalidStateException(
-                'Assign was called on worker {worker_id}, which already had work. '
+                'Assign was called on worker {worker_socket}, which already had work. '
                 'New work: {work_id} '
                 'Current work: {current_work_id}.'.format(
                     work_id=work.work_id,
-                    worker_id=self.worker_id,
+                    worker_socket=self.worker_socket,
                     current_work_id=self.current_work.work_id
                 ))
 
@@ -49,16 +49,16 @@ class Worker:
     def remove(self):
         if not self.has_work:
             log.info(
-                'Worker: {worker_id} was removed, '
+                'Worker: {worker_socket} was removed, '
                 'but he wasnt executing job'.format(
-                    worker_id=self.worker_id))
+                    worker_socket=self.worker_socket))
             return
         not_finished_work = self.current_work
         self.current_work = None
         log.info(
-            'Worker: {worker_id} has died '
+            'Worker: {worker_socket} has died '
             'while working on: {work}'.format(
-                worker_id=self.worker_id, work=not_finished_work))
+                worker_socket=self.worker_socket, work=not_finished_work))
         return not_finished_work
 
     def append_system_stat(self, system_stat):

@@ -22,13 +22,13 @@ def workers():
     repo = WorkerRepository()
     repo.put(
         Worker(
-            worker_id=sentinel.worker_id_1,
+            worker_socket=sentinel.worker_socket_1,
             worker_ref=sentinel.worker_ref_1,
         )
     )
     repo.put(
         Worker(
-            worker_id=sentinel.worker_id_2,
+            worker_socket=sentinel.worker_socket_2,
             worker_ref=sentinel.worker_ref_2
         )
     )

@@ -46,12 +46,12 @@ class KillWorkUsecase:
                 work_id=work_id,
                 event_type='sig_kill_sent_to_worker',
                 work_status=WorkStatus.to_be_killed.name,
-                context={'worker_id': worker.worker_id}
+                context={'worker_socket': worker.worker_socket}
             )
             await self.event_saver.save_event(event)
             return {
                 'status': 'sig_kill_sent_to_worker',
-                'worker_id': worker.worker_id,
+                'worker_socket': worker.worker_socket,
             }
 
     async def _validate(self, work_id, user_id):

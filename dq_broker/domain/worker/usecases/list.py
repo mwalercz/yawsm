@@ -17,7 +17,7 @@ class WorkerListUsecase:
 
     def _format_worker(self, worker: Worker):
         return {
-            'worker_id': worker.worker_id,
+            'worker_socket': worker.worker_socket,
             'current_work': worker.current_work,
             'last_system_stat': self._format_system_stat(
                 worker.get_last_system_stat()

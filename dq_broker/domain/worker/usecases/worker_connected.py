@@ -11,4 +11,4 @@ class WorkerConnectedUsecase:
     async def perform(self, worker):
         self.workers.put(worker)
         await self.workers_notifier.notify()
-        log.info('New worker: %s connected', worker.worker_id)
+        log.info('New worker: %s connected', worker.worker_socket)

@@ -13,7 +13,7 @@ class TestWorkerConnectedAndHasWork:
         work = fixt_work._replace(work_id=db_work.work_id)
         await worker_connected_usecase.perform(fixt_worker)
 
-        await worker_has_work_usecase.perform(fixt_worker.worker_id, work)
+        await worker_has_work_usecase.perform(fixt_worker.worker_socket, work)
 
         work_details = await work_details_usecase.perform(
             work_id=work.work_id, user_id=fixt_user.user_id

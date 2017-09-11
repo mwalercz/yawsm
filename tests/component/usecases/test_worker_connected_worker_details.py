@@ -22,15 +22,15 @@ class TestConnectedWorkerShouldBeReturnedInDetailsAndList:
     ):
         await worker_connected_usecase.perform(fixt_worker)
         await worker_system_stat_usecase.perform(
-            worker_id=fixt_worker.worker_id,
+            worker_socket=fixt_worker.worker_socket,
             system_stat=worker_system_stat
         )
 
         worker_details = await worker_details_usecase.perform(
-            worker_id=fixt_worker.worker_id
+            worker_socket=fixt_worker.worker_socket
         )
 
-        assert worker_details['worker_id'] == fixt_worker.worker_id
+        assert worker_details['worker_socket'] == fixt_worker.worker_socket
         assert worker_details['current_work'] is None
         assert worker_details['system_stats'][0]['cpu'] == {
             'count': 3,
@@ -53,10 +53,10 @@ class TestConnectedWorkerShouldBeReturnedInDetailsAndList:
     ):
         await worker_connected_usecase.perform(fixt_worker)
         await worker_system_stat_usecase.perform(
-            worker_id=fixt_worker.worker_id,
+            worker_socket=fixt_worker.worker_socket,
             system_stat=worker_system_stat
         )
 
         worker_list = await worker_list_usecase.perform()
-        assert worker_list[-1]['worker_id'] == fixt_worker.worker_id
+        assert worker_list[-1]['worker_socket'] == fixt_worker.worker_socket
         assert worker_list[-1]['last_system_stat']['cpu'] is not None

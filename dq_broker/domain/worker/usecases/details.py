@@ -7,13 +7,13 @@ class WorkerDetailsUsecase:
     def __init__(self, workers: WorkerRepository):
         self.workers = workers
 
-    async def perform(self, worker_id):
-        worker = self.workers.get(worker_id)
+    async def perform(self, worker_socket):
+        worker = self.workers.get(worker_socket)
         return self._format_worker(worker)
 
     def _format_worker(self, worker: Worker):
         return {
-            'worker_id': worker.worker_id,
+            'worker_socket': worker.worker_socket,
             'current_work': worker.current_work,
             'system_stats': [
                 self._format_system_stat(system_stat)

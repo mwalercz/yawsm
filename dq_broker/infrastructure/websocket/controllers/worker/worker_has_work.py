@@ -31,6 +31,6 @@ class WorkerHasWorkController:
             )
         )
         await self.usecase.perform(
-            worker_id=request.peer,
+            worker_socket=request.peer,
             work=work,
         )

@@ -7,7 +7,7 @@ class WorkerConnectedController:
 
     async def handle(self, request):
         worker = Worker(
-            worker_id=request.peer,
+            worker_socket=request.peer,
             worker_ref=request.sender,
         )
         await self.usecase.perform(worker)

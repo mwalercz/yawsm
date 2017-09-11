@@ -52,14 +52,14 @@ class TestWorkSaverAndFinder:
         event_1 = WorkEvent(
             work_id=work_id,
             event_type='worker_started_processing',
-            context={'worker_id': '1'},
+            context={'worker_socket': '1'},
             work_status=WorkStatus.processing.name,
         )
         event_2 = WorkEvent(
             work_id=work_id,
             event_type='worker_finished_processing',
             work_status=WorkStatus.finished_with_failure.name,
-            context={'worker_id': '2'}
+            context={'worker_socket': '2'}
         )
 
         await fixt_event_saver.save_event(event_1)
@@ -73,9 +73,9 @@ class TestWorkSaverAndFinder:
         assert len(work_found.events) == 3
         assert work_found.events[0].status == 'new'
         assert work_found.events[1].status == 'processing'
-        assert work_found.events[1].context == {'worker_id': '1'}
+        assert work_found.events[1].context == {'worker_socket': '1'}
         assert work_found.events[2].status == 'finished_with_failure'
-        assert work_found.events[2].context == {'worker_id': '2'}
+        assert work_found.events[2].context == {'worker_socket': '2'}
 
     async def test_when_no_results_find_by_work_id_should_raise_error(
             self, fixt_finder
