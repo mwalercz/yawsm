@@ -8,7 +8,7 @@ class WorkersNotifier:
     async def notify(self):
         if self.work_queue.empty:
             return
-        workers = self.workers.get_all_workers()
+        workers = self.workers.get_free_workers()
         best_workers = await self.picker.pick_best(workers)
         for worker in best_workers:
             self.worker_client.send(

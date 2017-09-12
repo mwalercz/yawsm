@@ -7,6 +7,10 @@ from dq_broker.domain.worker.model import Worker
 pytestmark = pytest.mark.asyncio
 
 
+@pytest.mark.skip(
+    reason='we are notifying only free workers, '
+           'so this situation should not happen'
+)
 class TestCreateAndFinishWork:
     async def test_create_and_finish_work(
             self, fixt_new_work, fixt_worker, fixt_user,

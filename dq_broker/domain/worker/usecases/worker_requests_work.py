@@ -25,13 +25,7 @@ class WorkerRequestsWorkUsecase:
             return
         work = self.work_queue.pop()
         worker = self.workers.get(worker_socket)
-        try:
-            worker.assign(work)
-        except InvalidStateException as exc:
-            log.exception('Putting work back to queue', exc_info=1)
-            self.work_queue.put(work)
-            await self.notifier.notify()
-            return
+        worker.assign(work)
         self.workers.put(worker)
         self.worker_client.send(
             recipient=worker.worker_ref,
