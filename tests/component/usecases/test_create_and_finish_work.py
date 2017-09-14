@@ -10,7 +10,7 @@ pytestmark = pytest.mark.asyncio
 
 class TestCreateAndFinishWork:
     async def test_create_and_finish_work(
-            self, fixt_new_work, fixt_worker, fixt_user,
+            self, fixt_new_work, fixt_new_worker_dto, fixt_user,
             new_work_usecase,
             worker_connected_usecase,
             worker_requests_work_usecase,
@@ -26,8 +26,8 @@ class TestCreateAndFinishWork:
         and last event should have output.
         """
         work_id = await new_work_usecase.perform(fixt_new_work, fixt_user)
-        await worker_connected_usecase.perform(fixt_worker)
-        await worker_requests_work_usecase.perform(fixt_worker.worker_socket)
+        await worker_connected_usecase.perform(fixt_new_worker_dto)
+        await worker_requests_work_usecase.perform(fixt_new_worker_dto.worker_socket)
         worker_client.send.assert_called_with(
             action_name='work_to_be_done',
             recipient=sentinel.worker_ref,
@@ -42,7 +42,7 @@ class TestCreateAndFinishWork:
         )
         await work_is_done_usecase.perform(
             dto=WorkIsDoneDto(
-                worker_socket=fixt_worker.worker_socket,
+                worker_socket=fixt_new_worker_dto.worker_socket,
                 work_id=work_id,
                 status='finished_with_success',
                 output='doc.txt something.sh'

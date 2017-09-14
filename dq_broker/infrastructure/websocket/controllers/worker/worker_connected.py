@@ -1,4 +1,4 @@
-from dq_broker.domain.worker.model import Worker
+from dq_broker.domain.worker.usecases.worker_connected import NewWorkerDto
 
 
 class WorkerConnectedController:
@@ -6,7 +6,7 @@ class WorkerConnectedController:
         self.usecase = usecase
 
     async def handle(self, request):
-        worker = Worker(
+        worker = NewWorkerDto(
             worker_socket=request.peer,
             worker_ref=request.sender,
         )

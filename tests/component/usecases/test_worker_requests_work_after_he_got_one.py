@@ -13,7 +13,7 @@ pytestmark = pytest.mark.asyncio
 )
 class TestCreateAndFinishWork:
     async def test_create_and_finish_work(
-            self, fixt_new_work, fixt_worker, fixt_user,
+            self, fixt_new_work, fixt_new_worker_dto, fixt_user,
             new_work_usecase,
             worker_connected_usecase,
             worker_requests_work_usecase,
@@ -21,10 +21,10 @@ class TestCreateAndFinishWork:
     ):
         await new_work_usecase.perform(fixt_new_work, fixt_user)
         work_2_id = await new_work_usecase.perform(fixt_new_work, fixt_user)
-        await worker_connected_usecase.perform(fixt_worker)
-        await worker_requests_work_usecase.perform(fixt_worker.worker_socket)
+        await worker_connected_usecase.perform(fixt_new_worker_dto)
+        await worker_requests_work_usecase.perform(fixt_new_worker_dto.worker_socket)
         before_work_to_be_done_call_count = self._get_work_to_be_done_call_count(worker_client)
-        await worker_requests_work_usecase.perform(fixt_worker.worker_socket)
+        await worker_requests_work_usecase.perform(fixt_new_worker_dto.worker_socket)
         assert before_work_to_be_done_call_count == self._get_work_to_be_done_call_count(worker_client)
 
         worker_2 = Worker(

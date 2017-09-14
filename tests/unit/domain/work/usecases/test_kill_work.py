@@ -9,7 +9,7 @@ from dq_broker.domain.work.usecases.kill import KillWorkUsecase
 from dq_broker.domain.worker.model import Worker
 from dq_broker.infrastructure.db.work import Work
 from dq_broker.infrastructure.repositories.work import WorkEventSaver, WorkFinder
-from dq_broker.infrastructure.repositories.worker import WorkerRepository
+from dq_broker.infrastructure.repositories.worker import InMemoryWorkers
 
 
 @pytest.fixture
@@ -24,7 +24,7 @@ def mock_work_finder():
 
 @pytest.fixture
 def mock_workers():
-    return Mock(spec=WorkerRepository)
+    return Mock(spec=InMemoryWorkers)
 
 
 @pytest.fixture
@@ -131,7 +131,9 @@ class TestKillWorkUsecase:
         mock_workers.find_by_work_id.return_value = Worker(
             worker_socket=sentinel.worker_socket,
             worker_ref=sentinel.worker_ref,
-            current_work=work.work_id
+            current_work=work.work_id,
+            host_id=1,
+            worker_id=1,
         )
 
         result = await kill_work_usecase.perform(

@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 
 import asyncio
 import functools
@@ -7,15 +7,20 @@ from dq_broker.domain.worker.model import Worker
 
 
 class FreeWorkersPicker:
-    async def pick_best(self, workers):
-        return workers
+    async def pick_best(self, workers: Dict[str, Worker]):
+        return [w for w in workers.values()]
 
 
 class SystemInfoBasedPicker:
-    def __init__(self, delay):
+    def __init__(self, delay, workers_repo):
         self.delay = delay
+        self.workers_repo = workers_repo
 
-    async def pick_best(self, workers: List[Worker]):
+    async def pick_best(self, workers: Dict[str, Worker]):
+        worker_ids = []
+        workers_system_stats = self.workers_repo.get_system_stats(
+            start='lala', worker_ids=worker_ids
+        )
         sorted_workers = sorted(
             workers,
             key=functools.cmp_to_key(self.cmp),

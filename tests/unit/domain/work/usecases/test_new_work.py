@@ -6,7 +6,7 @@ import pytest
 from dq_broker.domain.work.usecases.new import NewWorkUsecase
 from dq_broker.domain.work.work_queue import WorkQueue
 from dq_broker.infrastructure.repositories.work import WorkSaver
-from dq_broker.infrastructure.repositories.worker import WorkerRepository
+from dq_broker.infrastructure.repositories.worker import InMemoryWorkers
 from tests.unit.domain.utils import assert_work_is_ready_sent_to_2_workers
 
 
@@ -43,7 +43,7 @@ class TestNewWorkUsecase:
         """
         work_saver = asynctest.Mock(spec=WorkSaver)
         work_queue = WorkQueue()
-        notifier.workers = WorkerRepository()
+        notifier.workers = InMemoryWorkers()
         work_saver.save.return_value = fixt_db_work
         usecase = NewWorkUsecase(
             work_queue=work_queue,

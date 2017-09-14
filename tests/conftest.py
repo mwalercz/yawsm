@@ -9,6 +9,7 @@ import random
 import dq_broker
 from dq_broker.domain.user.model import User
 from dq_broker.domain.work.model import Work, Credentials
+from dq_broker.domain.worker.usecases.worker_connected import NewWorkerDto
 from dq_broker.infrastructure.db.user import User as DbUser
 from dq_broker.infrastructure.db.base import database
 from peewee_async import Manager
@@ -145,17 +146,28 @@ def fixt_credentials(fixt_username):
 
 
 @pytest.fixture
-def fixt_worker_socket():
+def fixt_new_worker_dto_socket():
     return '1.27.11.1:8181'
 
 
 @pytest.fixture
-def fixt_worker(fixt_worker_socket):
-    return Worker(
-        worker_socket=fixt_worker_socket,
+def fixt_new_worker_dto(fixt_new_worker_dto_socket):
+    return NewWorkerDto(
+        worker_socket=fixt_new_worker_dto_socket,
         worker_ref=sentinel.worker_ref,
     )
 
+# @pytest.fixture
+# def
+#
+# @pytest.fixture
+# def fixt_new_worker_dto(fixt_new_worker_dto):
+#     return Worker(
+#         worker_id=1,
+#         host_id=
+#         worker_socket=fixt_new_worker_dto.worker_socket,
+#         worker_ref=fixt_new_worker_dto.worker_socket,
+#     )
 
 @pytest.fixture
 def worker_system_stat():

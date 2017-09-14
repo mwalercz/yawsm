@@ -6,7 +6,7 @@ from dq_broker.domain.exceptions import WorkerNotFound
 from dq_broker.domain.worker.model import Worker
 
 
-class WorkerRepository:
+class InMemoryWorkers:
     def __init__(self):
         self.workers = {}
 
@@ -39,4 +39,8 @@ class WorkerRepository:
         return [w for w in self.workers.values()]
 
     def get_free_workers(self):
-        return [w for w in self.get_all_workers() if not w.has_work()]
+        return {
+            socket: worker for socket, worker
+            in self.workers.items()
+            if not worker.has_work()
+        }

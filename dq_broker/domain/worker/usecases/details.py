@@ -1,10 +1,10 @@
 from dq_broker.domain.worker.model import Worker
-from dq_broker.infrastructure.repositories.worker import WorkerRepository
+from dq_broker.infrastructure.repositories.worker import InMemoryWorkers
 from dq_broker.infrastructure.websocket.controllers.worker.worker_system_stat import WorkerSystemStat
 
 
 class WorkerDetailsUsecase:
-    def __init__(self, workers: WorkerRepository):
+    def __init__(self, workers: InMemoryWorkers):
         self.workers = workers
 
     async def perform(self, worker_socket):

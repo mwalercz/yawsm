@@ -3,7 +3,7 @@ from dq_broker.domain.exceptions import WorkNotFound
 from dq_broker.domain.work.model import WorkStatus, FINAL_STATUSES, WorkEvent
 from dq_broker.domain.work.work_queue import WorkQueue
 from dq_broker.infrastructure.repositories.work import WorkFinder, WorkEventSaver
-from dq_broker.infrastructure.repositories.worker import WorkerRepository
+from dq_broker.infrastructure.repositories.worker import InMemoryWorkers
 from dq_broker.infrastructure.websocket.clients import WorkerClient
 
 
@@ -11,7 +11,7 @@ class KillWorkUsecase:
     def __init__(
             self,
             work_queue: WorkQueue,
-            workers: WorkerRepository,
+            workers: InMemoryWorkers,
             worker_client: WorkerClient,
             work_finder: WorkFinder,
             event_saver: WorkEventSaver,

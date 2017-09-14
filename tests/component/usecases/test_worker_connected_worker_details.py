@@ -18,19 +18,19 @@ class TestConnectedWorkerShouldBeReturnedInDetailsAndList:
             worker_system_stat_usecase: WorkerSystemStatUsecase,
             worker_details_usecase: WorkerDetailsUsecase,
             worker_system_stat: WorkerSystemStat,
-            fixt_worker: Worker,
+            fixt_new_worker_dto: Worker,
     ):
-        await worker_connected_usecase.perform(fixt_worker)
+        await worker_connected_usecase.perform(fixt_new_worker_dto)
         await worker_system_stat_usecase.perform(
-            worker_socket=fixt_worker.worker_socket,
+            worker_socket=fixt_new_worker_dto.worker_socket,
             system_stat=worker_system_stat
         )
 
         worker_details = await worker_details_usecase.perform(
-            worker_socket=fixt_worker.worker_socket
+            worker_socket=fixt_new_worker_dto.worker_socket
         )
 
-        assert worker_details['worker_socket'] == fixt_worker.worker_socket
+        assert worker_details['worker_socket'] == fixt_new_worker_dto.worker_socket
         assert worker_details['current_work'] is None
         assert worker_details['system_stats'][0]['cpu'] == {
             'count': 3,
@@ -49,14 +49,14 @@ class TestConnectedWorkerShouldBeReturnedInDetailsAndList:
             worker_system_stat_usecase: WorkerSystemStatUsecase,
             worker_list_usecase: WorkerListUsecase,
             worker_system_stat: WorkerSystemStat,
-            fixt_worker: Worker,
+            fixt_new_worker_dto: Worker,
     ):
-        await worker_connected_usecase.perform(fixt_worker)
+        await worker_connected_usecase.perform(fixt_new_worker_dto)
         await worker_system_stat_usecase.perform(
-            worker_socket=fixt_worker.worker_socket,
+            worker_socket=fixt_new_worker_dto.worker_socket,
             system_stat=worker_system_stat
         )
 
         worker_list = await worker_list_usecase.perform()
-        assert worker_list[-1]['worker_socket'] == fixt_worker.worker_socket
+        assert worker_list[-1]['worker_socket'] == fixt_new_worker_dto.worker_socket
         assert worker_list[-1]['last_system_stat']['cpu'] is not None

@@ -20,7 +20,8 @@ def work_is_done_usecase(c):
 def worker_connected_usecase(c):
     return WorkerConnectedUsecase(
         workers=c('workers'),
-        workers_notifier=c('workers_notifier')
+        workers_notifier=c('workers_notifier'),
+        workers_repo=c('workers_repo'),
     )
 
 

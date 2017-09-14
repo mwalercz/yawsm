@@ -36,8 +36,8 @@ class TestCreateAndKillWork:
             self,
             fixt_new_work,
             fixt_user,
-            fixt_worker,
-            fixt_worker_socket,
+            fixt_new_worker_dto,
+            fixt_new_worker_dto_socket,
             new_work_usecase,
             kill_work_usecase,
             worker_connected_usecase,
@@ -52,18 +52,18 @@ class TestCreateAndKillWork:
         Then work_status should be killed.
         """
         work_id = await new_work_usecase.perform(fixt_new_work, fixt_user)
-        await worker_connected_usecase.perform(fixt_worker)
-        await worker_requests_work_usecase.perform(worker_socket=fixt_worker_socket)
+        await worker_connected_usecase.perform(fixt_new_worker_dto)
+        await worker_requests_work_usecase.perform(worker_socket=fixt_new_worker_dto_socket)
         kill_work_result = await kill_work_usecase.perform(
             work_id=work_id, user_id=fixt_user.user_id
         )
         assert kill_work_result == {
             'status': 'sig_kill_sent_to_worker',
-            'worker_socket': fixt_worker.worker_socket,
+            'worker_socket': fixt_new_worker_dto.worker_socket,
         }
         await work_is_done_usecase.perform(
             dto=WorkIsDoneDto(
-                worker_socket=fixt_worker.worker_socket,
+                worker_socket=fixt_new_worker_dto.worker_socket,
                 work_id=work_id,
                 status=WorkStatus.killed.name,
                 output=None,

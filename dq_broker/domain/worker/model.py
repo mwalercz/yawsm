@@ -7,7 +7,16 @@ log = logging.getLogger(__name__)
 
 
 class Worker:
-    def __init__(self, worker_socket, worker_ref, current_work=None):
+    def __init__(
+            self,
+            worker_id,
+            host_id,
+            worker_socket,
+            worker_ref,
+            current_work=None
+    ):
+        self.host_id = host_id
+        self.worker_id = worker_id
         self.worker_socket = worker_socket
         self.worker_ref = worker_ref
         self.current_work: Work = current_work

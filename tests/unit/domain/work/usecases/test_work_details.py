@@ -15,7 +15,7 @@ def fixt_db_work_id():
 
 
 @pytest.fixture
-def fixt_db_events(fixt_db_work_id, fixt_worker_socket):
+def fixt_db_events(fixt_db_work_id, fixt_new_worker_dto_socket):
     return [
         WorkEvent(
             work_id=fixt_db_work_id,
@@ -31,7 +31,7 @@ def fixt_db_events(fixt_db_work_id, fixt_worker_socket):
             status=WorkStatus.processing.name,
             created_at=parse_to_datetime('2017-01-02T20:21:24'),
             context={
-                'worker_socket': fixt_worker_socket
+                'worker_socket': fixt_new_worker_dto_socket
             },
         ),
         WorkEvent(
@@ -41,7 +41,7 @@ def fixt_db_events(fixt_db_work_id, fixt_worker_socket):
             status=WorkStatus.finished_with_success.name,
             created_at=parse_to_datetime('2017-01-02T20:21:25'),
             context={
-                'worker_socket': fixt_worker_socket,
+                'worker_socket': fixt_new_worker_dto_socket,
                 'output': 'this.txt that.sh',
             }
         )
@@ -66,7 +66,7 @@ def fixt_db_work(fixt_db_work_id, fixt_db_events):
 @pytest.mark.asyncio
 class TestWorkDetails:
     async def test_work_details_when_work_exists(
-            self, fixt_db_work, fixt_db_work_id, fixt_worker_socket, fixt_user
+            self, fixt_db_work, fixt_db_work_id, fixt_new_worker_dto_socket, fixt_user
     ):
         """
         Given work with three events found in repository,
@@ -106,7 +106,7 @@ class TestWorkDetails:
                     'status': 'processing',
                     'created_at': '2017-01-02T20:21:24',
                     'context': {
-                        'worker_socket': fixt_worker_socket
+                        'worker_socket': fixt_new_worker_dto_socket
                     }
                 },
                 {
@@ -115,7 +115,7 @@ class TestWorkDetails:
                     'status': 'finished_with_success',
                     'created_at': '2017-01-02T20:21:25',
                     'context': {
-                        'worker_socket': fixt_worker_socket,
+                        'worker_socket': fixt_new_worker_dto_socket,
                         'output': 'this.txt that.sh',
                     }
                 }

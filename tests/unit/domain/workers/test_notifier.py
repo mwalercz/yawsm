@@ -1,7 +1,7 @@
 import pytest
 
 from dq_broker.domain.work.work_queue import WorkQueue
-from dq_broker.infrastructure.repositories.worker import WorkerRepository
+from dq_broker.infrastructure.repositories.worker import InMemoryWorkers
 from tests.unit.domain.utils import assert_work_is_ready_sent_to_2_workers
 
 pytestmark = pytest.mark.asyncio
@@ -27,7 +27,7 @@ class TestNotifier:
     async def test_when_there_are_no_workers_no_message_should_be_sent(
             self, notifier, mock_worker_client,
     ):
-        notifier.workers = WorkerRepository()
+        notifier.workers = InMemoryWorkers()
 
         await notifier.notify()
 
