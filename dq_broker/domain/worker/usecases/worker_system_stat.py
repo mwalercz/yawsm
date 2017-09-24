@@ -6,5 +6,5 @@ class WorkerSystemStatUsecase:
     async def perform(self, worker_socket, system_stat):
         system_stat.created_at = self.current_datetime()
         worker = self.workers.get(worker_socket)
-        worker.append_system_stat(system_stat)
+        worker.add_system_stat(system_stat)
         self.workers.put(worker)
