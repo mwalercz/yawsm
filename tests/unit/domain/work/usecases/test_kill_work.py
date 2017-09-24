@@ -132,8 +132,7 @@ class TestKillWorkUsecase:
             worker_socket=sentinel.worker_socket,
             worker_ref=sentinel.worker_ref,
             current_work=work.work_id,
-            host_id=1,
-            worker_id=1,
+            host=None
         )
 
         result = await kill_work_usecase.perform(

@@ -9,8 +9,7 @@ class WorkersNotifier:
         if self.work_queue.empty:
             return
         workers = self.workers.get_free_workers()
-        best_workers = await self.picker.pick_best(workers)
-        for worker in best_workers:
+        async for worker in self.picker.pick_best(workers):
             self.worker_client.send(
                 recipient=worker.worker_ref,
                 action_name='work_is_ready'

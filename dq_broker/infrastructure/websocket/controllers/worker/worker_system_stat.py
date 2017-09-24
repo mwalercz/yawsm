@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from dq_broker.domain.worker.models.system_stat import SystemStat
+from dq_broker.domain.worker.model import SystemStat
 from dq_broker.infrastructure.websocket.request import validate
 
 
@@ -11,7 +11,6 @@ class WorkerSystemStatController:
     @validate(schema=SystemStat)
     async def handle(self, request):
         system_stat = request.validated
-        system_stat.created_at = datetime.now()
         await self.usecase.perform(
             worker_socket=request.peer,
             system_stat=system_stat,

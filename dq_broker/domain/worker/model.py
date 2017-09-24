@@ -1,9 +1,58 @@
 import logging
+import datetime
+from collections import deque
+from typing import Deque
+
+from schematics import Model
+from schematics.types import IntType, DateTimeType, FloatType
 
 from dq_broker.domain.exceptions import InvalidStateException
 from dq_broker.domain.work.model import Work
 
 log = logging.getLogger(__name__)
+
+
+class SystemStat(Model):
+    load_15 = FloatType(required=True)
+    available_memory = IntType(required=True)
+    created_at = DateTimeType(default=datetime.datetime.now)
+
+
+class Host:
+    DEFAULT_SYSTEM_STATS_SIZE = 10
+
+    def __init__(
+            self,
+            host_address: str,
+            cpu_count: int,
+            total_memory: int,
+            max_system_stats_size: int = None,
+    ):
+        self.total_memory = total_memory
+        self.cpu_count = cpu_count
+        self.system_stats: Deque[SystemStat] = deque(
+            maxlen=max_system_stats_size or self.DEFAULT_SYSTEM_STATS_SIZE
+        )
+        self.host_address = host_address
+
+    @property
+    def last_system_stat(self):
+        return self.system_stats[0]
+
+    def add_system_stat(self, system_stat):
+        self.system_stats.appendleft(system_stat)
+
+    def calculate_avg_available_load(self):
+        size = len(self.system_stats)
+        if size == 0:
+            return 0
+        total_available_load = 0
+        for stat in self.system_stats:
+            available_load = self.cpu_count - stat.cpu.load_15
+            total_available_load += available_load
+
+        avg_available_load = total_available_load / size
+        return avg_available_load
 
 
 class Worker:
@@ -14,11 +63,10 @@ class Worker:
             worker_ref,
             current_work=None
     ):
-        self.host = host
+        self.host: Host = host
         self.worker_socket = worker_socket
         self.worker_ref = worker_ref
         self.current_work: Work = current_work
-        self.system_stats = []
 
     def has_work(self):
         return bool(self.current_work)
@@ -68,8 +116,13 @@ class Worker:
                 worker_socket=self.worker_socket, work=not_finished_work))
         return not_finished_work
 
-    def add_system_stat(self, system_stat):
+    def add_system_stat(self, system_stat: SystemStat):
         self.host.add_system_stat(system_stat)
 
-    def get_last_system_stat(self):
-        self.host.get_last_system_stat()
+    @property
+    def system_stats(self):
+        return self.host.system_stats
+
+    @property
+    def last_system_stat(self):
+        return self.host.last_system_stat

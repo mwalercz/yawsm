@@ -1,6 +1,5 @@
-from dq_broker.domain.worker.model import Worker
+from dq_broker.domain.worker.model import Worker, SystemStat
 from dq_broker.infrastructure.repositories.worker import InMemoryWorkers
-from dq_broker.infrastructure.websocket.controllers.worker.worker_system_stat import WorkerSystemStat
 
 
 class WorkerListUsecase:
@@ -20,11 +19,11 @@ class WorkerListUsecase:
             'worker_socket': worker.worker_socket,
             'current_work': worker.current_work,
             'last_system_stat': self._format_system_stat(
-                worker.get_last_system_stat()
+                worker.last_system_stat
             )
         }
 
-    def _format_system_stat(self, system_stat: WorkerSystemStat):
+    def _format_system_stat(self, system_stat: SystemStat):
         if system_stat:
             return system_stat.to_primitive()
         else:

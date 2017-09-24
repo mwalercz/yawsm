@@ -1,34 +1,29 @@
-from jsonschema import validate
 from peewee import Model
-from schematics.types import FloatType, IntType, PolyModelType, DateTimeType
+from schematics.types import IntType, PolyModelType
 
+from dq_broker.domain.worker.model import SystemStat
 from dq_broker.domain.worker.usecases.worker_connected import NewWorkerDto
+from dq_broker.infrastructure.websocket.request import validate
 
 
-class Cpu(Model):
-    count = IntType(required=True)
-    load_15 = FloatType(required=True)
-
-
-class Memory(Model):
-    total = IntType(required=True)
-    available = IntType(required=True)
-
-
-class FullSystemStat(Model):
-    cpu = PolyModelType(Cpu, required=True)
-    memory = PolyModelType(Memory, required=True)
-    created_at = DateTimeType(required=False)
+class NewWorkerSchema(Model):
+    system_stat = PolyModelType(SystemStat, required=True)
+    host_cpu_count = IntType(required=True)
+    host_total_memory = IntType(required=True)
 
 
 class WorkerConnectedController:
     def __init__(self, usecase):
         self.usecase = usecase
 
-    @validate
+    @validate(schema=NewWorkerSchema)
     async def handle(self, request):
-        worker = NewWorkerDto(
+        validated = request.validated
+        dto = NewWorkerDto(
             worker_socket=request.peer,
             worker_ref=request.sender,
+            host_cpu_count=validated.host_cpu_count,
+            host_total_memory=validated.host_total_memory,
+            system_stat=validated.system_stat,
         )
-        await self.usecase.perform(worker)
+        await self.usecase.perform(dto)

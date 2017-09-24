@@ -9,15 +9,14 @@ import random
 import dq_broker
 from dq_broker.domain.user.model import User
 from dq_broker.domain.work.model import Work, Credentials
+from dq_broker.domain.worker.model import SystemStat
 from dq_broker.domain.worker.usecases.worker_connected import NewWorkerDto
 from dq_broker.infrastructure.db.user import User as DbUser
 from dq_broker.infrastructure.db.base import database
 from peewee_async import Manager
 
 from definitions import ROOT_DIR
-from dq_broker.domain.worker.model import Worker
 from dq_broker.infrastructure.http.controllers.schema import NewWorkDto
-from dq_broker.infrastructure.websocket.controllers.worker.worker_system_stat import WorkerSystemStat
 
 
 def pytest_addoption(parser):
@@ -44,6 +43,7 @@ def fixt_conf(conf_path):
 @pytest.fixture
 def fixt_db(fixt_conf):
     database.init(**fixt_conf['db'])
+    dq_broker.infrastructure.db.user.User.create_table(True)
     dq_broker.infrastructure.db.work.Work.create_table(True)
     dq_broker.infrastructure.db.work.WorkEvent.create_table(True)
     database.set_autocommit(False)
@@ -151,11 +151,15 @@ def fixt_new_worker_dto_socket():
 
 
 @pytest.fixture
-def fixt_new_worker_dto(fixt_new_worker_dto_socket):
+def fixt_new_worker_dto(fixt_new_worker_dto_socket, worker_system_stat):
     return NewWorkerDto(
         worker_socket=fixt_new_worker_dto_socket,
         worker_ref=sentinel.worker_ref,
+        host_cpu_count=2,
+        host_total_memory=20,
+        system_stat=worker_system_stat
     )
+
 
 # @pytest.fixture
 # def
@@ -171,18 +175,10 @@ def fixt_new_worker_dto(fixt_new_worker_dto_socket):
 
 @pytest.fixture
 def worker_system_stat():
-    stat = WorkerSystemStat(
+    stat = SystemStat(
         {
-            'cpu': {
-                'count': 3,
-                'load_1': 1.1,
-                'load_5': 2.4,
-                'load_15': 1.9,
-            },
-            'memory': {
-                'total': 123,
-                'available': 20
-            }
+            'load_15': 1.9,
+            'available_memory': 20,
         }
     )
     stat.validate()

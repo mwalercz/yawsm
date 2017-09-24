@@ -3,7 +3,6 @@ from peewee_async import Manager
 from dq_broker.infrastructure.db.base import database
 from dq_broker.infrastructure.db.user import User
 from dq_broker.infrastructure.db.work import Work, WorkEvent
-from dq_broker.infrastructure.db.worker import Host, SystemStat, Worker
 
 
 def db(c):
@@ -26,9 +25,6 @@ def connect_to_db_and_create_tables():
     User.create_table(True)
     Work.create_table(True)
     WorkEvent.create_table(True)
-    Host.create_table(True)
-    SystemStat.create_table(True)
-    Worker.create_table(True)
 
 
 def create_admin_if_does_not_exist():

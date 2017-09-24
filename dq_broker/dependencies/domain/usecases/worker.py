@@ -21,7 +21,7 @@ def worker_connected_usecase(c):
     return WorkerConnectedUsecase(
         workers=c('workers'),
         workers_notifier=c('workers_notifier'),
-        workers_repo=c('workers_repo'),
+        hosts=c('hosts')
     )
 
 

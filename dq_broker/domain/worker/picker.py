@@ -8,7 +8,9 @@ from dq_broker.domain.worker.model import Worker
 
 class FreeWorkersPicker:
     async def pick_best(self, workers: Dict[str, Worker]):
-        return [w for w in workers.values()]
+        for w in workers.values():
+            yield w
+            await asyncio.sleep(0.5)
 
 
 class SystemInfoBasedPicker:
@@ -18,7 +20,7 @@ class SystemInfoBasedPicker:
 
     async def pick_best(self, workers: Dict[str, Worker]):
         worker_ids = []
-        workers_system_stats = self.workers_repo.get_system_stats(
+        workers_system_stats = self.workers_repo.system_stats(
             start='lala', worker_ids=worker_ids
         )
         sorted_workers = sorted(

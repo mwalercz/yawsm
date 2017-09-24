@@ -24,16 +24,14 @@ def workers():
         Worker(
             worker_socket=sentinel.worker_socket_1,
             worker_ref=sentinel.worker_ref_1,
-            worker_id=sentinel.worker_id_1,
-            host_id=sentinel.host_id_1,
+            host=sentinel.host_1,
         )
     )
     repo.put(
         Worker(
             worker_socket=sentinel.worker_socket_2,
             worker_ref=sentinel.worker_ref_2,
-            worker_id=sentinel.worker_id_2,
-            host_id=sentinel.host_id_2,
+            host=sentinel.host_2,
         )
     )
     return repo
