@@ -3,10 +3,10 @@ from aiohttp_session import get_session
 
 from dq_broker.exceptions import WorkerNotFound
 from dq_broker.infrastructure.auth.permits import users_must_match, auth_required
-from dq_broker.infrastructure.http.controllers.schema import WorkIdDto
 from dq_broker.infrastructure.http.validator import validate
 from dq_broker.user.model import User
 from dq_broker.work.actions.kill.usecase import KillWorkUsecase
+from dq_broker.worker.actions.dtos import WorkIdDto
 
 
 class KillWorkController:

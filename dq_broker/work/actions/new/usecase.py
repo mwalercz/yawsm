@@ -1,6 +1,6 @@
-from dq_broker.infrastructure.http.controllers.schema import NewWorkDto
 from dq_broker.infrastructure.repositories.work import WorkSaver
 from dq_broker.user.model import User
+from dq_broker.work.actions.dtos import NewWorkDto
 from dq_broker.work.model import Work, Credentials
 from dq_broker.work.work_queue import WorkQueue
 from dq_broker.worker.notifier import WorkersNotifier

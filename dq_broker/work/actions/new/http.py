@@ -2,10 +2,10 @@ from aiohttp import web
 from aiohttp_session import get_session
 
 from dq_broker.infrastructure.auth.permits import users_must_match, auth_required
-from dq_broker.infrastructure.http.controllers.schema import NewWorkDto
 from dq_broker.infrastructure.http.validator import validate
 from dq_broker.user.model import User
 from dq_broker.work.actions.new.usecase import NewWorkUsecase
+from dq_broker.work.actions.dtos import NewWorkDto
 
 
 class NewWorkController:

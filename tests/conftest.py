@@ -11,11 +11,11 @@ import dq_broker
 from definitions import ROOT_DIR
 from dq_broker.infrastructure.db.base import database
 from dq_broker.infrastructure.db.user import User as DbUser
-from dq_broker.infrastructure.http.controllers.schema import NewWorkDto
 from dq_broker.user.model import User
 from dq_broker.work.model import Work, Credentials
-from dq_broker.worker.model import SystemStat
+from dq_broker.work.actions.new.usecase import NewWorkDto
 from dq_broker.worker.actions.worker_connected.usecase import NewWorkerDto
+from dq_broker.worker.model import SystemStat
 
 
 def pytest_addoption(parser):
