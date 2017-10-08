@@ -10,30 +10,28 @@ ENV BROKER_DATABASE_NAME=dq_broker \
     BROKER_DATABASE_PASSWORD=dq_broker
 
 # python
-RUN mkdir -p /usr/src/app
-COPY requirements.txt /usr/src/app/
-COPY requirements_dev.txt /usr/src/app/
-COPY . /usr/src/app
 WORKDIR /usr/src/app
+COPY requirements.txt .
+COPY requirements_dev.txt .
+COPY setup.py .
+RUN pip install -e . \
+&& pip install -r requirements_dev.txt
+
+#others
 COPY ./docker/entrypoint.sh /usr/bin/entrypoint
 COPY ./bin/dq.sh /usr/bin/dq
 RUN chmod 755 /usr/bin/entrypoint \
 && chmod 755 /usr/bin/dq
-RUN ["dq", "generate_keys", "broker"]
-
-# ssh
-RUN ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa \
-&& 	ssh-keygen -f /etc/ssh/ssh_host_dsa_key -N '' -t dsa \
-&&  mkdir -p /var/run/sshd
-
-# users
-RUN adduser -S test -s /bin/bash \
+RUN dq generate_keys broker \
+&& ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa \
+&& ssh-keygen -f /etc/ssh/ssh_host_dsa_key -N '' -t dsa \
+&& mkdir -p /var/run/sshd \
+&& adduser -S test -s /bin/bash \
 && echo 'test:test' | chpasswd \
 && adduser -S admin -s /bin/bash \
 && echo 'admin:admin' | chpasswd
 
-RUN pip install -e . \
-&& pip install -r requirements_dev.txt
+COPY . .
 
 ENTRYPOINT ["entrypoint"]
 

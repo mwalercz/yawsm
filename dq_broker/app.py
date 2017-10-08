@@ -17,8 +17,8 @@ from dq_broker.dependencies.app import register_all
 
 
 def run_app(
-        config_path='dq_broker/conf/develop.ini',
-        logging_config_path='dq_broker/conf/logging/develop.ini'
+    config_path='dq_broker/conf/develop.ini',
+    logging_config_path='dq_broker/conf/logging/develop.ini'
 ):
 
     logging.config.fileConfig(logging_config_path)
