@@ -1,11 +1,11 @@
 import asynctest
 import pytest
 
-from dq_broker.work.work_queue import WorkQueue
 from dq_broker.infrastructure.repositories.work import WorkSaver
 from dq_broker.infrastructure.repositories.worker import InMemoryWorkers
 from dq_broker.work.actions.new.usecase import NewWorkUsecase
-from tests.unit.domain.utils import assert_work_is_ready_sent_to_2_workers
+from dq_broker.work.work_queue import WorkQueue
+from tests.unit.utils import assert_work_is_ready_sent_to_2_workers
 
 
 @pytest.mark.asyncio

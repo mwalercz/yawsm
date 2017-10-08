@@ -6,7 +6,7 @@ from dq_broker.infrastructure.db.work import WorkEvent, Work
 from dq_broker.infrastructure.repositories.work import WorkFinder
 from dq_broker.work.actions.details.usecase import WorkDetailsUsecase
 from dq_broker.work.model import WorkStatus
-from tests.unit.domain.utils import parse_to_datetime
+from tests.unit.utils import parse_to_datetime
 
 
 @pytest.fixture
