@@ -1,4 +1,4 @@
-from peewee import Model
+from schematics import Model
 from schematics.types import IntType, PolyModelType
 
 from dq_broker.domain.worker.model import SystemStat
