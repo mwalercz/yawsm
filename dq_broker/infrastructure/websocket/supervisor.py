@@ -1,8 +1,6 @@
 import logging
 import traceback
 
-import asyncio
-
 from dq_broker.exceptions import ValidationError, AccessForbidden
 from dq_broker.infrastructure.websocket.request import Request, Response
 
@@ -15,10 +13,13 @@ class Supervisor:
         self.router = router
 
     async def handle_message(self, sender, peer, message):
-        response = await self.handle_message_and_catch_exceptions(
-            peer=peer,
+        request = Request(
+            message=message,
             sender=sender,
-            message=message
+            peer=peer
+        )
+        response = await self.handle_request_and_catch_exceptions(
+            request
         )
         if response:
             self.response_client.send(
@@ -26,33 +27,28 @@ class Supervisor:
                 response=response
             )
 
-    async def handle_message_and_catch_exceptions(self, sender, peer, message):
+    async def handle_request_and_catch_exceptions(self, request):
         try:
-            route = self.router.get_route(message.path)
-            request = Request(
-                message=message,
-                sender=sender,
-                peer=peer
-            )
+            route = self.router.get_route(request.message.path)
             return await route.handler(request)
         except AccessForbidden as exc:
             log.exception(exc)
             return Response(
-                path=message.path,
+                path=request.message.path,
                 status_code=403,
                 body={'error': exc.data}
             )
         except ValidationError as exc:
             log.exception(exc)
             return Response(
-                path=message.path,
+                path=request.message.path,
                 status_code=400,
                 body={'error': exc.data},
             )
         except Exception as exc:
             log.exception('Error while handling request: %s', exc)
             return Response(
-                path=message.path,
+                path=request.message.path,
                 status_code=500,
                 body={'error': traceback.format_exc(50)}
             )

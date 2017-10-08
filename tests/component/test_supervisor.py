@@ -3,6 +3,7 @@ from unittest.mock import sentinel
 import pytest
 
 from dq_broker.infrastructure.websocket.message import IncomingMessage
+from dq_broker.infrastructure.websocket.request import Request
 
 pytestmark = pytest.mark.asyncio
 
@@ -32,12 +33,14 @@ class TestWorkerFlows:
                 'path': 'worker_requests_work'
             })
         )
-        response = await supervisor.handle_message_and_catch_exceptions(
-            peer=worker_peer,
-            sender=sentinel.sender,
-            message=IncomingMessage.from_raw({
-                'path': 'worker_disconnected'
-            })
+        response = await supervisor.handle_request_and_catch_exceptions(
+            Request(
+                peer=worker_peer,
+                sender=sentinel.sender,
+                message=IncomingMessage.from_raw({
+                    'path': 'worker_disconnected'
+                })
+            )
         )
 
         assert response is None

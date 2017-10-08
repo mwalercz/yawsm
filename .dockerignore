@@ -1,3 +1,6 @@
 dq_broker.egg-info/*
 .eggs/*
 .git/*
+.idea/*
+.cache/*
+*pyc
