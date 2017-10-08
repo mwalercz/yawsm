@@ -1,4 +1,4 @@
-from dq_broker.exceptions import RouteNotFound
+from dq_broker.infrastructure.exceptions import RouteNotFound
 
 
 class Route:

@@ -1,10 +1,10 @@
 import logging
-from typing import Dict, NamedTuple
+from typing import Dict
 
-from dq_broker.domain.user.model import User
-from dq_broker.exceptions import AuthenticationFailed
 from dq_broker.infrastructure.auth.ssh import SSHService
+from dq_broker.infrastructure.exceptions import AuthenticationFailed
 from dq_broker.infrastructure.repositories.user import UserRepository
+from dq_broker.user.model import User
 
 log = logging.getLogger(__name__)
 

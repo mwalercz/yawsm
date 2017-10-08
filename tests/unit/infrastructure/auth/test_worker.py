@@ -1,11 +1,11 @@
+import asyncio
 from unittest.mock import Mock
 
-import asyncio
 import pytest
-from dq_broker.infrastructure.auth.worker import WorkerAuthenticationService
 
-from dq_broker.exceptions import AuthenticationFailed
 from dq_broker.infrastructure.auth.ssh import SSHService
+from dq_broker.infrastructure.auth.worker import WorkerAuthenticationService
+from dq_broker.infrastructure.exceptions import AuthenticationFailed
 
 pytestmark = pytest.mark.asyncio
 

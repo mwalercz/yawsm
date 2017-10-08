@@ -1,6 +1,6 @@
 from peewee_async import Manager
 
-from dq_broker.domain.exceptions import UserNotFound
+from dq_broker.exceptions import UserNotFound
 from dq_broker.infrastructure.db.user import User
 
 

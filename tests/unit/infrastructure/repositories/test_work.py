@@ -2,10 +2,10 @@ import logging
 
 import pytest
 
-from dq_broker.domain.exceptions import WorkNotFound
-from dq_broker.domain.work.model import WorkStatus
+from dq_broker.exceptions import WorkNotFound
 from dq_broker.infrastructure.db.work import WorkEvent
 from dq_broker.infrastructure.repositories.work import WorkSaver, WorkFinder, WorkEventSaver
+from dq_broker.work.model import WorkStatus
 
 log = logging.getLogger(__name__)
 

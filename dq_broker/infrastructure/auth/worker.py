@@ -1,5 +1,5 @@
 
-from dq_broker.exceptions import AuthenticationFailed
+from dq_broker.infrastructure.exceptions import AuthenticationFailed
 
 
 class WorkerAuthenticationService:

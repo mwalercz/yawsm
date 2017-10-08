@@ -1,10 +1,11 @@
-from dq_broker.domain.work.work_queue import WorkQueue
-from dq_broker.domain.worker.hosts import InMemoryHosts
-from dq_broker.domain.worker.notifier import WorkersNotifier
-from dq_broker.domain.worker.picker import FreeWorkersPicker
+from dq_broker.worker.hosts import InMemoryHosts
+from dq_broker.worker.notifier import WorkersNotifier
+
 from dq_broker.infrastructure.repositories.user import UserRepository
 from dq_broker.infrastructure.repositories.work import WorkEventSaver, WorkSaver, WorkFinder
 from dq_broker.infrastructure.repositories.worker import InMemoryWorkers
+from dq_broker.work.work_queue import WorkQueue
+from dq_broker.worker.picker import FreeWorkersPicker
 
 
 def picker(c):

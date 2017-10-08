@@ -1,12 +1,10 @@
-from unittest.mock import sentinel
-
 import asynctest
 import pytest
 
-from dq_broker.domain.work.usecases.new import NewWorkUsecase
-from dq_broker.domain.work.work_queue import WorkQueue
+from dq_broker.work.work_queue import WorkQueue
 from dq_broker.infrastructure.repositories.work import WorkSaver
 from dq_broker.infrastructure.repositories.worker import InMemoryWorkers
+from dq_broker.work.actions.new.usecase import NewWorkUsecase
 from tests.unit.domain.utils import assert_work_is_ready_sent_to_2_workers
 
 
@@ -54,4 +52,3 @@ class TestNewWorkUsecase:
         await usecase.perform(fixt_new_work, fixt_user)
 
         mock_worker_client.send.assert_not_called()
-

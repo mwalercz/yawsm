@@ -2,8 +2,7 @@ from unittest.mock import sentinel
 
 import pytest
 
-from dq_broker.domain.work.model import Work
-from dq_broker.domain.worker.usecases.work_is_done import WorkIsDoneDto
+from dq_broker.worker.actions.work_is_done.usecase import WorkIsDoneDto
 
 pytestmark = pytest.mark.asyncio
 

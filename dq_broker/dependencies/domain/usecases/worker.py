@@ -1,13 +1,13 @@
 import datetime
 
-from dq_broker.domain.worker.usecases.details import WorkerDetailsUsecase
-from dq_broker.domain.worker.usecases.list import WorkerListUsecase
-from dq_broker.domain.worker.usecases.worker_has_work import WorkerHasWorkUsecase
-from dq_broker.domain.worker.usecases.work_is_done import WorkIsDoneUsecase
-from dq_broker.domain.worker.usecases.worker_disconnected import WorkerDisconnectedUsecase
-from dq_broker.domain.worker.usecases.worker_requests_work import WorkerRequestsWorkUsecase
-from dq_broker.domain.worker.usecases.worker_system_stat import WorkerSystemStatUsecase
-from dq_broker.domain.worker.usecases.worker_connected import WorkerConnectedUsecase
+from dq_broker.worker.actions.details.usecase import WorkerDetailsUsecase
+from dq_broker.worker.actions.list.usecase import WorkerListUsecase
+from dq_broker.worker.actions.work_is_done.usecase import WorkIsDoneUsecase
+from dq_broker.worker.actions.worker_connected.usecase import WorkerConnectedUsecase
+from dq_broker.worker.actions.worker_disconnected.usecase import WorkerDisconnectedUsecase
+from dq_broker.worker.actions.worker_has_work.usecase import WorkerHasWorkUsecase
+from dq_broker.worker.actions.worker_requests_work.usecase import WorkerRequestsWorkUsecase
+from dq_broker.worker.actions.worker_system_stat.usecase import WorkerSystemStatUsecase
 
 
 def work_is_done_usecase(c):
@@ -71,11 +71,11 @@ def worker_details_usecase(c):
 
 
 def register(c):
-    c.add_service(work_is_done_usecase, 'usecases.worker.work_is_done')
-    c.add_service(worker_connected_usecase, 'usecases.worker.worker_connected')
-    c.add_service(worker_disconnected_usecase, 'usecases.worker.worker_disconnected')
-    c.add_service(worker_requests_work_usecase, 'usecases.worker.worker_requests_work')
-    c.add_service(worker_has_work_usecase, 'usecases.worker.worker_has_work')
-    c.add_service(worker_system_stat_usecase, 'usecases.worker.system_stat')
-    c.add_service(worker_list_usecase, 'usecases.worker.list')
-    c.add_service(worker_details_usecase, 'usecases.worker.details')
+    c.add_service(work_is_done_usecase, 'actions.worker.work_is_done')
+    c.add_service(worker_connected_usecase, 'actions.worker.worker_connected')
+    c.add_service(worker_disconnected_usecase, 'actions.worker.worker_disconnected')
+    c.add_service(worker_requests_work_usecase, 'actions.worker.worker_requests_work')
+    c.add_service(worker_has_work_usecase, 'actions.worker.worker_has_work')
+    c.add_service(worker_system_stat_usecase, 'actions.worker.system_stat')
+    c.add_service(worker_list_usecase, 'actions.worker.list')
+    c.add_service(worker_details_usecase, 'actions.worker.details')

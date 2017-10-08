@@ -57,57 +57,57 @@ def clean_db(container):
 
 @pytest.fixture
 async def new_work_usecase(container):
-    return container('usecases.work.new_work')
+    return container('actions.work.new_work')
 
 
 @pytest.fixture
 async def kill_work_usecase(container):
-    return container('usecases.work.kill_work')
+    return container('actions.work.kill_work')
 
 
 @pytest.fixture
 async def worker_connected_usecase(container):
-    return container('usecases.worker.worker_connected')
+    return container('actions.worker.worker_connected')
 
 
 @pytest.fixture
 async def worker_requests_work_usecase(container):
-    return container('usecases.worker.worker_requests_work')
+    return container('actions.worker.worker_requests_work')
 
 
 @pytest.fixture
 async def worker_has_work_usecase(container):
-    return container('usecases.worker.worker_has_work')
+    return container('actions.worker.worker_has_work')
 
 
 @pytest.fixture
 async def work_is_done_usecase(container):
-    return container('usecases.worker.work_is_done')
+    return container('actions.worker.work_is_done')
 
 
 @pytest.fixture
 async def worker_system_stat_usecase(container):
-    return container('usecases.worker.system_stat')
+    return container('actions.worker.system_stat')
 
 
 @pytest.fixture
 async def worker_details_usecase(container):
-    return container('usecases.worker.details')
+    return container('actions.worker.details')
 
 
 @pytest.fixture
 async def worker_list_usecase(container):
-    return container('usecases.worker.list')
+    return container('actions.worker.list')
 
 
 @pytest.fixture
 async def work_details_usecase(container):
-    return container('usecases.work.work_details')
+    return container('actions.work.work_details')
 
 
 @pytest.fixture
 async def list_work_usecase(container):
-    return container('usecases.work.list_work')
+    return container('actions.work.list_work')
 
 
 @pytest.fixture

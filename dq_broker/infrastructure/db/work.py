@@ -3,9 +3,9 @@ import datetime
 from peewee import CharField, PrimaryKeyField, TextField, DateTimeField, ForeignKeyField
 from playhouse.sqlite_ext import JSONField
 
-from dq_broker.domain.work.model import ALL_WORK_STATUSES
 from dq_broker.infrastructure.db.base import BaseModel
 from dq_broker.infrastructure.db.user import User
+from dq_broker.work.model import ALL_WORK_STATUSES
 
 
 class Work(BaseModel):

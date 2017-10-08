@@ -2,7 +2,7 @@ from unittest.mock import sentinel
 
 import pytest
 
-from dq_broker.domain.worker.model import Worker
+from dq_broker.worker.model import Worker
 
 pytestmark = pytest.mark.asyncio
 

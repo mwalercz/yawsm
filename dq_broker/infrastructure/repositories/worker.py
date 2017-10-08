@@ -2,8 +2,8 @@ from typing import List
 
 from copy import copy
 
-from dq_broker.domain.exceptions import WorkerNotFound
-from dq_broker.domain.worker.model import Worker
+from dq_broker.exceptions import WorkerNotFound
+from dq_broker.worker.model import Worker
 
 
 class InMemoryWorkers:

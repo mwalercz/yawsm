@@ -2,17 +2,7 @@ import asyncio
 from configparser import SafeConfigParser
 
 import os
-from dq_broker.dependencies.infrastructure.websocket.controllers import (
-    register as register_ws_controllers
-)
 
-from dq_broker.dependencies.infrastructure.websocket.clients import (
-    register as register_clients
-)
-from dq_broker.dependencies.infrastructure.websocket.services import (
-    register as register_ws_services
-)
-from dq_broker.dependencies.infrastructure.websocket.routing import register_ws_routing
 from dq_broker.dependencies.domain.services import (
     register as register_domain
 )
@@ -28,21 +18,30 @@ from dq_broker.dependencies.infrastructure.auth import (
 from dq_broker.dependencies.infrastructure.db import (
     register as register_db,
 )
-from dq_broker.dependencies.infrastructure.serialization import (
-    register as register_serialization
-)
 from dq_broker.dependencies.infrastructure.http.controllers import (
     register as register_http_controllers
-)
-from dq_broker.dependencies.infrastructure.http.services import (
-    register as register_http_services
 )
 from dq_broker.dependencies.infrastructure.http.routing import (
     register_http_routing
 )
-
+from dq_broker.dependencies.infrastructure.http.services import (
+    register as register_http_services
+)
+from dq_broker.dependencies.infrastructure.serialization import (
+    register as register_serialization
+)
+from dq_broker.dependencies.infrastructure.websocket.clients import (
+    register as register_clients
+)
+from dq_broker.dependencies.infrastructure.websocket.controllers import (
+    register as register_ws_controllers
+)
+from dq_broker.dependencies.infrastructure.websocket.routing import register_ws_routing
+from dq_broker.dependencies.infrastructure.websocket.services import (
+    register as register_ws_services
+)
 from dq_broker.infrastructure.auth.ssh import SSHService
-from dq_broker.lib.loop_policy import StrictEventLoopPolicy
+from dq_broker.infrastructure.loop_policy import StrictEventLoopPolicy
 
 
 def conf(c):

@@ -3,7 +3,7 @@ import logging
 from autobahn.asyncio import WebSocketServerProtocol
 from autobahn.websocket import ConnectionDeny
 
-from dq_broker.exceptions import (
+from dq_broker.infrastructure.exceptions import (
     AuthenticationFailed, ValidationError,
 )
 from dq_broker.infrastructure.websocket.message import IncomingMessage

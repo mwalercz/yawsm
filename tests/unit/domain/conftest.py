@@ -1,13 +1,13 @@
 from unittest.mock import Mock, sentinel
 
 import pytest
+from dq_broker.worker.notifier import WorkersNotifier
+from dq_broker.worker.picker import FreeWorkersPicker
 
-from dq_broker.domain.work.work_queue import WorkQueue
-from dq_broker.domain.worker.model import Worker
-from dq_broker.domain.worker.notifier import WorkersNotifier
-from dq_broker.domain.worker.picker import FreeWorkersPicker
 from dq_broker.infrastructure.repositories.worker import InMemoryWorkers
 from dq_broker.infrastructure.websocket.clients import WorkerClient
+from dq_broker.work.work_queue import WorkQueue
+from dq_broker.worker.model import Worker
 
 
 @pytest.fixture

@@ -1,10 +1,10 @@
-from dq_broker.infrastructure.http.controllers.work.kill import KillWorkController
-from dq_broker.infrastructure.http.controllers.work.list import ListWorksController
-from dq_broker.infrastructure.http.controllers.work.new import NewWorkController
-from dq_broker.infrastructure.http.controllers.work.details import WorkDetailsController
 from dq_broker.infrastructure.http.controllers.ping import PingController
-from dq_broker.infrastructure.http.controllers.worker.details import WorkerDetailsController
-from dq_broker.infrastructure.http.controllers.worker.list import WorkerListController
+from dq_broker.work.actions.details.http import WorkDetailsController
+from dq_broker.work.actions.kill.http import KillWorkController
+from dq_broker.work.actions.list.http import ListWorksController
+from dq_broker.work.actions.new.http import NewWorkController
+from dq_broker.worker.actions.details.http import WorkerDetailsController
+from dq_broker.worker.actions.list.http import WorkerListController
 
 
 def ping_controller(c):
@@ -13,37 +13,37 @@ def ping_controller(c):
 
 def kill_work_controller(c):
     return KillWorkController(
-        usecase=c('usecases.work.kill_work'),
+        usecase=c('actions.work.kill_work'),
     )
 
 
 def work_list_controller(c):
     return ListWorksController(
-        usecase=c('usecases.work.list_work'),
+        usecase=c('actions.work.list_work'),
     )
 
 
 def new_work_controller(c):
     return NewWorkController(
-        usecase=c('usecases.work.new_work'),
+        usecase=c('actions.work.new_work'),
     )
 
 
 def work_details_controller(c):
     return WorkDetailsController(
-        usecase=c('usecases.work.work_details'),
+        usecase=c('actions.work.work_details'),
     )
 
 
 def worker_list_controller(c):
     return WorkerListController(
-        usecase=c('usecases.worker.list')
+        usecase=c('actions.worker.list')
     )
 
 
 def worker_details_controller(c):
     return WorkerDetailsController(
-        usecase=c('usecases.worker.details')
+        usecase=c('actions.worker.details')
     )
 
 

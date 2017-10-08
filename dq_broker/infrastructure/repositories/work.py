@@ -3,11 +3,10 @@ from typing import List
 from peewee_async import Manager
 
 import dq_broker
-from dq_broker.domain.exceptions import WorkNotFound
-from dq_broker.domain.work.model import WorkStatus
-
+from dq_broker.exceptions import WorkNotFound
 from dq_broker.infrastructure.db.work import Work, WorkEvent
 from dq_broker.infrastructure.http.controllers.schema import NewWorkDto
+from dq_broker.work.model import WorkStatus
 
 
 class WorkSaver:
@@ -36,7 +35,7 @@ class WorkEventSaver:
     def __init__(self, objects: Manager):
         self.objects = objects
 
-    async def save_event(self, work_event: dq_broker.domain.work.model.WorkEvent):
+    async def save_event(self, work_event: dq_broker.work.model.WorkEvent):
         await self.objects.execute(
             Work.update(
                 status=work_event.work_status

@@ -1,20 +1,21 @@
-class ValidationError(Exception):
-    def __init__(self, data):
-        self.data = data
-
-
-class AccessForbidden(Exception):
-    def __init__(self, data):
-        self.data = data
-
-
-class AuthenticationFailed(Exception):
+class WorkerNotFound(Exception):
     pass
 
 
-class SessionNotFound(Exception):
+class WorkNotFound(Exception):
+    def __init__(self, work_id=None, user_id=None):
+        self.work_id = work_id
+        self.username = user_id
+
+
+class UserNotFound(Exception):
+    def __init__(self, username):
+        self.username = username
+
+
+class InvalidArgumentException(Exception):
     pass
 
 
-class RouteNotFound(Exception):
+class InvalidStateException(Exception):
     pass

@@ -1,45 +1,44 @@
-from dq_broker.infrastructure.websocket.controllers.worker.worker_connected import WorkerConnectedController
-from dq_broker.infrastructure.websocket.controllers.worker.worker_disconnected import WorkerDisconnectedController
-from dq_broker.infrastructure.websocket.controllers.worker.worker_requests_work import WorkerRequestsWorkController
-
-from dq_broker.infrastructure.websocket.controllers.worker.work_is_done import WorkIsDoneController
-from dq_broker.infrastructure.websocket.controllers.worker.worker_has_work import WorkerHasWorkController
-from dq_broker.infrastructure.websocket.controllers.worker.worker_system_stat import WorkerSystemStatController
+from dq_broker.worker.actions.work_is_done.ws import WorkIsDoneController
+from dq_broker.worker.actions.worker_connected.ws import WorkerConnectedController
+from dq_broker.worker.actions.worker_disconnected.ws import WorkerDisconnectedController
+from dq_broker.worker.actions.worker_has_work.ws import WorkerHasWorkController
+from dq_broker.worker.actions.worker_requests_work.ws import WorkerRequestsWorkController
+from dq_broker.worker.actions.worker_system_stat.ws import WorkerSystemStatController
 
 
 def work_is_done_controller(c):
     return WorkIsDoneController(
-        usecase=c('usecases.worker.work_is_done')
+        usecase=c('actions.worker.work_is_done')
     )
 
 
 def worker_connected_controller(c):
     return WorkerConnectedController(
-        usecase=c('usecases.worker.worker_connected')
+        usecase=c('actions.worker.worker_connected')
     )
 
 
 def worker_disconnected_controller(c):
     return WorkerDisconnectedController(
-        usecase=c('usecases.worker.worker_disconnected')
+        usecase=c('actions.worker.worker_disconnected')
     )
 
 
 def worker_requests_work_controller(c):
     return WorkerRequestsWorkController(
-        usecase=c('usecases.worker.worker_requests_work')
+        usecase=c('actions.worker.worker_requests_work')
     )
 
 
 def worker_has_work_controller(c):
     return WorkerHasWorkController(
-        usecase=c('usecases.worker.worker_has_work')
+        usecase=c('actions.worker.worker_has_work')
     )
 
 
 def worker_system_stat_controller(c):
     return WorkerSystemStatController(
-        usecase=c('usecases.worker.system_stat')
+        usecase=c('actions.worker.system_stat')
     )
 
 

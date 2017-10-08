@@ -1,9 +1,8 @@
 import pytest
 from collections import OrderedDict
-from dq_broker.domain.exceptions import WorkNotFound
-from dq_broker.domain.work.model import Work
 
-from dq_broker.domain.work.work_queue import WorkQueue
+from dq_broker.exceptions import WorkNotFound
+from dq_broker.work.work_queue import WorkQueue
 
 
 class TestWorkQueue:

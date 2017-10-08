@@ -1,8 +1,8 @@
 from aiohttp import web
 from aiohttp_session import get_session
 
-from dq_broker.exceptions import AuthenticationFailed
 from dq_broker.infrastructure.auth.user import UserAuthenticationService
+from dq_broker.infrastructure.exceptions import AuthenticationFailed
 
 
 class AuthMiddleware:

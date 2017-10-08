@@ -5,18 +5,17 @@ from unittest.mock import sentinel
 import os
 import pytest
 import random
-
-import dq_broker
-from dq_broker.domain.user.model import User
-from dq_broker.domain.work.model import Work, Credentials
-from dq_broker.domain.worker.model import SystemStat
-from dq_broker.domain.worker.usecases.worker_connected import NewWorkerDto
-from dq_broker.infrastructure.db.user import User as DbUser
-from dq_broker.infrastructure.db.base import database
 from peewee_async import Manager
 
+import dq_broker
 from definitions import ROOT_DIR
+from dq_broker.infrastructure.db.base import database
+from dq_broker.infrastructure.db.user import User as DbUser
 from dq_broker.infrastructure.http.controllers.schema import NewWorkDto
+from dq_broker.user.model import User
+from dq_broker.work.model import Work, Credentials
+from dq_broker.worker.model import SystemStat
+from dq_broker.worker.actions.worker_connected.usecase import NewWorkerDto
 
 
 def pytest_addoption(parser):

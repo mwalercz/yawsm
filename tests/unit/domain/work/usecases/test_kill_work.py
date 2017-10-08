@@ -3,13 +3,13 @@ from unittest.mock import Mock, sentinel
 import asynctest
 import pytest
 
-from dq_broker.domain.exceptions import WorkNotFound, WorkerNotFound
-from dq_broker.domain.work.model import WorkStatus, Credentials
-from dq_broker.domain.work.usecases.kill import KillWorkUsecase
-from dq_broker.domain.worker.model import Worker
+from dq_broker.exceptions import WorkNotFound, WorkerNotFound
 from dq_broker.infrastructure.db.work import Work
 from dq_broker.infrastructure.repositories.work import WorkEventSaver, WorkFinder
 from dq_broker.infrastructure.repositories.worker import InMemoryWorkers
+from dq_broker.work.actions.kill.usecase import KillWorkUsecase
+from dq_broker.work.model import WorkStatus, Credentials
+from dq_broker.worker.model import Worker
 
 
 @pytest.fixture

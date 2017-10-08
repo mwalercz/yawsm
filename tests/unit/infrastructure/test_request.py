@@ -2,10 +2,10 @@ from unittest.mock import Mock
 
 import pytest
 
-from dq_broker import exceptions
-from dq_broker.infrastructure.websocket.controllers.worker.work_is_done import WorkIsDoneSchema
+from dq_broker.infrastructure import exceptions
 from dq_broker.infrastructure.websocket.message import IncomingMessage
 from dq_broker.infrastructure.websocket.request import Request, validate
+from dq_broker.worker.actions.work_is_done.ws import WorkIsDoneSchema
 
 pytestmark = pytest.mark.asyncio
 

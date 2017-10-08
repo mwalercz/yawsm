@@ -1,7 +1,7 @@
 import logging
 import traceback
 
-from dq_broker.exceptions import ValidationError, AccessForbidden
+from dq_broker.infrastructure.exceptions import ValidationError, AccessForbidden
 from dq_broker.infrastructure.websocket.request import Request, Response
 
 log = logging.getLogger(__name__)
@@ -18,9 +18,7 @@ class Supervisor:
             sender=sender,
             peer=peer
         )
-        response = await self.handle_request_and_catch_exceptions(
-            request
-        )
+        response = await self.handle_request_and_catch_exceptions(request)
         if response:
             self.response_client.send(
                 recipient=sender,

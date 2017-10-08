@@ -1,4 +1,4 @@
-from dq_broker.lib.serializers import JsonDeserializer, JsonSerializer
+from dq_broker.infrastructure.serializers import JsonDeserializer, JsonSerializer
 
 
 def deserializer(c):

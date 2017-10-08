@@ -1,11 +1,11 @@
 import asynctest
 import pytest
 
-from dq_broker.domain.exceptions import WorkNotFound
-from dq_broker.domain.work.model import WorkStatus
-from dq_broker.domain.work.usecases.details import WorkDetailsUsecase
+from dq_broker.exceptions import WorkNotFound
 from dq_broker.infrastructure.db.work import WorkEvent, Work
 from dq_broker.infrastructure.repositories.work import WorkFinder
+from dq_broker.work.actions.details.usecase import WorkDetailsUsecase
+from dq_broker.work.model import WorkStatus
 from tests.unit.domain.utils import parse_to_datetime
 
 

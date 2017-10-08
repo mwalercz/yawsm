@@ -1,4 +1,4 @@
-from dq_broker.exceptions import ValidationError
+from dq_broker.infrastructure.exceptions import ValidationError
 
 
 class IncomingMessage:

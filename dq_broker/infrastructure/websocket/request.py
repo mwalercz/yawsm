@@ -1,6 +1,6 @@
 from schematics.exceptions import DataError
 
-from dq_broker import exceptions
+from dq_broker.infrastructure import exceptions
 
 
 class Request:

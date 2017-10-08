@@ -1,7 +1,7 @@
 import pytest
 
-from dq_broker.domain.work.work_queue import WorkQueue
 from dq_broker.infrastructure.repositories.worker import InMemoryWorkers
+from dq_broker.work.work_queue import WorkQueue
 from tests.unit.domain.utils import assert_work_is_ready_sent_to_2_workers
 
 pytestmark = pytest.mark.asyncio
