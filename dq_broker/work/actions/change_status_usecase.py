@@ -1,6 +1,10 @@
 from typing import List
 
+import logging
+
 from dq_broker.work.model import WorkEvent, WorkStatus
+
+log = logging.getLogger(__name__)
 
 
 class ChangeStatusUsecase:
@@ -23,4 +27,8 @@ class ChangeStatusUsecase:
             ) for work in works
         ]
         for event in events:
+            log.info(
+                'Status will be changed to "%s" for job: %s',
+                event.work_status, event.work_id
+            )
             await self.work_event_saver.save_event(event)
