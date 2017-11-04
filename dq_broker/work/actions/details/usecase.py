@@ -30,7 +30,7 @@ class WorkDetailsUsecase:
     def _format_event(self, event):
         return {
             'event_id': event.event_id,
-            'event_type': event.event_type,
+            'reason': event.event_type,
             'status': event.status,
             'context': event.context,
             'created_at': event.created_at.isoformat(),

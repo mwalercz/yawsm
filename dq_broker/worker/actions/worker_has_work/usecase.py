@@ -16,7 +16,7 @@ class WorkerHasWorkUsecase:
         await self.event_saver.save_event(
             WorkEvent(
                 work_id=work.work_id,
-                event_type='worker_has_work',
+                reason='worker_has_work',
                 work_status=WorkStatus.processing.name,
                 context={
                     'worker_socket': worker_socket,

@@ -95,14 +95,14 @@ class TestWorkDetails:
             'events': [
                 {
                     'event_id': 1,
-                    'event_type': 'work_created',
+                    'reason': 'work_created',
                     'status': 'new',
                     'created_at': '2017-01-02T20:21:23',
                     'context': {},
                 },
                 {
                     'event_id': 2,
-                    'event_type': 'work_assigned',
+                    'reason': 'work_assigned',
                     'status': 'processing',
                     'created_at': '2017-01-02T20:21:24',
                     'context': {
@@ -111,7 +111,7 @@ class TestWorkDetails:
                 },
                 {
                     'event_id': 3,
-                    'event_type': 'work_finished',
+                    'reason': 'work_finished',
                     'status': 'finished_with_success',
                     'created_at': '2017-01-02T20:21:25',
                     'context': {

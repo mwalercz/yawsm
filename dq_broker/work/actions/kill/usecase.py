@@ -30,7 +30,7 @@ class KillWorkUsecase:
             self.work_queue.pop_by_id(work_id)
             event = WorkEvent(
                 work_id=work_id,
-                event_type='work_killed_in_queue',
+                reason='work_killed_in_queue',
                 work_status=WorkStatus.killed.name,
             )
             await self.event_saver.save_event(event)
@@ -43,7 +43,7 @@ class KillWorkUsecase:
             )
             event = WorkEvent(
                 work_id=work_id,
-                event_type='sig_kill_sent_to_worker',
+                reason='sig_kill_sent_to_worker',
                 work_status=WorkStatus.to_be_killed.name,
                 context={'worker_socket': worker.worker_socket}
             )

@@ -48,7 +48,7 @@ class WorkEventSaver:
             work_id=work_event.work_id,
             status=work_event.work_status,
             context=work_event.context,
-            event_type=work_event.event_type,
+            event_type=work_event.reason,
         )
 
 
@@ -96,3 +96,10 @@ class WorkFinder:
         except IndexError:
             return []
         return result
+
+    async def find_by_statuses(self, statuses: List[WorkStatus]) -> List[Work]:
+        query = Work.select().where(
+            Work.status << statuses
+        )
+        return await self.objects.execute(query)
+

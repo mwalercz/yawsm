@@ -21,7 +21,7 @@ class TestWorkerConnectedAndHasWork:
 
         last_event = work_details['events'][-1]
         assert last_event['status'] == 'processing'
-        assert last_event['event_type'] == 'worker_has_work'
+        assert last_event['reason'] == 'worker_has_work'
 
 
 

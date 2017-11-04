@@ -51,13 +51,13 @@ class TestWorkSaverAndFinder:
 
         event_1 = WorkEvent(
             work_id=work_id,
-            event_type='worker_started_processing',
+            reason='worker_started_processing',
             context={'worker_socket': '1'},
             work_status=WorkStatus.processing.name,
         )
         event_2 = WorkEvent(
             work_id=work_id,
-            event_type='worker_finished_processing',
+            reason='worker_finished_processing',
             work_status=WorkStatus.finished_with_failure.name,
             context={'worker_socket': '2'}
         )

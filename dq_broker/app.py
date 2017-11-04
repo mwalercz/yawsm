@@ -14,6 +14,7 @@ from peewee import OperationalError
 from definitions import ROOT_DIR
 from dq_broker.dependencies.infrastructure.db import connect_to_db_and_create_tables, create_admin_if_does_not_exist
 from dq_broker.dependencies.app import register_all
+from dq_broker.work.model import NON_FINAL_STATUSES, WorkStatus
 
 
 def run_app(
@@ -31,6 +32,11 @@ def run_app(
     txaio.use_asyncio()
     txaio.config.loop = c('loop')
     try_to_connect_to_db(log)
+    c('actions.work.change_status').perform(
+        from_statuses=NON_FINAL_STATUSES,
+        to_status=WorkStatus.unknown.name,
+        reason='broker_shutdown',
+    )
 
     asyncio.ensure_future(make_http_app(c), loop=c('loop'))
     log.info('http started...')
@@ -40,7 +46,6 @@ def run_app(
     try:
         c('loop').run_forever()
     except KeyboardInterrupt:
-        # c('before_shutdown')()
         c('loop').close()
 
 

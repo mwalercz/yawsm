@@ -111,6 +111,11 @@ async def list_work_usecase(container):
 
 
 @pytest.fixture
+async def change_work_status_usecase(container):
+    return container('actions.work.change_status')
+
+
+@pytest.fixture
 async def worker_client(container):
     return container('worker_client')
 

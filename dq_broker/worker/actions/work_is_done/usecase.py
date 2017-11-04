@@ -35,7 +35,7 @@ class WorkIsDoneUsecase:
         finally:
             event = WorkEvent(
                 work_id=dto.work_id,
-                event_type='work_finished',
+                reason='work_finished',
                 work_status=dto.status,
                 context={
                     'worker_socket': dto.worker_socket,

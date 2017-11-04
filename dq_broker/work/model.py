@@ -18,7 +18,7 @@ class Work(NamedTuple):
 
 class WorkEvent(NamedTuple):
     work_id: int
-    event_type: str
+    reason: str
     work_status: str
     context: Dict[str, str] = {}
 
@@ -32,12 +32,13 @@ class WorkStatus(Enum):
     killed = 6
     not_killed = 7
     waiting_for_reschedule = 8
-    server_shutdown = 9
+    unknown = 9
 
 
-ALL_WORK_STATUSES = [e.name for e in WorkStatus]
-FINAL_STATUSES = [
+ALL_STATUSES = {e.name for e in WorkStatus}
+FINAL_STATUSES = {
     WorkStatus.finished_with_success.name,
     WorkStatus.finished_with_failure.name,
     WorkStatus.killed.name,
-]
+}
+NON_FINAL_STATUSES = ALL_STATUSES - FINAL_STATUSES
