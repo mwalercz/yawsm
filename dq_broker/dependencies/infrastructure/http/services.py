@@ -7,6 +7,7 @@ from aiohttp_session.cookie_storage import EncryptedCookieStorage
 from cryptography.fernet import Fernet
 
 from dq_broker.infrastructure.http.middlewares.auth import AuthMiddleware
+from dq_broker.infrastructure.http.middlewares.cookie_storage import EncryptedCookieStorageWithMaxAgeExpiration
 from dq_broker.infrastructure.http.middlewares.error import error_middleware
 
 
@@ -20,11 +21,12 @@ def http_app(c):
         middlewares=[
             error_middleware,
             session_middleware(
-                EncryptedCookieStorage(
+                EncryptedCookieStorageWithMaxAgeExpiration(
                     secret_key=urlsafe_b64decode(Fernet.generate_key()),
-                    max_age=120,
+                    max_age=10,
                     cookie_name='DQ_SESSION'
-                )),
+                )
+            ),
             AuthMiddleware(c('user_auth')).auth_middleware,
         ]
     )
