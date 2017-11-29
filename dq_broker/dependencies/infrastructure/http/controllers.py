@@ -1,4 +1,5 @@
 from dq_broker.infrastructure.http.controllers.ping import PingController
+from dq_broker.user.actions.new.http import NewUserController
 from dq_broker.work.actions.details.http import WorkDetailsController
 from dq_broker.work.actions.kill.http import KillWorkController
 from dq_broker.work.actions.list.http import ListWorksController
@@ -47,6 +48,12 @@ def worker_details_controller(c):
     )
 
 
+def new_user_controller(c):
+    return NewUserController(
+        usecase=c('actions.user.new')
+    )
+
+
 def register(c):
     c.add_service(ping_controller, 'controllers.ping')
     c.add_service(kill_work_controller, 'controllers.work.kill')
@@ -57,3 +64,4 @@ def register(c):
     c.add_service(worker_details_controller, 'controllers.workers.details')
     c.add_service(worker_list_controller, 'controllers.workers.list')
 
+    c.add_service(new_user_controller, 'controllers.user.new')

@@ -20,10 +20,10 @@ class AuthMiddleware:
                 session['user'] = user._asdict()
                 session.changed()
                 return await handler(request)
-            except AuthenticationFailed:
+            except AuthenticationFailed as exc:
                 user = session.get('user')
                 if user:
                     return await handler(request)
-                return web.HTTPUnauthorized()
+                return web.HTTPUnauthorized(exc.args)
 
         return middleware_handler

@@ -7,6 +7,9 @@ from dq_broker.dependencies.domain.services import (
     register as register_domain
 )
 from dq_broker.dependencies.domain.usecases.work import (
+    register as register_work_usecases
+)
+from dq_broker.dependencies.domain.usecases.user import (
     register as register_user_usecases
 )
 from dq_broker.dependencies.domain.usecases.worker import (
@@ -66,6 +69,7 @@ def ssh(c):
 
 def register_usecases(c):
     register_worker_usecases(c)
+    register_work_usecases(c)
     register_user_usecases(c)
 
 

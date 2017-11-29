@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: dq-worker
-          image: gcr.io/dist-queue/dq-worker:a757c20
+          image: gcr.io/dist-queue/dq-worker:64c1d73
           args: ["dq-worker", "-c", "env.ini"]
           env:
             - name: BROKER_URL

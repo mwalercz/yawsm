@@ -7,3 +7,5 @@ def register_http_routing(r, c):
 
     r.add_route('GET', '/workers', c('controllers.workers.list').handle)
     r.add_route('GET', '/workers/{worker_socket}', c('controllers.workers.details').handle)
+
+    r.add_route('POST', '/users', c('controllers.user.new').handle)

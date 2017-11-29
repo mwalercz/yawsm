@@ -49,7 +49,7 @@ class DqBrokerProtocol(WebSocketServerProtocol):
             self.sendClose(code=3400, reason=exc.data)
         except Exception as exc:
             log.exception(exc)
-            self.sendClose(code=3400, reason='Message is not in json format')
+            self.sendClose(code=3400, reason='Message is not in json _format')
         else:
             await self.supervisor.handle_message(
                 sender=self,

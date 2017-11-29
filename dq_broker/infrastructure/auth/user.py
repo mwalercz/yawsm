@@ -1,6 +1,7 @@
 import logging
 from typing import Dict
 
+from dq_broker.exceptions import UserNotFound
 from dq_broker.infrastructure.auth.ssh import SSHService
 from dq_broker.infrastructure.exceptions import AuthenticationFailed
 from dq_broker.infrastructure.repositories.user import UserRepository
@@ -21,14 +22,16 @@ class UserAuthenticationService:
                 password=headers['password'],
             )
         except KeyError:
-            raise AuthenticationFailed()
+            raise AuthenticationFailed('username or password not provided')
+        except UserNotFound:
+            raise AuthenticationFailed(
+                'user: "{}" not found in db.'.format(headers['username'])
+            )
 
     async def _verify_and_get_user_info(self, username, password):
         if not await self.ssh_service.try_to_login(username, password):
             raise AuthenticationFailed()
-        user, was_created = await self.user_repo.get_or_create(username)
-        if was_created:
-            log.info('New user was created: {}'.format(user.username))
+        user = await self.user_repo.find_by_username(username)
         return User(
             user_id=user.user_id,
             username=user.username,

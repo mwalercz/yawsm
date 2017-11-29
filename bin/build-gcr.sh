@@ -2,7 +2,7 @@
 
 set -ex
 
-IMAGE=dq-worker
+IMAGE=dq-broker
 VERSION=`git rev-parse --short HEAD`
 echo "version: $VERSION"
 

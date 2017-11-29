@@ -4,6 +4,7 @@ import logging
 from aiohttp import web
 from aiohttp.web_exceptions import HTTPNotFound, HTTPError
 
+from dq_broker.infrastructure.exceptions import ValidationError
 
 log = logging.getLogger(__name__)
 
@@ -20,6 +21,8 @@ async def error_middleware(app, handler):
     async def middleware_handler(request):
         try:
             return await handler(request)
+        except ValidationError as exc:
+            return json_error(exc.data, status=400)
         except HTTPNotFound as exc:
             return json_error('path_not_found', status=404)
         except HTTPError as exc:
