@@ -27,7 +27,7 @@ setup(
     packages=find_packages(include=path_in_project('dq_broker*'), exclude=['tests*']),
     entry_points={
         'console_scripts': [
-            'broker = dq_broker.app:main',
+            'dq-broker = dq_broker.app:main',
         ],
     },
     include_package_data=True,

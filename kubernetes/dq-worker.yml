@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: dq-worker
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: dq-worker
+  template:
+    metadata:
+      labels:
+        app: dq-worker
+    spec:
+      containers:
+        - name: dq-worker
+          image: gcr.io/dist-queue/dq-worker:a757c20
+          args: ["dq-worker", "-c", "env.ini"]
+          env:
+            - name: BROKER_URL
+              value: wss://dq-broker:9000

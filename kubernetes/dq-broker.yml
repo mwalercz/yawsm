@@ -1,0 +1,47 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: dq-broker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dq-broker
+  template:
+    metadata:
+      labels:
+        app: dq-broker
+    spec:
+      containers:
+        - name: dq-broker
+          image: gcr.io/dist-queue/dq-broker:56da1a1
+          args: ["dq-broker", "-c", "env.ini"]
+          ports:
+          - containerPort: 9000
+            name: websocket
+          - containerPort: 9001
+            name: http
+          env:
+            - name: LANG
+              value: en_US.utf8
+            - name: BROKER_DATABASE_HOSTNAME
+              value: postgres
+            - name: BROKER_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: db
+            - name: BROKER_DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: username
+            - name: BROKER_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: password
+            - name: BROKER_WEBSOCKET_PING_INTERVAL
+              value: "10"
+            - name: BROKER_WEBSOCKET_PING_TIMEOUT
+              value: "10"
