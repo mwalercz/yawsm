@@ -9,7 +9,7 @@ from dq_broker.worker.picker import SystemInfoBasedPicker
 
 
 def picker(c):
-    return SystemInfoBasedPicker(delay=0.4)
+    return SystemInfoBasedPicker(delay=0.2)
     # return FreeWorkersPicker()
 
 
