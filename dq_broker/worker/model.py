@@ -1,6 +1,5 @@
 import datetime
 import logging
-from typing import Deque
 
 from collections import deque
 from schematics import Model
@@ -30,29 +29,48 @@ class Host:
     ):
         self.total_memory = total_memory
         self.cpu_count = cpu_count
-        self.system_stats: Deque[SystemStat] = deque(
+        self.system_stats = deque(
             maxlen=max_system_stats_size or self.DEFAULT_SYSTEM_STATS_SIZE
         )
         self.host_address = host_address
 
     @property
     def last_system_stat(self):
-        return self.system_stats[0]
+        try:
+            return self.system_stats[0]
+        except KeyError:
+            return None
 
-    def add_system_stat(self, system_stat):
+    def add_system_stat(self, system_stat: SystemStat):
         self.system_stats.appendleft(system_stat)
 
-    def calculate_avg_available_load(self):
+    @property
+    def avg_available_load(self):
+        return self.cpu_count - self.avg_load
+
+    @property
+    def avg_available_memory(self):
         size = len(self.system_stats)
         if size == 0:
-            return 0
-        total_available_load = 0
+            return 0.0
+        total_available_memory = 0
         for stat in self.system_stats:
-            available_load = self.cpu_count - stat.cpu.load_15
-            total_available_load += available_load
+            total_available_memory += stat.available_memory
 
-        avg_available_load = total_available_load / size
-        return avg_available_load
+        avg_available_memory = total_available_memory / size
+        return avg_available_memory
+
+    @property
+    def avg_load(self):
+        size = len(self.system_stats)
+        if size == 0:
+            return 0.0
+        total_load = 0.0
+        for stat in self.system_stats:
+            total_load += stat.load_15
+
+        avg_load = total_load / size
+        return avg_load
 
 
 class Worker:

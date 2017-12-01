@@ -12,7 +12,8 @@ from knot import Container
 from peewee import OperationalError
 
 from definitions import ROOT_DIR
-from dq_broker.dependencies.infrastructure.db import connect_to_db_and_create_tables, create_admin_if_does_not_exist
+from dq_broker.dependencies.infrastructure.db import \
+    connect_to_db_and_create_tables, create_default_admin_if_not_present
 from dq_broker.dependencies.app import register_all
 from dq_broker.work.model import NON_FINAL_STATUSES, WorkStatus
 
@@ -30,7 +31,9 @@ def run_app(
     register_all(c)
     txaio.use_asyncio()
     txaio.config.loop = c('loop')
-    try_to_connect_to_db(log)
+    try_to_connect_to_db_and_create_admin_if_not_present(
+        log, c('conf')['admin']['default_username']
+    )
 
     log.info('changing unfinished work status to unknown...')
     move_unfinished_works_to_unknown_status(c)
@@ -55,11 +58,11 @@ def move_unfinished_works_to_unknown_status(c):
     c('loop').run_until_complete(coro)
 
 
-def try_to_connect_to_db(log):
+def try_to_connect_to_db_and_create_admin_if_not_present(log, default_admin_username):
     while True:
         try:
             connect_to_db_and_create_tables()
-            create_admin_if_does_not_exist()
+            create_default_admin_if_not_present(default_admin_username, log)
             break
         except OperationalError as exc:
             log.info('DB is probably unavailable. ' + str(exc))

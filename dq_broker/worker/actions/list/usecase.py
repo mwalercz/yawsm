@@ -1,5 +1,5 @@
 from dq_broker.infrastructure.repositories.worker import InMemoryWorkers
-from dq_broker.worker.model import Worker, SystemStat
+from dq_broker.worker.model import Worker
 
 
 class WorkerListUsecase:
@@ -11,20 +11,18 @@ class WorkerListUsecase:
         formatted_workers = [
             self._format_worker(worker)
             for worker in workers
-        ]
+            ]
         return formatted_workers
 
     def _format_worker(self, worker: Worker):
         return {
             'worker_socket': worker.worker_socket,
             'current_work': worker.current_work,
-            'last_system_stat': self._format_system_stat(
-                worker.last_system_stat
-            )
+            **self._format_avg_stats(worker)
         }
 
-    def _format_system_stat(self, system_stat: SystemStat):
-        if system_stat:
-            return system_stat.to_primitive()
-        else:
-            return None
+    def _format_avg_stats(self, worker):
+        return {
+            'avg_available_load': worker.host.avg_available_load,
+            'avg_available_memory': worker.host.avg_available_memory
+        }

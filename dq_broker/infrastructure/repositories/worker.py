@@ -38,9 +38,9 @@ class InMemoryWorkers:
     def get_all_workers(self) -> List[Worker]:
         return [w for w in self.workers.values()]
 
-    def get_free_workers(self):
-        return {
-            socket: worker for socket, worker
+    def get_free_workers(self) -> List[Worker]:
+        return [
+            worker for socket, worker
             in self.workers.items()
             if not worker.has_work()
-        }
+        ]

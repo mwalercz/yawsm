@@ -17,8 +17,15 @@ class WorkerDetailsUsecase:
             'system_stats': [
                 self._format_system_stat(system_stat)
                 for system_stat in worker.system_stats
-            ]
+            ],
+            **self._format_avg_stats(worker)
         }
 
     def _format_system_stat(self, system_stat: SystemStat):
         return system_stat.to_primitive()
+
+    def _format_avg_stats(self, worker):
+        return {
+            'avg_available_load': worker.host.avg_available_load,
+            'avg_available_memory': worker.host.avg_available_memory
+        }

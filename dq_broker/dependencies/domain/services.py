@@ -5,11 +5,12 @@ from dq_broker.infrastructure.repositories.user import UserRepository
 from dq_broker.infrastructure.repositories.work import WorkEventSaver, WorkSaver, WorkFinder
 from dq_broker.infrastructure.repositories.worker import InMemoryWorkers
 from dq_broker.work.work_queue import WorkQueue
-from dq_broker.worker.picker import FreeWorkersPicker
+from dq_broker.worker.picker import SystemInfoBasedPicker
 
 
 def picker(c):
-    return FreeWorkersPicker()
+    return SystemInfoBasedPicker(delay=0.4)
+    # return FreeWorkersPicker()
 
 
 def workers_notifier(c):

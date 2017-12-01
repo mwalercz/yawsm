@@ -49,4 +49,4 @@ class TestConnectedWorkerShouldBeReturnedInDetailsAndList:
 
         worker_list = await worker_list_usecase.perform()
         assert worker_list[-1]['worker_socket'] == fixt_new_worker_dto.worker_socket
-        assert worker_list[-1]['last_system_stat']['load_15'] is not None
+        assert worker_list[-1]['avg_available_load'] is not None

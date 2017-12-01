@@ -45,3 +45,5 @@ spec:
               value: "10"
             - name: BROKER_WEBSOCKET_PING_TIMEOUT
               value: "10"
+            - name: BROKER_DEFAULT_ADMIN_USERNAME
+              value: admin

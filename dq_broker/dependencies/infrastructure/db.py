@@ -27,14 +27,17 @@ def connect_to_db_and_create_tables():
     WorkEvent.create_table(True)
 
 
-def create_admin_if_does_not_exist():
-    user, was_created = User.get_or_create(
+def create_default_admin_if_not_present(default_admin_username, log):
+    admins_count = User.select(User.is_admin is True).count()
+    if admins_count > 0:
+        return
+    log.info(
+        'There are no admin users. '
+        'Creating new one with username: %s', default_admin_username
+    )
+    User.create(
         is_admin=True,
-        defaults=dict(
-            username='admin',
-            password='admin',
-            is_admin=True
-        )
+        username=default_admin_username,
     )
 
 
