@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: dq-broker
-          image: gcr.io/dist-queue/dq-broker:8d0940e
+          image: gcr.io/dist-queue/dq-broker:63aa73f
           args: ["dq-broker", "-c", "env.ini"]
           ports:
           - containerPort: 9000
