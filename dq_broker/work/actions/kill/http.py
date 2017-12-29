@@ -6,6 +6,7 @@ from dq_broker.infrastructure.auth.permits import users_must_match, auth_require
 from dq_broker.infrastructure.http.validator import validate
 from dq_broker.user.model import User
 from dq_broker.work.actions.kill.usecase import KillWorkUsecase
+from dq_broker.work.model import KillWork
 from dq_broker.worker.actions.dtos import WorkIdDto
 
 
@@ -24,12 +25,14 @@ class KillWorkController:
         )
         try:
             result = await self.usecase.perform(
-                work_id=validated.work_id,
-                user_id=user.user_id,
+                KillWork(
+                    work_id=validated.work_id,
+                    user_id=user.user_id,
+                )
             )
             return web.json_response(result)
         except WorkerNotFound:
             return web.json_response(
-                {'error': 'work_found_in_db_but_not_in_memory'},
-                status=404,
+                {'status': 'work_cannot_be_cancelled'},
+                status=403,
             )

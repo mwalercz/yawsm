@@ -97,7 +97,7 @@ class WorkFinder:
             return []
         return result
 
-    async def find_by_statuses(self, statuses: List[int]) -> List[Work]:
+    async def find_by_statuses(self, statuses: List[str]) -> List[Work]:
         query = Work.select().where(
             Work.status << statuses
         )

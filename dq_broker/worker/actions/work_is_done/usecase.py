@@ -17,7 +17,8 @@ class WorkIsDoneDto:
 
 
 class WorkIsDoneUsecase:
-    def __init__(self, workers: InMemoryWorkers, event_saver):
+    def __init__(self, worker_client, workers: InMemoryWorkers, event_saver):
+        self.worker_client = worker_client
         self.workers = workers
         self.event_saver = event_saver
 
@@ -27,10 +28,15 @@ class WorkIsDoneUsecase:
             worker.work_finished(dto.work_id)
             self.workers.put(worker)
         except WorkerNotFound:
-            log.warning(
+            log.exception(
                 'Worker: %s not found in repository, '
                 'but he finished work: %s with status: %s',
                 dto.worker_socket, dto.work_id, dto.status
+            )
+        else:
+            self.worker_client.send(
+                recipient=worker.worker_ref,
+                action_name='work_is_done_ack',
             )
         finally:
             event = WorkEvent(

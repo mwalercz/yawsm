@@ -146,6 +146,11 @@ def worker_auth(container):
 
 
 @pytest.fixture
+def task_queue_consumer(container):
+    return container('consumer')
+
+
+@pytest.fixture
 def worker_headers(container):
     return {
         'username': 'test',

@@ -2,7 +2,9 @@ import argparse
 import logging.config
 
 import asyncio
+import signal
 
+import functools
 import os
 import time
 
@@ -38,15 +40,24 @@ def run_app(
     log.info('changing unfinished work status to unknown...')
     move_unfinished_works_to_unknown_status(c)
 
+    asyncio.ensure_future(
+        c('consumer').consume_all(), loop=c('loop')
+    )
+    log.info('task queue consumer started..')
+
     asyncio.ensure_future(make_http_app(c), loop=c('loop'))
     log.info('http started...')
+
     asyncio.ensure_future(make_ws_app(c), loop=c('loop'))
     log.info('websocket started..')
 
-    try:
-        c('loop').run_forever()
-    except KeyboardInterrupt:
-        c('loop').close()
+    for signame in ('SIGINT', 'SIGTERM'):
+        c('loop').add_signal_handler(
+            getattr(signal, signame),
+            functools.partial(exit, signame, c)
+        )
+
+    c('loop').run_forever()
 
 
 def move_unfinished_works_to_unknown_status(c):
@@ -88,6 +99,13 @@ def make_http_app(c):
         port=c('conf')['http']['port'],
         ssl=c('secure_context'),
     )
+
+
+def exit(signame, c):
+    print('Exiting...')
+    for task in asyncio.Task.all_tasks():
+        task.cancel()
+    c('loop').stop()
 
 
 def main():

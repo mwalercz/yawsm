@@ -13,7 +13,8 @@ from dq_broker.worker.actions.worker_system_stat.usecase import WorkerSystemStat
 def work_is_done_usecase(c):
     return WorkIsDoneUsecase(
         workers=c('workers'),
-        event_saver=c('event_saver')
+        event_saver=c('event_saver'),
+        worker_client=c('worker_client')
     )
 
 

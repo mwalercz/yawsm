@@ -30,8 +30,11 @@ class InMemoryWorkers:
 
     def find_by_work_id(self, work_id):
         try:
-            return [w for w in self.workers.values()
-                    if w.current_work is not None and w.current_work.work_id == work_id][0]
+            return [
+                w for w in self.workers.values()
+                if w.current_work is not None and
+                w.current_work.work_id == work_id
+            ][0]
         except IndexError:
             raise WorkerNotFound()
 

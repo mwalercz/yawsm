@@ -12,7 +12,7 @@ def kill_work_usecase(c):
         workers=c('workers'),
         event_saver=c('event_saver'),
         work_finder=c('work_finder'),
-        worker_client=c('worker_client')
+        worker_client=c('worker_client'),
     )
 
 
@@ -25,7 +25,7 @@ def list_work_usecase(c):
 def new_work_usecase(c):
     return NewWorkUsecase(
         work_queue=c('work_queue'),
-        workers_notifier=c('workers_notifier'),
+        task_queue=c('task_queue'),
         work_saver=c('work_saver')
     )
 

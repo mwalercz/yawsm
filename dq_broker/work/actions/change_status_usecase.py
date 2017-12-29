@@ -15,7 +15,7 @@ class ChangeStatusUsecase:
     async def perform(
             self,
             from_statuses: List[WorkStatus],
-            to_status: WorkStatus,
+            to_status: str,
             reason: str
     ):
         works = await self.work_finder.find_by_statuses(from_statuses)

@@ -24,6 +24,8 @@ class NewWorkController:
             user=user,
         )
         return web.json_response(
-            {'work_id': work_id},
-            status=202
+            {
+                'status': 'ok',
+                'work_id': work_id
+            }
         )

@@ -1,20 +1,21 @@
+import asyncio
+
 from dq_broker.infrastructure.repositories.work import WorkSaver
 from dq_broker.user.model import User
 from dq_broker.work.actions.dtos import NewWorkDto
 from dq_broker.work.model import Work, Credentials
 from dq_broker.work.work_queue import WorkQueue
-from dq_broker.worker.notifier import WorkersNotifier
 
 
 class NewWorkUsecase:
     def __init__(
             self,
             work_queue: WorkQueue,
-            workers_notifier: WorkersNotifier,
+            task_queue: asyncio.Queue,
             work_saver: WorkSaver
     ):
+        self.task_queue = task_queue
         self.work_queue = work_queue
-        self.workers_notifier = workers_notifier
         self.work_saver = work_saver
 
     async def perform(self, new_work: NewWorkDto, user: User):
@@ -30,5 +31,5 @@ class NewWorkUsecase:
             )
         )
         self.work_queue.put(work)
-        await self.workers_notifier.notify()
+        await self.task_queue.put(work)
         return work.work_id
