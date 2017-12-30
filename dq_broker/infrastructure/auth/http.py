@@ -32,9 +32,7 @@ class HTTPAuthenticationService:
         try:
             user = await self.user_repo.find_by_username(credentials.username)
         except UserNotFound:
-            raise AuthenticationFailed(
-                'User: "{}" not found in db.'.format(credentials.username)
-            )
+            raise AuthenticationFailed('User not found in db')
         else:
             return User(
                 user_id=user.user_id,

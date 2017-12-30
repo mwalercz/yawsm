@@ -24,6 +24,9 @@ class AuthMiddleware:
                 user = session.get('user')
                 if user:
                     return await handler(request)
-                return web.HTTPUnauthorized()
+                return web.HTTPUnauthorized(
+                    headers={'WWW-Authenticate': 'Basic'},
+                    reason=str(exc)
+                )
 
         return middleware_handler
