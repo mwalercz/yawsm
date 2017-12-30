@@ -152,7 +152,4 @@ def task_queue_consumer(container):
 
 @pytest.fixture
 def worker_headers(container):
-    return {
-        'username': 'test',
-        'password': 'test'
-    }
+    return {'authorization': 'Basic dGVzdDpwYXNzd29yZA=='}

@@ -1,10 +1,9 @@
 from unittest.mock import Mock, sentinel
 
 import asynctest
-import asyncio
 import pytest
 
-from dq_broker.exceptions import WorkNotFound, WorkerNotFound
+from dq_broker.exceptions import WorkNotFound
 from dq_broker.infrastructure.db.work import Work
 from dq_broker.infrastructure.repositories.work import WorkEventSaver, WorkFinder
 from dq_broker.infrastructure.repositories.worker import InMemoryWorkers

@@ -19,7 +19,7 @@ class Work(BaseModel):
     cwd = CharField()
     env = JSONField(default={}, null=True)
     output = TextField(null=True)
-    status = CharField(choices=ALL_STATUSES, index=True)
+    status = CharField(choices=ALL_STATUSES)
     created_at = DateTimeField(default=datetime.datetime.utcnow)
 
 

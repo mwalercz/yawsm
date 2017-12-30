@@ -1,16 +1,16 @@
-from dq_broker.infrastructure.auth.user import UserAuthenticationService
-from dq_broker.infrastructure.auth.worker import WorkerAuthenticationService
+from dq_broker.infrastructure.auth.http import HTTPAuthenticationService
+from dq_broker.infrastructure.auth.ws import WebSocketAuthenticationService
 
 
 def user_auth(c):
-    return UserAuthenticationService(
+    return HTTPAuthenticationService(
         ssh_service=c('ssh'),
         user_repo=c('user_repo'),
     )
 
 
 def worker_auth(c):
-    return WorkerAuthenticationService(
+    return WebSocketAuthenticationService(
         ssh_service=c('ssh')
     )
 

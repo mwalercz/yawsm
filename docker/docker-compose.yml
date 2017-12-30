@@ -3,7 +3,7 @@ services:
   broker:
     image: compose_broker
     container_name: compose_broker
-    command: broker -c env.ini
+    command: dq-broker -c env.ini
     build:
       context: ../
       dockerfile: ./docker/Dockerfile

@@ -1,10 +1,11 @@
 import asyncio
 from unittest.mock import Mock
 
+import base64
 import pytest
 
 from dq_broker.infrastructure.auth.ssh import SSHService
-from dq_broker.infrastructure.auth.worker import WorkerAuthenticationService
+from dq_broker.infrastructure.auth.ws import WebSocketAuthenticationService
 from dq_broker.infrastructure.exceptions import AuthenticationFailed
 
 pytestmark = pytest.mark.asyncio
@@ -21,39 +22,37 @@ def mock_ssh():
 
 
 @pytest.fixture
-def worker_auth(mock_ssh):
-    return WorkerAuthenticationService(ssh_service=mock_ssh)
-
-
-@pytest.fixture
-def worker_headers():
-    return {
-        'username': 'test',
-        'password': 'test'
-    }
+def ws_auth(mock_ssh):
+    return WebSocketAuthenticationService(ssh_service=mock_ssh)
 
 
 class TestWorkerAuthentication:
+
+    @pytest.mark.parametrize('param_headers', [
+        {'authorization': ' '.join(['Basic', base64.b64encode(b'test:pasword').decode()])},
+        {'authorization': 'Basic dGVzdDpwYXNzd29yZA=='}
+    ])
     async def test_when_authenticate_with_correct_headers_then_no_errors_should_be_raised(
-            self, worker_auth, worker_headers
+            self, ws_auth, param_headers
     ):
-        await worker_auth.authenticate(worker_headers)
+        await ws_auth.authenticate(param_headers)
 
     @pytest.mark.parametrize('param_incorrect_headers', [
         {},
-        {'username': 'incorrect-key'},
-        {'username': '123'},
-        {'password': 'some-pass'}
+        {'authorization': ''},
+        {'authorization': 'Basic'},
+        {'authorization': 'Basic not-encoded'}
     ])
     async def test_when_authenticate_with_incorrect_headers_then_it_should_raise(
-            self, worker_auth, param_incorrect_headers
+            self, ws_auth, param_incorrect_headers
     ):
         with pytest.raises(AuthenticationFailed):
-            await worker_auth.authenticate(param_incorrect_headers)
+            await ws_auth.authenticate(param_incorrect_headers)
 
     async def test_when_ssh_returns_false_then_authenticate_should_raise(
-            self, worker_auth, worker_headers, mock_ssh
+            self, ws_auth, mock_ssh
     ):
+        headers = {'authorization': 'Basic dGVzdDpwYXNzd29yZA=='}
         mock_ssh._try_to_login.return_value = False
         with pytest.raises(AuthenticationFailed):
-            await worker_auth.authenticate(worker_headers)
+            await ws_auth.authenticate(headers)

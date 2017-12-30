@@ -23,16 +23,11 @@ class KillWorkController:
             {'work_id': request.match_info.get('work_id')},
             schema=WorkIdDto
         )
-        try:
-            result = await self.usecase.perform(
-                KillWork(
-                    work_id=validated.work_id,
-                    user_id=user.user_id,
-                )
+        result = await self.usecase.perform(
+            KillWork(
+                work_id=validated.work_id,
+                user_id=user.user_id,
             )
-            return web.json_response(result)
-        except WorkerNotFound:
-            return web.json_response(
-                {'status': 'work_cannot_be_cancelled'},
-                status=403,
-            )
+        )
+        return web.json_response(result)
+

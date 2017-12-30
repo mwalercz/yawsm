@@ -62,7 +62,7 @@ def run_app(
 
 def move_unfinished_works_to_unknown_status(c):
     coro = c('actions.work.change_status').perform(
-        from_statuses=NON_FINAL_STATUSES,
+        from_statuses=NON_FINAL_STATUSES - {WorkStatus.unknown.name},
         to_status=WorkStatus.unknown.name,
         reason='broker_shutdown',
     )
