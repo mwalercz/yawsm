@@ -18,16 +18,16 @@ def read_requirements(filename):
     return contents.split('\n') if contents else []
 
 setup(
-    name="dq_broker",
+    name="yawsm",
     version="0.0.1",
     author="Maciej Walerczuk",
     author_email="mwalerczuk@gmail.com",
-    description="dq_broker",
+    description="yawsm",
     license="BSD",
-    packages=find_packages(include=path_in_project('dq_broker*'), exclude=['tests*']),
+    packages=find_packages(include=path_in_project('yawsm*'), exclude=['tests*']),
     entry_points={
         'console_scripts': [
-            'dq-broker = dq_broker.app:main',
+            'yawsm = yawsm.app:main',
         ],
     },
     include_package_data=True,

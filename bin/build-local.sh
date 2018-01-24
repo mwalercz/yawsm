@@ -2,7 +2,7 @@
 
 set -ex
 PROJECT=dist-queue
-IMAGE=dq-broker
+IMAGE=yawsm
 
 VERSION=`git rev-parse --short HEAD`
 echo "version: $VERSION"

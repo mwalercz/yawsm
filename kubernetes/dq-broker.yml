@@ -1,21 +1,21 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: dq-broker
+  name: yawsm
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: dq-broker
+      app: yawsm
   template:
     metadata:
       labels:
-        app: dq-broker
+        app: yawsm
     spec:
       containers:
-        - name: dq-broker
-          image: gcr.io/dist-queue/dq-broker:1ab74d5
-          args: ["dq-broker", "-c", "env.ini"]
+        - name: yawsm
+          image: gcr.io/dist-queue/yawsm:1ab74d5
+          args: ["yawsm", "-c", "env.ini"]
           ports:
           - containerPort: 9000
             name: websocket
@@ -24,26 +24,26 @@ spec:
           env:
             - name: LANG
               value: en_US.utf8
-            - name: BROKER_DATABASE_HOSTNAME
+            - name: YAWSM_DATABASE_HOSTNAME
               value: postgres
-            - name: BROKER_DATABASE_NAME
+            - name: YAWSM_DATABASE_NAME
               valueFrom:
                 secretKeyRef:
                   name: postgres-credentials
                   key: db
-            - name: BROKER_DATABASE_USER
+            - name: YAWSM_DATABASE_USER
               valueFrom:
                 secretKeyRef:
                   name: postgres-credentials
                   key: username
-            - name: BROKER_DATABASE_PASSWORD
+            - name: YAWSM_DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: postgres-credentials
                   key: password
-            - name: BROKER_WEBSOCKET_PING_INTERVAL
+            - name: YAWSM_WEBSOCKET_PING_INTERVAL
               value: "10"
-            - name: BROKER_WEBSOCKET_PING_TIMEOUT
+            - name: YAWSM_WEBSOCKET_PING_TIMEOUT
               value: "10"
-            - name: BROKER_DEFAULT_ADMIN_USERNAME
+            - name: YAWSM_DEFAULT_ADMIN_USERNAME
               value: admin

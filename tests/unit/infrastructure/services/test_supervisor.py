@@ -2,13 +2,13 @@ from unittest.mock import Mock, ANY
 
 import pytest
 
-from dq_broker.infrastructure.exceptions import AccessForbidden
-from dq_broker.infrastructure.websocket.clients import ResponseClient
-from dq_broker.infrastructure.websocket.message import IncomingMessage
-from dq_broker.infrastructure.websocket.request import Response, validate
-from dq_broker.infrastructure.websocket.routing import Route, Router
-from dq_broker.infrastructure.websocket.supervisor import Supervisor
-from dq_broker.worker.actions.dtos import WorkIdDto
+from yawsm.infrastructure.exceptions import AccessForbidden
+from yawsm.infrastructure.websocket.clients import ResponseClient
+from yawsm.infrastructure.websocket.message import IncomingMessage
+from yawsm.infrastructure.websocket.request import Response, validate
+from yawsm.infrastructure.websocket.routing import Route, Router
+from yawsm.infrastructure.websocket.supervisor import Supervisor
+from yawsm.worker.actions.dtos import WorkIdDto
 
 pytestmark = pytest.mark.asyncio
 

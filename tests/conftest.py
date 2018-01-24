@@ -7,15 +7,15 @@ import pytest
 import random
 from peewee_async import Manager
 
-import dq_broker
+import yawsm
 from definitions import ROOT_DIR
-from dq_broker.infrastructure.db.base import database
-from dq_broker.infrastructure.db.user import User as DbUser
-from dq_broker.user.model import User
-from dq_broker.work.model import Work, Credentials
-from dq_broker.work.actions.new.usecase import NewWorkDto
-from dq_broker.worker.actions.worker_connected.usecase import NewWorkerDto
-from dq_broker.worker.model import SystemStat
+from yawsm.infrastructure.db.base import database
+from yawsm.infrastructure.db.user import User as DbUser
+from yawsm.user.model import User
+from yawsm.work.model import Work, Credentials
+from yawsm.work.actions.new.usecase import NewWorkDto
+from yawsm.worker.actions.worker_connected.usecase import NewWorkerDto
+from yawsm.worker.model import SystemStat
 
 
 def pytest_addoption(parser):
@@ -28,7 +28,7 @@ def pytest_addoption(parser):
 @pytest.fixture
 def conf_path(request):
     conf_name = request.config.getoption("--settings")
-    conf_path = os.path.join(ROOT_DIR, 'dq_broker/conf/', conf_name)
+    conf_path = os.path.join(ROOT_DIR, 'yawsm/conf/', conf_name)
     return conf_path
 
 
@@ -42,9 +42,9 @@ def fixt_conf(conf_path):
 @pytest.fixture
 def fixt_db(fixt_conf):
     database.init(**fixt_conf['db'])
-    dq_broker.infrastructure.db.user.User.create_table(True)
-    dq_broker.infrastructure.db.work.Work.create_table(True)
-    dq_broker.infrastructure.db.work.WorkEvent.create_table(True)
+    yawsm.infrastructure.db.user.User.create_table(True)
+    yawsm.infrastructure.db.work.Work.create_table(True)
+    yawsm.infrastructure.db.work.WorkEvent.create_table(True)
     database.set_autocommit(False)
     return database
 
@@ -74,7 +74,7 @@ def fixt_work(fixt_new_work, fixt_credentials):
 
 @pytest.fixture
 def fixt_db_work(fixt_work):
-    return dq_broker.infrastructure.db.work.Work(
+    return yawsm.infrastructure.db.work.Work(
         work_id=fixt_work.work_id,
         command=fixt_work.command,
         cwd=fixt_work.cwd,

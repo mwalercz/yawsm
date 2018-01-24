@@ -1,4 +1,4 @@
-dq_broker.egg-info/*
+yawsm.egg-info/*
 .eggs/*
 .git/*
 .idea/*

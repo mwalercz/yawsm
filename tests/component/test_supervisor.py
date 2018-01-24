@@ -2,8 +2,8 @@ from unittest.mock import sentinel
 
 import pytest
 
-from dq_broker.infrastructure.websocket.message import IncomingMessage
-from dq_broker.infrastructure.websocket.request import Request
+from yawsm.infrastructure.websocket.message import IncomingMessage
+from yawsm.infrastructure.websocket.request import Request
 
 pytestmark = pytest.mark.asyncio
 

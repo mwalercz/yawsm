@@ -1,10 +1,10 @@
 import pytest
-from dq_broker.worker.actions.details.usecase import WorkerDetailsUsecase
-from dq_broker.worker.actions.list.usecase import WorkerListUsecase
-from dq_broker.worker.actions.worker_connected.usecase import WorkerConnectedUsecase
+from yawsm.worker.actions.details.usecase import WorkerDetailsUsecase
+from yawsm.worker.actions.list.usecase import WorkerListUsecase
+from yawsm.worker.actions.worker_connected.usecase import WorkerConnectedUsecase
 
-from dq_broker.worker.model import Worker, SystemStat
-from dq_broker.worker.actions.worker_system_stat.usecase import WorkerSystemStatUsecase
+from yawsm.worker.model import Worker, SystemStat
+from yawsm.worker.actions.worker_system_stat.usecase import WorkerSystemStatUsecase
 
 pytestmark = pytest.mark.asyncio
 

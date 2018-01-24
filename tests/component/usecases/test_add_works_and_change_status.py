@@ -1,6 +1,6 @@
 import pytest
 
-from dq_broker.work.model import NON_FINAL_STATUSES, WorkStatus
+from yawsm.work.model import NON_FINAL_STATUSES, WorkStatus
 
 pytestmark = pytest.mark.asyncio
 
@@ -19,7 +19,7 @@ class TestAddWorksAndChangeStatus:
         await change_work_status_usecase.perform(
             from_statuses=NON_FINAL_STATUSES,
             to_status=WorkStatus.unknown.name,
-            reason='broker_shutdown',
+            reason='master_shutdown',
         )
 
         result = await list_work_usecase.perform(

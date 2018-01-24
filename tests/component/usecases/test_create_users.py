@@ -2,9 +2,9 @@ import uuid
 
 import pytest
 
-from dq_broker.infrastructure.repositories.user import UserAlreadyExists
-from dq_broker.user.actions.new.http import NewUserDto
-from dq_broker.user.actions.new.usecase import NewUserUsecase
+from yawsm.infrastructure.repositories.user import UserAlreadyExists
+from yawsm.user.actions.new.http import NewUserDto
+from yawsm.user.actions.new.usecase import NewUserUsecase
 
 pytestmark = pytest.mark.asyncio
 

@@ -1,9 +1,9 @@
 version: '2'
 services:
-  broker:
-    image: compose_broker
-    container_name: compose_broker
-    command: dq-broker -c env.ini
+  yawsm:
+    image: compose_yawsm
+    container_name: compose_yawsm
+    command: yawsm -c env.ini
     build:
       context: ../
       dockerfile: ./docker/Dockerfile
@@ -15,12 +15,12 @@ services:
       - ../:/usr/src/app
     environment:
      - LANG=en_US.utf8
-     - BROKER_DATABASE_HOSTNAME=127.0.0.1
-     - BROKER_DATABASE_NAME=dq_broker
-     - BROKER_DATABASE_USER=dq_broker
-     - BROKER_DATABASE_PASSWORD=dq_broker
-     - BROKER_WEBSOCKET_PING_INTERVAL=2
-     - BROKER_WEBSOCKET_PING_TIMEOUT=2
+     - YAWSM_DATABASE_HOSTNAME=127.0.0.1
+     - YAWSM_DATABASE_NAME=yawsm
+     - YAWSM_DATABASE_USER=yawsm
+     - YAWSM_DATABASE_PASSWORD=yawsm
+     - YAWSM_WEBSOCKET_PING_INTERVAL=2
+     - YAWSM_WEBSOCKET_PING_TIMEOUT=2
 
   postgres:
     image: postgres:9.2-alpine
@@ -29,6 +29,6 @@ services:
       - 5432:5432
     network_mode: "host"
     environment:
-      - POSTGRES_USER=dq_broker
-      - POSTGRES_PASSWORD=dq_broker
-      - POSTGRES_DB=dq_broker
+      - POSTGRES_USER=yawsm
+      - POSTGRES_PASSWORD=yawsm
+      - POSTGRES_DB=yawsm

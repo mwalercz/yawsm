@@ -2,8 +2,8 @@ from unittest.mock import sentinel
 
 import pytest
 
-from dq_broker.worker.model import Worker, Host, SystemStat
-from dq_broker.worker.picker import SystemInfoBasedPicker
+from yawsm.worker.model import Worker, Host, SystemStat
+from yawsm.worker.picker import SystemInfoBasedPicker
 
 pytestmark = pytest.mark.asyncio
 

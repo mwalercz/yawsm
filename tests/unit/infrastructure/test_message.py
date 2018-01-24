@@ -1,7 +1,7 @@
 import pytest
 
-from dq_broker.infrastructure.exceptions import ValidationError
-from dq_broker.infrastructure.websocket.message import IncomingMessage
+from yawsm.infrastructure.exceptions import ValidationError
+from yawsm.infrastructure.websocket.message import IncomingMessage
 
 
 class TestIncomingMessage:

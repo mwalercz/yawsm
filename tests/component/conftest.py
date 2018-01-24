@@ -4,11 +4,11 @@ import asynctest
 import pytest
 from knot import Container
 
-from dq_broker.dependencies.infrastructure.db import connect_to_db_and_create_tables
-from dq_broker.dependencies.app import *
-from dq_broker.infrastructure.auth.ssh import SSHService
-from dq_broker.infrastructure.db.work import Work, WorkEvent
-from dq_broker.infrastructure.websocket.clients import ResponseClient, WorkerClient
+from yawsm.dependencies.infrastructure.db import connect_to_db_and_create_tables
+from yawsm.dependencies.app import *
+from yawsm.infrastructure.auth.ssh import SSHService
+from yawsm.infrastructure.db.work import Work, WorkEvent
+from yawsm.infrastructure.websocket.clients import ResponseClient, WorkerClient
 
 
 def register_mock_clients(c):

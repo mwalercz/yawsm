@@ -2,8 +2,8 @@ from unittest.mock import ANY, call
 
 import pytest
 
-from dq_broker.work.model import WorkStatus, KillWork
-from dq_broker.worker.actions.work_is_done.usecase import WorkIsDoneDto
+from yawsm.work.model import WorkStatus, KillWork
+from yawsm.worker.actions.work_is_done.usecase import WorkIsDoneDto
 
 pytestmark = pytest.mark.asyncio
 

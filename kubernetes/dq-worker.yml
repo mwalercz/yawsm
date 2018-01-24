@@ -17,5 +17,5 @@ spec:
           image: gcr.io/dist-queue/dq-worker:0d2de54
           args: ["dq-worker", "-c", "env.ini"]
           env:
-            - name: BROKER_URL
-              value: wss://dq-broker:9000
+            - name: YAWSM_URL
+              value: wss://yawsm:9000

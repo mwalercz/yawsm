@@ -2,9 +2,9 @@ import base64
 import pytest
 from asynctest import CoroutineMock
 
-from dq_broker.infrastructure.auth.ssh import SSHService
-from dq_broker.infrastructure.auth.ws import WebSocketAuthenticationService
-from dq_broker.infrastructure.exceptions import AuthenticationFailed
+from yawsm.infrastructure.auth.ssh import SSHService
+from yawsm.infrastructure.auth.ws import WebSocketAuthenticationService
+from yawsm.infrastructure.exceptions import AuthenticationFailed
 
 pytestmark = pytest.mark.asyncio
 

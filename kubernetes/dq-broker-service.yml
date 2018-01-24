@@ -2,8 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: dq-broker
-  name: dq-broker
+    app: yawsm
+  name: yawsm
 spec:
   type: LoadBalancer
   loadBalancerIP: 35.205.255.205
@@ -17,4 +17,4 @@ spec:
       targetPort: 9000
       protocol: TCP
   selector:
-    app: dq-broker
+    app: yawsm

@@ -1,8 +1,8 @@
 import pytest
 from collections import OrderedDict
 
-from dq_broker.exceptions import WorkNotFound
-from dq_broker.work.work_queue import WorkQueue
+from yawsm.exceptions import WorkNotFound
+from yawsm.work.work_queue import WorkQueue
 
 
 class TestWorkQueue:
