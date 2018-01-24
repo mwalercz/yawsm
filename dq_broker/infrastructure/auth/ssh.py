@@ -1,30 +1,24 @@
-import functools
-import paramiko
-from paramiko import SSHClient, SSHException
+import logging
+
+import asyncssh
+
+log = logging.getLogger(__name__)
 
 
 class SSHService:
-    def __init__(self, hostname, loop):
+    def __init__(self, hostname):
         self.hostname = hostname
-        self.loop = loop
 
     async def try_to_login(self, username, password):
-        return await self.loop.run_in_executor(
-            executor=None,
-            func=functools.partial(self._try_to_login, username, password)
-        )
-
-    def _try_to_login(self, username, password):
-        with SSHClient() as client:
-            client.set_missing_host_key_policy(
-                paramiko.AutoAddPolicy()
+        try:
+            await asyncssh.create_connection(
+                None,
+                self.hostname,
+                known_hosts=None,
+                username=username,
+                password=password,
             )
-            try:
-                client.connect(
-                    hostname=self.hostname,
-                    username=username,
-                    password=password,
-                )
-                return True
-            except SSHException:
-                return False
+            return True
+        except (OSError, asyncssh.Error) as exc:
+            log.info('Could not authenticate user %s via SSH %s', username, str(exc))
+            return False

@@ -1,8 +1,6 @@
-import asyncio
-from unittest.mock import Mock
-
 import base64
 import pytest
+from asynctest import CoroutineMock
 
 from dq_broker.infrastructure.auth.ssh import SSHService
 from dq_broker.infrastructure.auth.ws import WebSocketAuthenticationService
@@ -15,9 +13,8 @@ pytestmark = pytest.mark.asyncio
 def mock_ssh():
     ssh = SSHService(
         hostname='some-hostname',
-        loop=asyncio.get_event_loop()
     )
-    ssh._try_to_login = Mock(return_value=True)
+    ssh.try_to_login = CoroutineMock(return_value=True)
     return ssh
 
 
@@ -53,6 +50,6 @@ class TestWorkerAuthentication:
             self, ws_auth, mock_ssh
     ):
         headers = {'authorization': 'Basic dGVzdDpwYXNzd29yZA=='}
-        mock_ssh._try_to_login.return_value = False
+        mock_ssh.try_to_login.return_value = False
         with pytest.raises(AuthenticationFailed):
             await ws_auth.authenticate(headers)

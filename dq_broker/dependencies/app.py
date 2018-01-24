@@ -63,7 +63,6 @@ def loop(c):
 def ssh(c):
     return SSHService(
         hostname=c('conf')['ssh']['host'],
-        loop=c('loop'),
     )
 
 

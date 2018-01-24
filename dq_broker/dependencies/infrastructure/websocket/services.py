@@ -43,10 +43,14 @@ def factory(c):
 
 def secure_context(c):
     secure_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    # secure_context.verify_mode = ssl.CERT_REQUIRED
     secure_context.load_cert_chain(
         os.path.join(ROOT_DIR, c('conf')['auth']['crt_path']),
         os.path.join(ROOT_DIR, c('conf')['auth']['key_path']),
     )
+    # secure_context.load_verify_locations(
+    #     os.path.join(ROOT_DIR, 'keys/server.crt')
+    # )
     return secure_context
 
 
