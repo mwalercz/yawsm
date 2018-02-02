@@ -13,7 +13,6 @@ class NewWorkController:
         self.usecase = usecase
 
     @auth_required
-    @users_must_match
     async def handle(self, request):
         data = await request.json()
         session = await get_session(request)

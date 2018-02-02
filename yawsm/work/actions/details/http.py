@@ -14,7 +14,6 @@ class WorkDetailsController:
         self.usecase = usecase
 
     @auth_required
-    @users_must_match
     async def handle(self, request):
         session = await get_session(request)
         user = User.from_session(session)

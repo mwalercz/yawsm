@@ -1,3 +1,5 @@
+from typing import Iterable
+
 from peewee import IntegrityError
 from peewee_async import Manager
 
@@ -43,3 +45,7 @@ class UserRepository:
             },
             username=username,
         )
+
+    async def find_all(self) -> Iterable[User]:
+        query = User.select()
+        return await self.objects.execute(query)

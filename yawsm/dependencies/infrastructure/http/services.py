@@ -23,7 +23,7 @@ def http_app(c):
             session_middleware(
                 EncryptedCookieStorageWithMaxAgeExpiration(
                     secret_key=urlsafe_b64decode(Fernet.generate_key()),
-                    max_age=10,
+                    max_age=c('conf').getint('cookie', 'max_age'),
                     cookie_name='YAWSM_SESSION'
                 )
             ),

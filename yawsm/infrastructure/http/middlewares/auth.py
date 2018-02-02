@@ -15,15 +15,15 @@ class AuthMiddleware:
 
         async def middleware_handler(request):
             session = await get_session(request)
+            user = session.get('user')
+            if user:
+                return await handler(request)
             try:
                 user = await self.auth.authenticate(request.headers)
                 session['user'] = user._asdict()
                 session.changed()
                 return await handler(request)
             except AuthenticationFailed as exc:
-                user = session.get('user')
-                if user:
-                    return await handler(request)
                 return web.HTTPUnauthorized(
                     headers={'WWW-Authenticate': 'Basic'},
                     reason=str(exc)

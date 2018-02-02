@@ -1,4 +1,5 @@
 from yawsm.infrastructure.http.controllers.ping import PingController
+from yawsm.user.actions.list.http import ListUserController
 from yawsm.user.actions.new.http import NewUserController
 from yawsm.work.actions.details.http import WorkDetailsController
 from yawsm.work.actions.kill.http import KillWorkController
@@ -54,6 +55,12 @@ def new_user_controller(c):
     )
 
 
+def list_user_controller(c):
+    return ListUserController(
+        usecase=c('actions.user.list')
+    )
+
+
 def register(c):
     c.add_service(ping_controller, 'controllers.ping')
     c.add_service(kill_work_controller, 'controllers.work.kill')
@@ -65,3 +72,4 @@ def register(c):
     c.add_service(worker_list_controller, 'controllers.workers.list')
 
     c.add_service(new_user_controller, 'controllers.user.new')
+    c.add_service(list_user_controller, 'controllers.user.list')

@@ -97,6 +97,18 @@ class WorkFinder:
             return []
         return result
 
+    async def find_by_user_id_and_statuses(self, user_id: int, statuses: List[str]):
+        query = Work.select().where(
+            Work.user_id == user_id,
+            Work.status << statuses,
+        )
+        result = await self.objects.execute(query)
+        try:
+            list(result)[0]
+        except IndexError:
+            return []
+        return result
+
     async def find_by_statuses(self, statuses: List[str]) -> List[Work]:
         query = Work.select().where(
             Work.status << statuses

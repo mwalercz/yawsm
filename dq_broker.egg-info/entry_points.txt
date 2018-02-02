@@ -1,3 +1,0 @@
-[console_scripts]
-yawsm = yawsm.app:main
-
