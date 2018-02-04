@@ -15,7 +15,7 @@ spec:
       containers:
         - name: dq-worker
           image: gcr.io/dist-queue/dq-worker:0d2de54
-          args: ["dq-worker", "-c", "env.ini"]
+          args: ["dq-worker", "-c", "env.cfg"]
           env:
             - name: YAWSM_URL
               value: wss://yawsm:9000

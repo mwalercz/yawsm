@@ -11,13 +11,14 @@ class SSHService:
 
     async def try_to_login(self, username, password):
         try:
-            await asyncssh.create_connection(
+            chan, conn = await asyncssh.create_connection(
                 None,
                 self.hostname,
                 known_hosts=None,
                 username=username,
                 password=password,
             )
+            chan.close()
             return True
         except (OSError, asyncssh.Error) as exc:
             log.info('Could not authenticate user %s via SSH %s', username, str(exc))

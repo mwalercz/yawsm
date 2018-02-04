@@ -19,9 +19,9 @@ class TestCreateAndListWork:
         work_list = result['works']
         assert len(work_list) >= 2
         assert work_list[-2]['work_id'] == work_id_1
-        assert work_list[-2]['status'] == 'new'
+        assert work_list[-2]['status'] == 'READY'
         assert work_list[-1]['work_id'] == work_id_2
-        assert work_list[-1]['status'] == 'new'
+        assert work_list[-1]['status'] == 'READY'
 
 
 

@@ -105,11 +105,11 @@ class Worker:
     def work_finished(self, work_id):
         if self.current_work is None:
             raise InvalidStateException(
-                'Work was finished, but worker didnt have any job assigned')
+                'Work was FINISHED, but worker didnt have any job assigned')
         if self.current_work.work_id != work_id:
             self.current_work = None
             raise InvalidStateException(
-                'Work was finished, but worker was working on something else'
+                'Work was FINISHED, but worker was working on something else'
             )
         self.current_work = None
 

@@ -6,6 +6,7 @@ from autobahn.websocket import ConnectionDeny
 from yawsm.infrastructure.exceptions import (
     AuthenticationFailed, ValidationError,
 )
+from yawsm.infrastructure.utils import clear_passwords_from_message
 from yawsm.infrastructure.websocket.message import IncomingMessage
 
 log = logging.getLogger(__name__)
@@ -42,7 +43,7 @@ class DqBrokerProtocol(WebSocketServerProtocol):
     async def onMessage(self, payload, isBinary):
         try:
             raw_message = self.deserializer.deserialize(payload)
-            log.debug('New message: %s from: %s', raw_message, self.peer)
+            log.info('New message: %s from: %s', clear_passwords_from_message(raw_message), self.peer)
             message = IncomingMessage.from_raw(raw_message)
         except ValidationError as exc:
             log.exception(exc)
@@ -58,4 +59,4 @@ class DqBrokerProtocol(WebSocketServerProtocol):
             )
 
     async def onPong(self, payload):
-        log.info('pong from %s', self.peer)
+        log.debug('pong from %s', self.peer)

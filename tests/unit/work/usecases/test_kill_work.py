@@ -67,14 +67,14 @@ class TestKillWorkUsecase:
             self, kill_work_usecase, mock_work_finder
     ):
         """
-        Given work in db in status finished_with_failure,
+        Given work in db in status FINISHED,
         when kill work comes,
         then 'work_already_in_final_status' should be returned.
         """
         mock_work_finder.find_by_work_id_and_user_id.return_value = (
             Work(
                 work_id=5,
-                status=WorkStatus.finished_with_failure.name
+                status=WorkStatus.FINISHED.name
             )
         )
 
@@ -83,7 +83,7 @@ class TestKillWorkUsecase:
         assert result == {
             'status': 'error',
             'reason': 'work_already_in_final_status',
-            'work_status': 'finished_with_failure'
+            'work_status': 'FINISHED'
         }
 
     async def test_when_work_in_db_exist_and_work_is_in_queue(
@@ -98,7 +98,7 @@ class TestKillWorkUsecase:
         mock_work_finder.find_by_work_id_and_user_id.return_value = (
             Work(
                 work_id=fixt_work.work_id,
-                status=WorkStatus.new.name,
+                status=WorkStatus.READY.name,
                 username='test-usr'
             )
         )
@@ -127,7 +127,7 @@ class TestKillWorkUsecase:
         mock_work_finder.find_by_work_id_and_user_id.return_value = (
             Work(
                 work_id=work.work_id,
-                status=WorkStatus.processing.name,
+                status=WorkStatus.PROCESSING.name,
                 username='test-usr'
             )
         )

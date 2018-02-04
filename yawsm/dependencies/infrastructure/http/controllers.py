@@ -64,12 +64,12 @@ def list_user_controller(c):
 def register(c):
     c.add_service(ping_controller, 'controllers.ping')
     c.add_service(kill_work_controller, 'controllers.work.kill')
-    c.add_service(new_work_controller, 'controllers.work.new')
+    c.add_service(new_work_controller, 'controllers.work.READY')
     c.add_service(work_details_controller, 'controllers.work.details')
     c.add_service(work_list_controller, 'controllers.work.list')
 
     c.add_service(worker_details_controller, 'controllers.workers.details')
     c.add_service(worker_list_controller, 'controllers.workers.list')
 
-    c.add_service(new_user_controller, 'controllers.user.new')
+    c.add_service(new_user_controller, 'controllers.user.READY')
     c.add_service(list_user_controller, 'controllers.user.list')

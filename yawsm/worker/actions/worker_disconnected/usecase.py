@@ -28,8 +28,8 @@ class WorkerDisconnectedUsecase:
             await self.workers_notifier.notify()
             event = WorkEvent(
                 work_id=not_finished_work.work_id,
-                event_type='worker_disconnected',
-                work_status=WorkStatus.waiting_for_reschedule.name,
+                reason='worker_disconnected',
+                work_status=WorkStatus.READY.name,
                 context={'worker_socket': worker_socket}
             )
             await self.event_saver.save_event(

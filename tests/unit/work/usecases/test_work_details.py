@@ -21,14 +21,14 @@ def fixt_db_events(fixt_db_work_id, fixt_new_worker_dto_socket):
             work_id=fixt_db_work_id,
             event_id=1,
             event_type='work_created',
-            status=WorkStatus.new.name,
+            status=WorkStatus.READY.name,
             created_at=parse_to_datetime('2017-01-02T20:21:23'),
         ),
         WorkEvent(
             work_id=fixt_db_work_id,
             event_id=2,
             event_type='work_assigned',
-            status=WorkStatus.processing.name,
+            status=WorkStatus.PROCESSING.name,
             created_at=parse_to_datetime('2017-01-02T20:21:24'),
             context={
                 'worker_socket': fixt_new_worker_dto_socket
@@ -38,7 +38,7 @@ def fixt_db_events(fixt_db_work_id, fixt_new_worker_dto_socket):
             work_id=fixt_db_work_id,
             event_id=3,
             event_type='work_finished',
-            status=WorkStatus.finished_with_success.name,
+            status=WorkStatus.FINISHED.name,
             created_at=parse_to_datetime('2017-01-02T20:21:25'),
             context={
                 'worker_socket': fixt_new_worker_dto_socket,
@@ -55,9 +55,10 @@ def fixt_db_work(fixt_db_work_id, fixt_db_events):
         command='ls',
         cwd='/home/user',
         env={},
+        exit_code=0,
         username='test-user',
         output='this.txt that.sh',
-        status=WorkStatus.finished_with_success.name,
+        status=WorkStatus.FINISHED.name,
         created_at=parse_to_datetime('2017-01-02T20:21:23'),
         events=fixt_db_events
     )
@@ -89,21 +90,22 @@ class TestWorkDetails:
             'command': 'ls',
             'cwd': '/home/user',
             'environment': {},
+            'exit_code': 0,
             'output': 'this.txt that.sh',
-            'status': 'finished_with_success',
+            'status': 'FINISHED',
             'created_at': '2017-01-02T20:21:23',
             'events': [
                 {
                     'event_id': 1,
                     'reason': 'work_created',
-                    'status': 'new',
+                    'status': 'READY',
                     'created_at': '2017-01-02T20:21:23',
                     'context': {},
                 },
                 {
                     'event_id': 2,
                     'reason': 'work_assigned',
-                    'status': 'processing',
+                    'status': 'PROCESSING',
                     'created_at': '2017-01-02T20:21:24',
                     'context': {
                         'worker_socket': fixt_new_worker_dto_socket
@@ -112,7 +114,7 @@ class TestWorkDetails:
                 {
                     'event_id': 3,
                     'reason': 'work_finished',
-                    'status': 'finished_with_success',
+                    'status': 'FINISHED',
                     'created_at': '2017-01-02T20:21:25',
                     'context': {
                         'worker_socket': fixt_new_worker_dto_socket,

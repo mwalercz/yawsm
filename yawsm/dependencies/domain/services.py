@@ -12,7 +12,7 @@ from yawsm.worker.picker import SystemInfoBasedPicker
 
 
 def picker(c):
-    return SystemInfoBasedPicker(delay=0.2)
+    return SystemInfoBasedPicker(delay=0)
     # return FreeWorkersPicker()
 
 

@@ -10,9 +10,10 @@ class WorkIsDoneSchema(Model):
     work_id = IntType(required=True)
     status = StringType(
         required=True,
-        choices=ALL_STATUSES
+        choices=['KILLED', 'DONE']
     )
     output = StringType()
+    exit_code = IntType()
 
 
 class WorkIsDoneController:
@@ -26,5 +27,6 @@ class WorkIsDoneController:
             work_id=request.validated.work_id,
             status=request.validated.status,
             output=request.validated.output,
+            exit_code=request.validated.exit_code
         )
         await self.usecase.perform(dto)

@@ -20,6 +20,7 @@ class WorkDetailsUsecase:
             'status': work.status,
             'environment': work.env,
             'output': work.output,
+            'exit_code': work.exit_code,
             'created_at': work.created_at.isoformat(),
             'events': self._format_events(work.events)
         }

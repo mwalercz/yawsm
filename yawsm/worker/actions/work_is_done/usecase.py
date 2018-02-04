@@ -2,18 +2,18 @@ import logging
 
 from yawsm.exceptions import WorkerNotFound
 from yawsm.infrastructure.repositories.worker import InMemoryWorkers
-from yawsm.work.model import WorkEvent
-
+from yawsm.work.model import WorkEvent, WorkStatus
 
 log = logging.getLogger(__name__)
 
 
 class WorkIsDoneDto:
-    def __init__(self, worker_socket, work_id, status, output=None):
+    def __init__(self, worker_socket, work_id, status, exit_code=None, output=None):
         self.worker_socket = worker_socket
         self.work_id = work_id
         self.status = status
         self.output = output
+        self.exit_code = exit_code
 
 
 class WorkIsDoneUsecase:
@@ -30,7 +30,7 @@ class WorkIsDoneUsecase:
         except WorkerNotFound:
             log.exception(
                 'Worker: %s not found in repository, '
-                'but he finished work: %s with status: %s',
+                'but he FINISHED work: %s with status: %s',
                 dto.worker_socket, dto.work_id, dto.status
             )
         else:
@@ -39,13 +39,31 @@ class WorkIsDoneUsecase:
                 action_name='work_is_done_ack',
             )
         finally:
+            work_status, reason = self._resolve_work_status(dto)
             event = WorkEvent(
                 work_id=dto.work_id,
-                reason='work_finished',
-                work_status=dto.status,
+                reason=reason,
+                work_status=work_status,
                 context={
                     'worker_socket': dto.worker_socket,
-                    'output': dto.output,
                 }
             )
-            await self.event_saver.save_event(event)
+            await self.event_saver.save_event(
+                event,
+                output=dto.output,
+                exit_code=dto.exit_code,
+            )
+
+    def _resolve_work_status(self, dto):
+        if dto.status == 'DONE':
+            if dto.exit_code == 0:
+                return WorkStatus.FINISHED.name, 'work_finished_with_success'
+            else:
+                return WorkStatus.ERROR.name, 'work_finished_with_error'
+        elif dto.status == 'KILLED':
+            return WorkStatus.CANCELLED.name, 'work_cancelled'
+        else:
+            raise Exception(
+                'Wrong status, work_id: %s, status: %',
+                dto.work_id, dto.status
+            )

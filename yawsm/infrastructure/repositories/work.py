@@ -19,13 +19,13 @@ class WorkSaver:
             command=work.command,
             cwd=work.cwd,
             env=work.env,
-            status=WorkStatus.new.name,
+            status=WorkStatus.READY.name,
             user_id=user_id,
         )
         await self.objects.create(
             WorkEvent,
             work_id=created_work.work_id,
-            status=WorkStatus.new.name,
+            status=WorkStatus.READY.name,
             event_type='work_created',
         )
         return created_work
@@ -35,10 +35,14 @@ class WorkEventSaver:
     def __init__(self, objects: Manager):
         self.objects = objects
 
-    async def save_event(self, work_event: yawsm.work.model.WorkEvent):
+    async def save_event(
+            self, work_event: yawsm.work.model.WorkEvent,
+            **kwargs
+    ):
         await self.objects.execute(
             Work.update(
-                status=work_event.work_status
+                status=work_event.work_status,
+                **kwargs
             ).where(
                 Work.work_id == work_event.work_id
             )

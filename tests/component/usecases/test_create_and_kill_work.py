@@ -19,7 +19,7 @@ class TestCreateAndKillWork:
             worker_client,
     ):
         """
-        Given new work was submitted, no worker in system and kill_work was submitted_once,
+        Given READY work was submitted, no worker in system and kill_work was submitted_once,
         When kill_work is performed second time,
         Then another kill_work should be accepted.
         """
@@ -46,7 +46,7 @@ class TestCreateAndKillWork:
         assert kill_work_2_result == {
             'status': 'error',
             'reason': 'work_already_in_final_status',
-            'work_status': 'cancelled'
+            'work_status': 'CANCELLED'
         }
 
         assert worker_client.send.mock_calls == []
@@ -67,10 +67,10 @@ class TestCreateAndKillWork:
             task_queue_consumer,
     ):
         """
-        Given new work was submitted, given to one worker,
+        Given READY work was submitted, given to one worker,
         kill_work and work_is_done are performed,
         When work_details is performed,
-        Then work_status should be cancelled.
+        Then work_status should be CANCELLED.
         """
         worker_ref = fixt_new_worker_dto.worker_ref
 
@@ -90,7 +90,7 @@ class TestCreateAndKillWork:
             dto=WorkIsDoneDto(
                 worker_socket=fixt_new_worker_dto.worker_socket,
                 work_id=work_id,
-                status=WorkStatus.cancelled.name,
+                status='KILLED',
                 output=None,
             )
         )
@@ -106,5 +106,5 @@ class TestCreateAndKillWork:
             work_id=work_id, user_id=fixt_user.user_id
         )
 
-        assert work_details['status'] == 'cancelled'
+        assert work_details['status'] == 'CANCELLED'
         assert work_details['output'] is None

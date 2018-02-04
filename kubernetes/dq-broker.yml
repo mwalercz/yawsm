@@ -15,7 +15,7 @@ spec:
       containers:
         - name: yawsm
           image: gcr.io/dist-queue/yawsm:1ab74d5
-          args: ["yawsm", "-c", "env.ini"]
+          args: ["yawsm", "-c", "env.cfg"]
           ports:
           - containerPort: 9000
             name: websocket

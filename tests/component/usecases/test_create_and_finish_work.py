@@ -18,7 +18,7 @@ class TestCreateAndFinishWork:
             worker_client,
     ):
         """
-        Given new work was submitted, given to one worker
+        Given READY work was submitted, given to one worker
         and work_is_done is performed,
         When work_details is performed,
         Then work_status should be finished_with success
@@ -43,15 +43,20 @@ class TestCreateAndFinishWork:
             dto=WorkIsDoneDto(
                 worker_socket=fixt_new_worker_dto.worker_socket,
                 work_id=work_id,
-                status='finished_with_success',
-                output='doc.txt something.sh'
+                status='DONE',
+                output='doc.txt something.sh',
+                exit_code=0,
             )
         )
         work_details = await work_details_usecase.perform(
             work_id, fixt_user.user_id
         )
 
-        assert work_details['status'] == 'finished_with_success'
+        assert work_details['status'] == 'FINISHED'
+        assert work_details['output'] == 'doc.txt something.sh'
+        assert work_details['exit_code'] == 0
+
         work_events = work_details['events']
         assert len(work_events) == 3
-        assert work_events[-1]['context']['output'] == 'doc.txt something.sh'
+
+

@@ -21,23 +21,23 @@ from yawsm.work.model import NON_FINAL_STATUSES, WorkStatus
 
 
 def run_app(
-        config_path='yawsm/conf/develop.ini',
-        logging_config_path='yawsm/conf/logging/develop.ini'
+        config_path='yawsm/conf/develop.cfg',
+        logging_config_path='yawsm/conf/logging/develop.cfg'
 ):
     logging.config.fileConfig(logging_config_path)
-    txaio.start_logging(level='debug')
+    # txaio.start_logging(level='debug')
     c = Container(dict(
         config_path=config_path,
     ))
     log = logging.getLogger(__name__)
     register_all(c)
-    txaio.use_asyncio()
-    txaio.config.loop = c('loop')
+    # txaio.use_asyncio()
+    # txaio.config.loop = c('loop')
     try_to_connect_to_db_and_create_admin_if_not_present(
         log, c('conf')['admin']['default_username']
     )
 
-    log.info('changing unfinished work status to unknown...')
+    log.info('changing unfinished work status to UNKNOWN...')
     move_unfinished_works_to_unknown_status(c)
 
     asyncio.ensure_future(
@@ -62,8 +62,8 @@ def run_app(
 
 def move_unfinished_works_to_unknown_status(c):
     coro = c('actions.work.change_status').perform(
-        from_statuses=NON_FINAL_STATUSES - {WorkStatus.unknown.name},
-        to_status=WorkStatus.unknown.name,
+        from_statuses=NON_FINAL_STATUSES - {WorkStatus.UNKNOWN.name},
+        to_status=WorkStatus.UNKNOWN.name,
         reason='master_shutdown',
     )
     c('loop').run_until_complete(coro)
@@ -110,13 +110,13 @@ def exit(signame, c):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', dest='config_path', default='develop.ini')
-    parser.add_argument('-l', dest='logging_config_path', default='develop.ini')
+    parser.add_argument('-c', dest='config_path', default='develop.cfg')
+    parser.add_argument('-l', dest='logging_config_path', default='develop.cfg')
     args = parser.parse_args()
     run_app(
-        config_path=os.path.join(ROOT_DIR, 'yawsm/conf', args.config_path),
+        config_path=os.path.join(ROOT_DIR, 'yawsm', 'conf', args.config_path),
         logging_config_path=os.path.join(
-            ROOT_DIR, 'yawsm/conf/logging', args.logging_config_path
+            ROOT_DIR, 'yawsm', 'conf', 'logging', args.logging_config_path
         ),
     )
 

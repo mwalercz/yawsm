@@ -18,7 +18,7 @@ class TestAddWorksAndChangeStatus:
 
         await change_work_status_usecase.perform(
             from_statuses=NON_FINAL_STATUSES,
-            to_status=WorkStatus.unknown.name,
+            to_status=WorkStatus.UNKNOWN.name,
             reason='master_shutdown',
         )
 
@@ -28,9 +28,9 @@ class TestAddWorksAndChangeStatus:
 
         work_list = result['works']
         assert work_list[-2]['work_id'] == work_id_1
-        assert work_list[-2]['status'] == 'unknown'
+        assert work_list[-2]['status'] == 'UNKNOWN'
         assert work_list[-1]['work_id'] == work_id_2
-        assert work_list[-1]['status'] == 'unknown'
+        assert work_list[-1]['status'] == 'UNKNOWN'
 
 
 

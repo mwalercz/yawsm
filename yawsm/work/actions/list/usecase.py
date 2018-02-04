@@ -24,6 +24,7 @@ class ListWorkUsecase:
             'cwd': work.cwd,
             'environment': work.env,
             'output': work.output,
+            'exit_code': work.exit_code,
             'created_at': work.created_at.isoformat(),
         }
 

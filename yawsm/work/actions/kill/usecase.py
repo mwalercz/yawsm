@@ -9,8 +9,6 @@ from yawsm.work.model import (
     WorkEvent,
     KillWork,
     FINAL_STATUSES,
-    WORK_IN_WORK_QUEUE_STATUSES,
-    WORK_PROCESSED_BY_WORKER_STATUSES,
 )
 from yawsm.work.work_queue import WorkQueue
 
@@ -40,17 +38,17 @@ class KillWorkUsecase:
         except WorkNotFound:
             return self._error('work_not_found_in_db')
 
-        if work.status == WorkStatus.unknown.name:
+        if work.status == WorkStatus.UNKNOWN.name:
             return self._error(
                 'work_in_unknown_status',
                 detailed_reson=(
                     'Broker was restarted and all unfinished works '
-                    'went to "unknown" status. '
+                    'went to "UNKNOWN" status. '
                     'If there was a worker which was working on this '
                     'work, and he didn\'t die during master unavailability '
-                    'then work should be moved to "processing" status '
+                    'then work should be moved to "PROCESSING" status '
                     'after this concrete worker reconnects.'
-                    'Otherwise, this work will be stuck in "unknown" status.'
+                    'Otherwise, this work will be stuck in "UNKNOWN" status.'
                 )
             )
         if work.status in FINAL_STATUSES:
@@ -59,7 +57,7 @@ class KillWorkUsecase:
                 work_status=work.status,
             )
 
-        if work.status in WORK_IN_WORK_QUEUE_STATUSES:
+        if work.status == WorkStatus.READY.name:
             try:
                 self.work_queue.pop_by_id(dto.work_id)
             except WorkNotFound:
@@ -81,12 +79,12 @@ class KillWorkUsecase:
                 event = WorkEvent(
                     work_id=dto.work_id,
                     reason=info,
-                    work_status=WorkStatus.cancelled.name,
+                    work_status=WorkStatus.CANCELLED.name,
                 )
                 await self.event_saver.save_event(event)
                 return self._ok(info)
 
-        if work.status in WORK_PROCESSED_BY_WORKER_STATUSES:
+        if work.status == WorkStatus.PROCESSING.name:
             try:
                 worker = self.workers.find_by_work_id(dto.work_id)
             except WorkerNotFound:
@@ -113,7 +111,7 @@ class KillWorkUsecase:
                 event = WorkEvent(
                     work_id=dto.work_id,
                     reason=info,
-                    work_status=WorkStatus.to_be_cancelled.name,
+                    work_status=WorkStatus.PROCESSING.name,
                     context=context
                 )
                 await self.event_saver.save_event(event)

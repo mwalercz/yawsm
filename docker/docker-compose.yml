@@ -3,7 +3,7 @@ services:
   yawsm:
     image: compose_yawsm
     container_name: compose_yawsm
-    command: yawsm -c env.ini
+    command: yawsm -c env.cfg
     build:
       context: ../
       dockerfile: ./docker/Dockerfile

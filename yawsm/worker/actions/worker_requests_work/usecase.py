@@ -44,7 +44,7 @@ class WorkerRequestsWorkUsecase:
         event = WorkEvent(
             work_id=work_id,
             reason='work_assigned',
-            work_status=WorkStatus.processing.name,
+            work_status=WorkStatus.PROCESSING.name,
             context={'worker_socket': worker_socket}
         )
         await self.event_saver.save_event(event)

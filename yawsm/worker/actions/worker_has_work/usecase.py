@@ -17,7 +17,7 @@ class WorkerHasWorkUsecase:
             WorkEvent(
                 work_id=work.work_id,
                 reason='worker_has_work',
-                work_status=WorkStatus.processing.name,
+                work_status=WorkStatus.PROCESSING.name,
                 context={
                     'worker_socket': worker_socket,
                 }

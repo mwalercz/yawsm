@@ -1,6 +1,6 @@
 import datetime
 
-from peewee import CharField, PrimaryKeyField, TextField, DateTimeField, ForeignKeyField
+from peewee import CharField, PrimaryKeyField, TextField, DateTimeField, ForeignKeyField, IntegerField
 from playhouse.sqlite_ext import JSONField
 
 from yawsm.infrastructure.db.base import BaseModel
@@ -19,6 +19,7 @@ class Work(BaseModel):
     cwd = CharField()
     env = JSONField(default={}, null=True)
     output = TextField(null=True)
+    exit_code = IntegerField(null=True)
     status = CharField(choices=ALL_STATUSES)
     created_at = DateTimeField(default=datetime.datetime.utcnow)
 
