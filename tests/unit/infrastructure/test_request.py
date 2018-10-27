@@ -24,7 +24,7 @@ class TestValidate:
     async def test_when_input_matches_schema_no_error_should_be_raised(self):
         data = {
             'work_id': 1,
-            'status': 'FINISHED',
+            'status': 'DONE',
             'output': 'some output'
         }
         request = Request(

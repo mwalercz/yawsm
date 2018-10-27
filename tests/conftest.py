@@ -9,6 +9,7 @@ from peewee_async import Manager
 
 import yawsm
 from definitions import ROOT_DIR
+from yawsm.app import try_to_connect_to_db_and_create_admin_if_not_present
 from yawsm.infrastructure.db.base import database
 from yawsm.infrastructure.db.user import User as DbUser
 from yawsm.user.model import User
@@ -34,14 +35,18 @@ def conf_path(request):
 
 @pytest.fixture
 def fixt_conf(conf_path):
-    conf = ConfigParser()
+    conf = ConfigParser(os.environ)
     conf.read(conf_path)
     return conf
 
 
 @pytest.fixture
 def fixt_db(fixt_conf):
-    database.init(**fixt_conf['db'])
+    database.init(**{
+        k: v for k, v in fixt_conf['db'].items()
+        if k in ['database', 'host', 'user', 'password']
+    })
+    try_to_connect_to_db_and_create_admin_if_not_present('admin')
     yawsm.infrastructure.db.user.User.create_table(True)
     yawsm.infrastructure.db.work.Work.create_table(True)
     yawsm.infrastructure.db.work.WorkEvent.create_table(True)

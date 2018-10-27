@@ -34,7 +34,7 @@ def run_app(
     # txaio.use_asyncio()
     # txaio.config.loop = c('loop')
     try_to_connect_to_db_and_create_admin_if_not_present(
-        log, c('conf')['admin']['default_username']
+        c('conf')['admin']['default_username'], log
     )
 
     log.info('changing unfinished work status to UNKNOWN...')
@@ -69,14 +69,17 @@ def move_unfinished_works_to_unknown_status(c):
     c('loop').run_until_complete(coro)
 
 
-def try_to_connect_to_db_and_create_admin_if_not_present(log, default_admin_username):
+def try_to_connect_to_db_and_create_admin_if_not_present(
+        default_username, log=None
+):
     while True:
         try:
             connect_to_db_and_create_tables()
-            create_default_admin_if_not_present(default_admin_username, log)
+            create_default_admin_if_not_present(default_username, log)
             break
         except OperationalError as exc:
-            log.info('DB is probably unavailable. ' + str(exc))
+            if log:
+                log.info('DB is probably unavailable. ' + str(exc))
             time.sleep(1)
 
 
