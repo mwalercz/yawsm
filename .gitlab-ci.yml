@@ -7,8 +7,8 @@ before_script:
   - docker info
   - docker-compose --version
 
-tests:
-  stage: tests
+test:
+  stage: test
   tags:
     - docker
   script:
