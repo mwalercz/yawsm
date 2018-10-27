@@ -1,21 +1,21 @@
-image: tmaier/docker-compose:latest
-
-services:
-  - docker:dind
-
-before_script:
-  - docker info
-  - docker-compose --version
-
 variables:
   DOCKER_DRIVER: overlay
 
 test:
+  image: tmaier/docker-compose:latest
+  before_script:
+    - docker info
+    - docker-compose --version
+  services:
+    - docker:dind
   stage: test
+  only:
+    - pushes
   tags:
     - docker
   script:
-    - cd docker && docker-compose run tests
+#    - cd docker && docker-compose run tests
+     - echo "test"
 
 
 deploy:
