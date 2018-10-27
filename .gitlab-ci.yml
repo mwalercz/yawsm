@@ -1,0 +1,15 @@
+image: tmaier/docker-compose:latest
+
+services:
+  - docker:dind
+
+before_script:
+  - docker info
+  - docker-compose --version
+
+test:
+  stage: test
+  tags:
+    - docker
+  script:
+    - cd docker && docker-compose run tests

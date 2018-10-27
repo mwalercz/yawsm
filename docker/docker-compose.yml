@@ -10,25 +10,33 @@ services:
     ports:
       - 9000:9000
       - 9001:9001
-    network_mode: "host"
     volumes:
       - ../:/usr/src/app
     environment:
-     - LANG=en_US.utf8
-     - YAWSM_DATABASE_HOSTNAME=127.0.0.1
-     - YAWSM_DATABASE_NAME=yawsm
-     - YAWSM_DATABASE_USER=yawsm
-     - YAWSM_DATABASE_PASSWORD=yawsm
-     - YAWSM_WEBSOCKET_PING_INTERVAL=2
-     - YAWSM_WEBSOCKET_PING_TIMEOUT=2
+      - LANG=en_US.utf8
+      - YAWSM_DATABASE_HOSTNAME=postgres
+      - YAWSM_DATABASE_NAME=yawsm
+      - YAWSM_DATABASE_USER=yawsm
+      - YAWSM_DATABASE_PASSWORD=yawsm
+      - YAWSM_WEBSOCKET_PING_INTERVAL=2
+      - YAWSM_WEBSOCKET_PING_TIMEOUT=2
 
   postgres:
     image: postgres:9.2-alpine
     container_name: compose_postgres
     ports:
       - 5432:5432
-    network_mode: "host"
     environment:
       - POSTGRES_USER=yawsm
       - POSTGRES_PASSWORD=yawsm
       - POSTGRES_DB=yawsm
+
+  tests:
+    extends:
+      service: yawsm
+    command: pytest --settings env.cfg tests
+    links:
+      - postgres
+
+
+
