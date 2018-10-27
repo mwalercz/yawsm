@@ -7,6 +7,9 @@ before_script:
   - docker info
   - docker-compose --version
 
+variables:
+  DOCKER_DRIVER: overlay
+
 test:
   stage: test
   tags:
@@ -20,3 +23,7 @@ deploy:
   script:
     - echo "DEPLOY"
   when: manual
+  only:
+    - /^release/.*$/
+  except:
+    - branches
