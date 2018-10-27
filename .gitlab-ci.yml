@@ -13,3 +13,10 @@ test:
     - docker
   script:
     - cd docker && docker-compose run tests
+
+
+deploy:
+  stage: deploy
+  script:
+    - echo "DEPLOY"
+  when: manual
